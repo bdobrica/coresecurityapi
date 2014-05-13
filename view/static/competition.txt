@@ -1,0 +1,5 @@
+/**
+ * Competition analyses current company performance with those of competitors.
+ * Requires: Defining competitors and access to mfinante.ro database (to gather financial data), defining competitors keywords (to gather google presence data)
+ * Using statistical inference based on National Statistics Institute data, forecast marketshare evolution.
+ */

@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class PDF</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class PDF</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+		<p class="notes">
+			Located in <a class="field" href="_pdf.php.html">/pdf.php</a> (line <span class="field">2</span>)
+		</p>
+		
+				
+		<pre><a href="../default/FPDF.html">FPDF</a>
+   |
+   --PDF</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																				
+												<div class="method-definition">
+											<span class="method-result">PDF</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$o</span> = <span class="var-default">'P'</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#columns" title="details" class="method-name">columns</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$height</span> = <span class="var-default">6</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$data</span> = <span class="var-default">array()</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#fix" title="details" class="method-name">fix</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$str</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#out" title="details" class="method-name">out</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$path</span> = <span class="var-default">''</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$dest</span> = <span class="var-default">'I'</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#style" title="details" class="method-name">style</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$html</span> = <span class="var-default">'p'</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#table" title="details" class="method-name">table</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$cols</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rows</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$height</span> = <span class="var-default">6</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$border</span> = <span class="var-default">'1'</span>])
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+										<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../default/FPDF.html">FPDF</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$AliasNbPages">FPDF::$AliasNbPages</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$author">FPDF::$author</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$AutoPageBreak">FPDF::$AutoPageBreak</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$bMargin">FPDF::$bMargin</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$buffer">FPDF::$buffer</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$cMargin">FPDF::$cMargin</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$ColorFlag">FPDF::$ColorFlag</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$compress">FPDF::$compress</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$CoreFonts">FPDF::$CoreFonts</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$creator">FPDF::$creator</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$CurOrientation">FPDF::$CurOrientation</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$CurPageSize">FPDF::$CurPageSize</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$CurrentFont">FPDF::$CurrentFont</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$DefOrientation">FPDF::$DefOrientation</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$DefPageSize">FPDF::$DefPageSize</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$diffs">FPDF::$diffs</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$DrawColor">FPDF::$DrawColor</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$FillColor">FPDF::$FillColor</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$FontFamily">FPDF::$FontFamily</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$FontFiles">FPDF::$FontFiles</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$fontpath">FPDF::$fontpath</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$fonts">FPDF::$fonts</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$FontSize">FPDF::$FontSize</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$FontSizePt">FPDF::$FontSizePt</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$FontStyle">FPDF::$FontStyle</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$h">FPDF::$h</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$hPt">FPDF::$hPt</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$images">FPDF::$images</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$InFooter">FPDF::$InFooter</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$InHeader">FPDF::$InHeader</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$k">FPDF::$k</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$keywords">FPDF::$keywords</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$lasth">FPDF::$lasth</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$LayoutMode">FPDF::$LayoutMode</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$LineWidth">FPDF::$LineWidth</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$links">FPDF::$links</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$lMargin">FPDF::$lMargin</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$n">FPDF::$n</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$offsets">FPDF::$offsets</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$page">FPDF::$page</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$PageBreakTrigger">FPDF::$PageBreakTrigger</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$PageLinks">FPDF::$PageLinks</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$pages">FPDF::$pages</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$PageSizes">FPDF::$PageSizes</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$PDFVersion">FPDF::$PDFVersion</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$rMargin">FPDF::$rMargin</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$state">FPDF::$state</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$StdPageSizes">FPDF::$StdPageSizes</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$subject">FPDF::$subject</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$TextColor">FPDF::$TextColor</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$title">FPDF::$title</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$tMargin">FPDF::$tMargin</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$underline">FPDF::$underline</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$w">FPDF::$w</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$wPt">FPDF::$wPt</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$ws">FPDF::$ws</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$x">FPDF::$x</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$y">FPDF::$y</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/FPDF.html#var$ZoomMode">FPDF::$ZoomMode</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-vars">Vars</a>
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">5</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">PDF</span>
+		<span class="method-name">
+			__construct
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$o</span> = <span class="var-default">'P'</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$o</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/FPDF.html#method__construct">FPDF::__construct()</a></dt>
+						<dd>*****************************************************************************</dd>
+					</dl>
+			
+	</div>
+<a name="methodcolumns" id="columns"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">columns</span> (line <span class="line-number">126</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			columns
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$height</span> = <span class="var-default">6</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$data</span> = <span class="var-default">array()</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$height</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$data</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodfix" id="fix"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">fix</span> (line <span class="line-number">17</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			fix
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$str</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$str</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodout" id="out"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">out</span> (line <span class="line-number">242</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			out
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$path</span> = <span class="var-default">''</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$dest</span> = <span class="var-default">'I'</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$path</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$dest</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodstyle" id="style"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">style</span> (line <span class="line-number">70</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			style
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$html</span> = <span class="var-default">'p'</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$html</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtable" id="table"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">table</span> (line <span class="line-number">139</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			table
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$cols</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rows</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$height</span> = <span class="var-default">6</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$border</span> = <span class="var-default">'1'</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$cols</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$rows</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$height</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$border</span>			</li>
+				</ul>
+		
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../default/FPDF.html">FPDF</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../default/FPDF.html#method__construct">FPDF::__construct()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodAcceptPageBreak">FPDF::AcceptPageBreak()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodAddFont">FPDF::AddFont()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodAddLink">FPDF::AddLink()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodAddPage">FPDF::AddPage()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodAliasNbPages">FPDF::AliasNbPages()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodCell">FPDF::Cell()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodClose">FPDF::Close()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodError">FPDF::Error()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodFooter">FPDF::Footer()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodGetStringWidth">FPDF::GetStringWidth()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodGetX">FPDF::GetX()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodGetY">FPDF::GetY()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodHeader">FPDF::Header()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodImage">FPDF::Image()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodLine">FPDF::Line()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodLink">FPDF::Link()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodLn">FPDF::Ln()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodMultiCell">FPDF::MultiCell()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodOpen">FPDF::Open()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodOutput">FPDF::Output()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodPageNo">FPDF::PageNo()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodRect">FPDF::Rect()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetAuthor">FPDF::SetAuthor()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetAutoPageBreak">FPDF::SetAutoPageBreak()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetCompression">FPDF::SetCompression()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetCreator">FPDF::SetCreator()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetDisplayMode">FPDF::SetDisplayMode()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetDrawColor">FPDF::SetDrawColor()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetFillColor">FPDF::SetFillColor()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetFont">FPDF::SetFont()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetFontSize">FPDF::SetFontSize()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetKeywords">FPDF::SetKeywords()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetLeftMargin">FPDF::SetLeftMargin()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetLineWidth">FPDF::SetLineWidth()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetLink">FPDF::SetLink()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetMargins">FPDF::SetMargins()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetRightMargin">FPDF::SetRightMargin()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetSubject">FPDF::SetSubject()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetTextColor">FPDF::SetTextColor()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetTitle">FPDF::SetTitle()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetTopMargin">FPDF::SetTopMargin()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetX">FPDF::SetX()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetXY">FPDF::SetXY()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodSetY">FPDF::SetY()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodText">FPDF::Text()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#methodWrite">FPDF::Write()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_beginpage">FPDF::_beginpage()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_checkoutput">FPDF::_checkoutput()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_dochecks">FPDF::_dochecks()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_dounderline">FPDF::_dounderline()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_enddoc">FPDF::_enddoc()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_endpage">FPDF::_endpage()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_escape">FPDF::_escape()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_getpagesize">FPDF::_getpagesize()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_loadfont">FPDF::_loadfont()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_newobj">FPDF::_newobj()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_out">FPDF::_out()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_parsegif">FPDF::_parsegif()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_parsejpg">FPDF::_parsejpg()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_parsepng">FPDF::_parsepng()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_parsepngstream">FPDF::_parsepngstream()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putcatalog">FPDF::_putcatalog()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putfonts">FPDF::_putfonts()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putheader">FPDF::_putheader()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putimage">FPDF::_putimage()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putimages">FPDF::_putimages()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putinfo">FPDF::_putinfo()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putpages">FPDF::_putpages()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putresourcedict">FPDF::_putresourcedict()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putresources">FPDF::_putresources()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putstream">FPDF::_putstream()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_puttrailer">FPDF::_puttrailer()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_putxobjectdict">FPDF::_putxobjectdict()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_readint">FPDF::_readint()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_readstream">FPDF::_readstream()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_textstring">FPDF::_textstring()</a></span><br>
+													<span class="method-name"><a href="../default/FPDF.html#method_UTF8toUTF16">FPDF::_UTF8toUTF16()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 29 Jan 2014 23:27:37 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
+</html>

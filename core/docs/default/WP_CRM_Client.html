@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class WP_CRM_Client</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class WP_CRM_Client</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Client is an extension of Person. Actually a person that bought something.</p>
+<p class="description"><p>It holds methods to access invoices and products. Works only for Person.</p></p>
+		<p class="notes">
+			Located in <a class="field" href="_wp_crm_client.php.html">/wp_crm_client.php</a> (line <span class="field">6</span>)
+		</p>
+		
+				
+		<pre><a href="../default/WP_CRM_Model.html">WP_CRM_Model</a>
+   |
+   --<a href="../default/WP_CRM_Person.html">WP_CRM_Person</a>
+      |
+      --WP_CRM_Client</pre>
+	
+			</div>
+</div>
+
+
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<a href="#Max_Clients" title="details" class="const-name">Max_Clients</a> = 					<span class="var-type"> 9</span>
+
+				</div>
+							</div>
+		</div>
+	</div>
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+												<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$F" title="details" class="var-name">$F</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$K" title="details" class="var-name">$K</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$Q" title="details" class="var-name">$Q</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$T" title="details" class="var-name">$T</a>
+				</div>
+																																															</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																												
+												<div class="method-definition">
+											<span class="method-result">WP_CRM_Client</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$data</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__destruct" title="details" class="method-name">__destruct</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#get" title="details" class="method-name">get</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$opts</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#register" title="details" class="method-name">register</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$product</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$invoice</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#set" title="details" class="method-name">set</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">null</span>])
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$F" id="$F"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$F</span>
+			 = <span class="var-default">array (<br />		'new' =&gt; array (<br />			'person:person' =&gt; 'Participant',<br />			'iid:invoice' =&gt; 'Factura',<br />			'pid:product' =&gt; 'Produs'<br />			),'edit'=&gt;array('person:person'=&gt;'Participant','iid:invoice'=&gt;'Factura','pid:product'=&gt;'Produs'),'view'=&gt;array('first_name'=&gt;'Prenume','last_name'=&gt;'Nume','invoice_series'=&gt;'Factura','invoice_paid:bool'=&gt;'Platita','email'=&gt;'E-Mail','address'=&gt;'Adresa','county'=&gt;'Judet','phone'=&gt;'Telefon','uin'=&gt;'CNP',),'public'=&gt;array('first_name'=&gt;'Prenume','last_name'=&gt;'Nume','invoice_series'=&gt;'Factura','invoice_paid:bool'=&gt;'Platita','email'=&gt;'E-Mail','address'=&gt;'Adresa','county'=&gt;'Judet','phone'=&gt;'Telefon','uin'=&gt;'CNP',),'extended'=&gt;array('id_series'=&gt;'Serie CI','id_number'=&gt;'Numar CI','id_issuer'=&gt;'Eliberat de','id_expire'=&gt;'La data de','id_place'=&gt;'Locul nasterii','id_father'=&gt;'Numele tatalui','id_mother'=&gt;'Numele mamei',),'private'=&gt;array())</span>			(line <span class="line-number">18</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#var$F">WP_CRM_Person::$F</a></dt>
+					</dl>
+		
+		
+
+</div>
+<a name="var$K" id="$K"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$K</span>
+			 = <span class="var-default">array (<br />		'uid',<br />		'iid',<br />		'pid',<br />		'cid',<br />		'stamp'<br />		)</span>			(line <span class="line-number">10</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#var$K">WP_CRM_Person::$K</a></dt>
+					</dl>
+		
+		
+
+</div>
+<a name="var$Q" id="$Q"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$Q</span>
+			 = <span class="var-default">array (<br />		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',<br />		'`uid` int(11) NOT NULL DEFAULT 0',<br />		'`iid` int(11) NOT NULL DEFAULT 0',<br />		'`pid` int(11) NOT NULL DEFAULT 0',<br />		'`cid` int(11) NOT NULL DEFAULT 0',<br />		'`stamp` int(11) NOT NULL DEFAULT 0',<br />		)</span>			(line <span class="line-number">64</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#var$Q">WP_CRM_Person::$Q</a></dt>
+					</dl>
+		
+		
+
+</div>
+<a name="var$T" id="$T"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$T</span>
+			 = <span class="var-default"> 'clients'</span>			(line <span class="line-number">9</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#var$T">WP_CRM_Person::$T</a></dt>
+					</dl>
+		
+		
+
+</div>
+							<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../default/WP_CRM_Model.html">WP_CRM_Model</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$data">WP_CRM_Model::$data</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$group">WP_CRM_Model::$group</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$ID">WP_CRM_Model::$ID</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$M_K">WP_CRM_Model::$M_K</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$U">WP_CRM_Model::$U</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																			<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">77</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">WP_CRM_Client</span>
+		<span class="method-name">
+			__construct
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$data</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$data</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#method__construct">WP_CRM_Person::__construct()</a></dt>
+					</dl>
+			
+	</div>
+<a name="method__destruct" id="__destruct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Destructor __destruct</span> (line <span class="line-number">197</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__destruct
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#method__destruct">WP_CRM_Person::__destruct()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodget" id="get"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">get</span> (line <span class="line-number">120</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			get
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$opts</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$key</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$opts</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#methodget">WP_CRM_Person::get()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodregister" id="register"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">register</span> (line <span class="line-number">160</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			register
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$product</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$invoice</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$product</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$invoice</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#methodregister">WP_CRM_Person::register()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodset" id="set"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">set</span> (line <span class="line-number">145</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			set
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$key</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Person.html#methodset">WP_CRM_Person::set()</a></dt>
+					</dl>
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../default/WP_CRM_Person.html">WP_CRM_Person</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#method__construct">WP_CRM_Person::__construct()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#methodauth">WP_CRM_Person::auth()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#methodget">WP_CRM_Person::get()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#methodis">WP_CRM_Person::is()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#methodmove">WP_CRM_Person::move()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#methodregister">WP_CRM_Person::register()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#methodsave">WP_CRM_Person::save()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#methodset">WP_CRM_Person::set()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Person.html#method__destruct">WP_CRM_Person::__destruct()</a></span><br>
+											</blockquote>
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../default/WP_CRM_Model.html">WP_CRM_Model</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../default/WP_CRM_Model.html#method__construct">WP_CRM_Model::__construct()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+														| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constMax_Clients" id="Max_Clients"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">Max_Clients</span>
+			 = <span class="const-default"> 9</span>
+			(line <span class="line-number">7</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+							<h4>Inherited Constants</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../default/WP_CRM_Person.html">WP_CRM_Person</a></span></p>
+					<blockquote>
+													<span class="const-title">
+								<span class="const-name"><a href="../default/WP_CRM_Person.html#constFirst_Flag">WP_CRM_Person::First_Flag</a></span><br>
+							</span>
+													<span class="const-title">
+								<span class="const-name"><a href="../default/WP_CRM_Person.html#constPadding">WP_CRM_Person::Padding</a></span><br>
+							</span>
+													<span class="const-title">
+								<span class="const-name"><a href="../default/WP_CRM_Person.html#constRaiffeisen_Flag">WP_CRM_Person::Raiffeisen_Flag</a></span><br>
+							</span>
+													<span class="const-title">
+								<span class="const-name"><a href="../default/WP_CRM_Person.html#constTerms_Flag">WP_CRM_Person::Terms_Flag</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 29 Jan 2014 23:27:38 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
+</html>

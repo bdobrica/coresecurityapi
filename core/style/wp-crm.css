@@ -1,0 +1,25 @@
+.wp-crm-table th,
+.wp-crm-table td { font-size: 8pt; }
+.wp-crm-table thead { cursor: pointer; }
+.wp-crm-popup-control { cursor: pointer; }
+.wp-crm-popup { position: absolute; width: 350px; }
+.wp-crm-popup-ajax { cursor: pointer; margin: 0 3px; }
+
+.wp-crm-colorpicker a { background-position: center center; background-repeat: no-repeat; }
+
+.wp-crm-past-date { background: #00c; color: #fff; line-height: 18px; height: 18px; border-radius: 3px; text-shadow: #ccc 1px 1px 1px; box-shadow: 1px 1px 1px #ccc; padding: 0 3px; }
+.wp-crm-current-date { background: #c00; color: #fff; line-height: 18px; height: 18px; border-radius: 3px; text-shadow: #ccc 1px 1px 1px; box-shadow: 1px 1px 1px #ccc; padding: 0 3px; }
+.wp-crm-future-date { background: #0c0; color: #fff; line-height: 18px; height: 18px; border-radius: 3px; text-shadow: #ccc 1px 1px 1px; box-shadow: 1px 1px 1px #ccc; padding: 0 3px; }
+
+.wp-crm-button-primary, .wp-crm-button-secondary { line-height: 18px; height: 18px; border-radius: 3px; text-shadow: #ccc 1px 1px 1px; box-shadow: 1px 1px 1px #ccc; padding: 0 3px; font-family: Calibri, Arial, Verdana, sans-serif; font-weight: bold; font-size: 9pt; cursor: pointer; border: 0!important; }
+.wp-crm-button-primary:hover, .wp-crm-button-secondary:hover { box-shadow: 0 0 1px #ccc; }
+.wp-crm-button-primary { background: #00c!important; color: #fff!important; }
+.wp-crm-button-secondary { background: #ccc!important; color: #fff!important; }
+
+.wp-crm-spacer { clear: both; height: 800px; }
+
+.wp-crm-massactions {}
+.wp-crm-massactions fieldset { border: 1px solid #eee; float: left; padding: 5px; margin: 5px; }
+.wp-crm-massactions legend { border: 1px solid #eee; padding: 3px; margin-left: 10px; }
+.wp-crm-massactions input[type="submit"],
+.wp-crm-massactions input[type="button"] { width: 150px; clear: both; display: block; margin: 2px 3px; cursor: pointer; }

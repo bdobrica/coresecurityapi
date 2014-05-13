@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs for page biginteger.php</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="file-name">/biginteger.php</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-classes">Classes</a>
+														</div>
+	<div class="info-box-body">	
+		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pure-PHP arbitrary precision integer arithmetic library.</p>
+<p class="description"><p>Supports base-2, base-10, base-16, and base-256 numbers.  Uses the GMP or BCMath extensions, if available,  and an internal implementation, otherwise.</p><p>PHP versions 4 and 5</p><p>{@ mode)</p><p>BigInteger uses base-2**26 to perform operations such as multiplication and division and  base-2**52 (ie. two base 2**26 digits) to perform addition and subtraction.  Because the largest possible  value when multiplying two base-2**26 numbers together is a base-2**52 number, double precision floating  point numbers - numbers that should be supported on most hardware and whose significand is 53 bits - are  used.  As a consequence, bitwise operators such as &gt;&gt; and &lt;&lt; cannot be used, nor can the modulo operator %,  which only supports integers.  Although this fact will slow this library down, the fact that such a high  base is being used should more than compensate.</p><p>When PHP version 6 is officially released, we'll be able to use 64-bit integers.  This should, once again,  allow bitwise operators, and will increase the maximum possible base to 2**31 (or 2**62 for addition /  subtraction).</p><p>Numbers are stored in <a href="http://en.wikipedia.org/wiki/Endianness">little endian</a> format.  ie.  (new BigInteger(pow(2, 26)))-&gt;value = array(0, 1)</p><p>Useful resources are as follows:</p><p><ul><li><a href="http://www.cacr.math.uwaterloo.ca/hac/about/chap14.pdf">Handbook of Applied Cryptography (HAC)</a></li><li><a href="http://math.libtomcrypt.com/files/tommath.pdf">Multi-Precision Math (MPM)</a></li><li>Java's BigInteger classes.  See /j2se/src/share/classes/java/math in jdk-1_5_0-src-jrl.zip</li></ul>  Here's an example of how to use this library:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-php">&lt;?php</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-inc">include</span><span class="src-sym">(</span><span class="src-str">'Math/BigInteger.php'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$a&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../BigInteger/BigInteger.html">BigInteger</a></span><span class="src-sym">(</span><span class="src-num">2</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$b&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../BigInteger/BigInteger.html">BigInteger</a></span><span class="src-sym">(</span><span class="src-num">3</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$c&nbsp;</span>=&nbsp;<span class="src-var">$a</span><span class="src-sym">-&gt;</span><span class="src-id">add</span><span class="src-sym">(</span><span class="src-var">$b</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$c</span><span class="src-sym">-&gt;</span><span class="src-id">toString</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">//&nbsp;outputs&nbsp;5</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-php">?&gt;</span></div></li>
+</ol></div></p><p>LICENSE: This library is free software; you can redistribute it and/or  modify it under the terms of the GNU Lesser General Public  License as published by the Free Software Foundation; either  version 2.1 of the License, or (at your option) any later version.</p><p>This library is distributed in the hope that it will be useful,  but WITHOUT ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  Lesser General Public License for more details.</p><p>You should have received a copy of the GNU Lesser General Public  License along with this library; if not, write to the Free Software  Foundation, Inc., 59 Temple Place, Suite 330, Boston,  MA  02111-1307  USA</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jim Wigginton &lt;<a href="mailto:terrafrost@php.net">terrafrost@php.net</a>&gt;</li>
+				<li><span class="field">version:</span> $Id: BigInteger.php,v 1.33 2010/03/22 22:32:03 terrafrost Exp $</li>
+				<li><span class="field">copyright:</span> MMVI Jim Wigginton</li>
+				<li><span class="field">link:</span> <a href="http://pear.php.net/package/BigInteger">http://pear.php.net/package/BigInteger</a></li>
+				<li><span class="field">license:</span> <a href="http://www.gnu.org/licenses/lgpl.txt">http://www.gnu.org/licenses/lgpl.txt</a></li>
+			</ul>
+		
+			</div>
+</div>
+		
+	<a name="sec-classes"></a>	
+	<div class="info-box">
+		<div class="info-box-title">Classes</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Classes</span>
+																	</div>
+		<div class="info-box-body">	
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em; vertical-align: top">
+						<a href="../BigInteger/BigInteger.html">BigInteger</a>
+					</td>
+					<td>
+											Pure-PHP arbitrary precision integer arithmetic library. Supports base-2, base-10, base-16, and base-256  numbers.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+	
+	
+	
+	
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 29 Jan 2014 23:27:37 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
+</html>

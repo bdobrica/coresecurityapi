@@ -1,0 +1,1 @@
+API for interfacing a remote web-site to the WP_CRM plugin. WP_CRM is not intended to be used on the same domain as your business, meaning you can have multiple store managed from the same place.

@@ -1,0 +1,9 @@
+01-11-2012 15:03:18	217.156.103.68		action=paid	errorCode=
+01-11-2012 15:05:05	217.156.103.68		action=paid	errorCode=
+01-11-2012 15:10:22	217.156.103.68		action=paid	errorCode=
+26-11-2012 07:28:40	217.156.103.68		action=paid	errorCode=16
+26-11-2012 07:30:10	217.156.103.68		action=paid	errorCode=50
+26-11-2012 07:37:17	217.156.103.68		action=paid	errorCode=19
+26-11-2012 08:27:14	217.156.103.68		action=paid	errorCode=16
+27-11-2012 14:12:00	217.156.103.68		action=paid	errorCode=21
+27-11-2012 14:12:14	217.156.103.68		action=confirmed	errorCode=0

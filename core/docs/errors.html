@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>phpDocumentor Parser Errors and Warnings</title>
+			<link rel="stylesheet" href="media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+						<a href="#Post-parsing">Post-parsing</a><br>
+<a href="#Address.php">Address.php</a><br>
+<a href="#biginteger.php">biginteger.php</a><br>
+<a href="#Card.php">Card.php</a><br>
+<a href="#fpdf.php">fpdf.php</a><br>
+<a href="#Invoice.php">Invoice.php</a><br>
+<a href="#Item.php">Item.php</a><br>
+<a href="#Notify.php">Notify.php</a><br>
+<a href="#passwordhash.php">passwordhash.php</a><br>
+<a href="#pdf.php">pdf.php</a><br>
+<a href="#phpmailer.php">phpmailer.php</a><br>
+<a href="#Request.php">Request.php</a><br>
+<a href="#Sms.php">Sms.php</a><br>
+<a href="#smtp.php">smtp.php</a><br>
+<a href="#wp_crm.php">wp_crm.php</a><br>
+<a href="#wp_crm_action.php">wp_crm_action.php</a><br>
+<a href="#wp_crm_analytics.php">wp_crm_analytics.php</a><br>
+<a href="#wp_crm_app.php">wp_crm_app.php</a><br>
+<a href="#wp_crm_basket.php">wp_crm_basket.php</a><br>
+<a href="#wp_crm_buyer.php">wp_crm_buyer.php</a><br>
+<a href="#wp_crm_card.php">wp_crm_card.php</a><br>
+<a href="#wp_crm_cash_register.php">wp_crm_cash_register.php</a><br>
+<a href="#wp_crm_chart.php">wp_crm_chart.php</a><br>
+<a href="#wp_crm_client.php">wp_crm_client.php</a><br>
+<a href="#wp_crm_company.php">wp_crm_company.php</a><br>
+<a href="#wp_crm_contact.php">wp_crm_contact.php</a><br>
+<a href="#wp_crm_controller.php">wp_crm_controller.php</a><br>
+<a href="#wp_crm_cookie.php">wp_crm_cookie.php</a><br>
+<a href="#wp_crm_coupon.php">wp_crm_coupon.php</a><br>
+<a href="#wp_crm_discount.php">wp_crm_discount.php</a><br>
+<a href="#wp_crm_event.php">wp_crm_event.php</a><br>
+<a href="#wp_crm_exception.php">wp_crm_exception.php</a><br>
+<a href="#wp_crm_form.php">wp_crm_form.php</a><br>
+<a href="#wp_crm_form_structure.php">wp_crm_form_structure.php</a><br>
+<a href="#wp_crm_gallery.php">wp_crm_gallery.php</a><br>
+<a href="#wp_crm_garbage.php">wp_crm_garbage.php</a><br>
+<a href="#wp_crm_group.php">wp_crm_group.php</a><br>
+<a href="#wp_crm_index.php">wp_crm_index.php</a><br>
+<a href="#wp_crm_invoice.php">wp_crm_invoice.php</a><br>
+<a href="#wp_crm_list.php">wp_crm_list.php</a><br>
+<a href="#wp_crm_location.php">wp_crm_location.php</a><br>
+<a href="#wp_crm_log.php">wp_crm_log.php</a><br>
+<a href="#wp_crm_mail.php">wp_crm_mail.php</a><br>
+<a href="#wp_crm_mailagent.php">wp_crm_mailagent.php</a><br>
+<a href="#wp_crm_mailagent_site.php">wp_crm_mailagent_site.php</a><br>
+<a href="#wp_crm_math_element.php">wp_crm_math_element.php</a><br>
+<a href="#wp_crm_math_set.php">wp_crm_math_set.php</a><br>
+<a href="#wp_crm_memo.php">wp_crm_memo.php</a><br>
+<a href="#wp_crm_menu.php">wp_crm_menu.php</a><br>
+<a href="#wp_crm_metro.php">wp_crm_metro.php</a><br>
+<a href="#wp_crm_model.php">wp_crm_model.php</a><br>
+<a href="#wp_crm_office.php">wp_crm_office.php</a><br>
+<a href="#wp_crm_order.php">wp_crm_order.php</a><br>
+<a href="#wp_crm_order_category.php">wp_crm_order_category.php</a><br>
+<a href="#wp_crm_participants.php">wp_crm_participants.php</a><br>
+<a href="#wp_crm_payment.php">wp_crm_payment.php</a><br>
+<a href="#wp_crm_person.php">wp_crm_person.php</a><br>
+<a href="#wp_crm_price.php">wp_crm_price.php</a><br>
+<a href="#wp_crm_product.php">wp_crm_product.php</a><br>
+<a href="#wp_crm_queue.php">wp_crm_queue.php</a><br>
+<a href="#wp_crm_receipt.php">wp_crm_receipt.php</a><br>
+<a href="#wp_crm_resource.php">wp_crm_resource.php</a><br>
+<a href="#wp_crm_responsible.php">wp_crm_responsible.php</a><br>
+<a href="#wp_crm_room.php">wp_crm_room.php</a><br>
+<a href="#wp_crm_room_block.php">wp_crm_room_block.php</a><br>
+<a href="#wp_crm_secureconn.php">wp_crm_secureconn.php</a><br>
+<a href="#wp_crm_securedata.php">wp_crm_securedata.php</a><br>
+<a href="#wp_crm_secureleaf.php">wp_crm_secureleaf.php</a><br>
+<a href="#wp_crm_secureserver.php">wp_crm_secureserver.php</a><br>
+<a href="#wp_crm_site.php">wp_crm_site.php</a><br>
+<a href="#wp_crm_srp.php">wp_crm_srp.php</a><br>
+<a href="#wp_crm_state.php">wp_crm_state.php</a><br>
+<a href="#wp_crm_stock.php">wp_crm_stock.php</a><br>
+<a href="#wp_crm_table.php">wp_crm_table.php</a><br>
+<a href="#wp_crm_task.php">wp_crm_task.php</a><br>
+<a href="#wp_crm_tasklet.php">wp_crm_tasklet.php</a><br>
+<a href="#wp_crm_template.php">wp_crm_template.php</a><br>
+<a href="#wp_crm_theme.php">wp_crm_theme.php</a><br>
+<a href="#wp_crm_timer.php">wp_crm_timer.php</a><br>
+<a href="#wp_crm_tm_action.php">wp_crm_tm_action.php</a><br>
+<a href="#wp_crm_tm_array.php">wp_crm_tm_array.php</a><br>
+<a href="#wp_crm_tm_register.php">wp_crm_tm_register.php</a><br>
+<a href="#wp_crm_tm_task.php">wp_crm_tm_task.php</a><br>
+<a href="#wp_crm_tools.php">wp_crm_tools.php</a><br>
+<a href="#wp_crm_trainer.php">wp_crm_trainer.php</a><br>
+<a href="#wp_crm_ui.php">wp_crm_ui.php</a><br>
+<a href="#wp_crm_view.php">wp_crm_view.php</a><br>
+<a name="Post-parsing"></a>
+<h1>Post-parsing</h1>
+<h2>Warnings:</h2><br>
+<b>Warning</b> - 
+duplicate function element "install" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "__clone" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "delete" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "parse" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "save" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "__destruct" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "slug" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "set" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "get" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning</b> - 
+duplicate function element "json" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<a name="Abstract.php"></a>
+<h1>Abstract.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 13</b> - no @package tag was used in a DocBlock for class Mobilpay_Payment_Request_Abstract<br>
+<b>Warning on line 386</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/Mobilpay/Payment/Request/Abstract.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Address.php"></a>
+<h1>Address.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - no @package tag was used in a DocBlock for class Mobilpay_Payment_Address<br>
+<b>Warning on line 254</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/Mobilpay/Payment/Address.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="biginteger.php"></a>
+<h1>biginteger.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 78</b> - package default is already in category default, will now replace with category Math<br>
+<a name="Card.php"></a>
+<h1>Card.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - no @package tag was used in a DocBlock for class Mobilpay_Payment_Request_Card<br>
+<b>Warning on line 114</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/Mobilpay/Payment/Request/Card.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="fpdf.php"></a>
+<h1>fpdf.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 12</b> - no @package tag was used in a DocBlock for class FPDF<br>
+<b>Warning on line 1803</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/fpdf.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Invoice.php"></a>
+<h1>Invoice.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 9</b> - no @package tag was used in a DocBlock for class Mobilpay_Payment_Invoice<br>
+<b>Warning on line 357</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/Mobilpay/Payment/Invoice.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Item.php"></a>
+<h1>Item.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 9</b> - no @package tag was used in a DocBlock for class Mobilpay_Payment_Invoice_Item<br>
+<b>Warning on line 137</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/Mobilpay/Payment/Invoice/Item.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Notify.php"></a>
+<h1>Notify.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 11</b> - no @package tag was used in a DocBlock for class Mobilpay_Payment_Request_Notify<br>
+<b>Warning on line 371</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/Mobilpay/Payment/Request/Notify.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="passwordhash.php"></a>
+<h1>passwordhash.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 26</b> - no @package tag was used in a DocBlock for class PasswordHash<br>
+<b>Warning on line 252</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/passwordhash.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="pdf.php"></a>
+<h1>pdf.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class PDF<br>
+<b>Warning on line 246</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/pdf.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="phpmailer.php"></a>
+<h1>phpmailer.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 39</b> - DocBlock would be page-level, but precedes class "PHPMailer", use another DocBlock to document the file<br>
+<b>Warning on line 2524</b> - no @package tag was used in a DocBlock for class phpmailerException<br>
+<a name="Request.php"></a>
+<h1>Request.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 13</b> - no @package tag was used in a DocBlock for class Mobilpay_Payment_Request<br>
+<b>Warning on line 188</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/Mobilpay/Payment/Request.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="Sms.php"></a>
+<h1>Sms.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 10</b> - no @package tag was used in a DocBlock for class Mobilpay_Payment_Request_Sms<br>
+<b>Warning on line 186</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/Mobilpay/Payment/Request/Sms.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="smtp.php"></a>
+<h1>smtp.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 45</b> - no @package tag was used in a DocBlock for class SMTP<br>
+<a name="wp_crm.php"></a>
+<h1>wp_crm.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM<br>
+<b>Warning on line 179</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_action.php"></a>
+<h1>wp_crm_action.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - no @package tag was used in a DocBlock for class WP_CRM_Action<br>
+<b>Warning on line 97</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_action.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_analytics.php"></a>
+<h1>wp_crm_analytics.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 23</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_analytics.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_app.php"></a>
+<h1>wp_crm_app.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 17</b> - no @package tag was used in a DocBlock for class WP_CRM_App<br>
+<b>Warning on line 115</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_app.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_basket.php"></a>
+<h1>wp_crm_basket.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - no @package tag was used in a DocBlock for class WP_CRM_Basket<br>
+<b>Warning on line 280</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_basket.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_buyer.php"></a>
+<h1>wp_crm_buyer.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 5</b> - no @package tag was used in a DocBlock for class WP_CRM_Buyer<br>
+<b>Warning on line 52</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_buyer.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_card.php"></a>
+<h1>wp_crm_card.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 4</b> - no @package tag was used in a DocBlock for class WP_CRM_Card<br>
+<b>Warning on line 151</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_card.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_cash_register.php"></a>
+<h1>wp_crm_cash_register.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 4</b> - no @package tag was used in a DocBlock for class WP_CRM_Cash_Register<br>
+<b>Warning on line 6</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_cash_register.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_chart.php"></a>
+<h1>wp_crm_chart.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 5</b> - no @package tag was used in a DocBlock for class WP_CRM_Chart<br>
+<b>Warning on line 78</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_chart.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_client.php"></a>
+<h1>wp_crm_client.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 5</b> - no @package tag was used in a DocBlock for class WP_CRM_Client<br>
+<b>Warning on line 199</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_client.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_company.php"></a>
+<h1>wp_crm_company.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 4</b> - no @package tag was used in a DocBlock for class WP_CRM_Company<br>
+<b>Warning on line 218</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_company.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_contact.php"></a>
+<h1>wp_crm_contact.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Contact<br>
+<b>Warning on line 97</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_contact.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_controller.php"></a>
+<h1>wp_crm_controller.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Controller<br>
+<b>Warning on line 10</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_controller.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_cookie.php"></a>
+<h1>wp_crm_cookie.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Cookie<br>
+<b>Warning on line 43</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_cookie.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_coupon.php"></a>
+<h1>wp_crm_coupon.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Coupon<br>
+<b>Warning on line 156</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_coupon.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_discount.php"></a>
+<h1>wp_crm_discount.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Discount<br>
+<b>Warning on line 135</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_discount.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_event.php"></a>
+<h1>wp_crm_event.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Event<br>
+<b>Warning on line 64</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_event.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_exception.php"></a>
+<h1>wp_crm_exception.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Exception<br>
+<b>Warning on line 37</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_exception.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_form.php"></a>
+<h1>wp_crm_form.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Form<br>
+<b>Warning on line 650</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_form.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_form_structure.php"></a>
+<h1>wp_crm_form_structure.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Form_Structure<br>
+<b>Warning on line 559</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_form_structure.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_gallery.php"></a>
+<h1>wp_crm_gallery.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Gallery<br>
+<b>Warning on line 104</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_gallery.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_garbage.php"></a>
+<h1>wp_crm_garbage.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Garbage<br>
+<b>Warning on line 113</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_garbage.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_group.php"></a>
+<h1>wp_crm_group.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 6</b> - no @package tag was used in a DocBlock for class WP_CRM_Group<br>
+<b>Warning on line 121</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_group.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_index.php"></a>
+<h1>wp_crm_index.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Index<br>
+<b>Warning on line 81</b> - 
+duplicate class element "WP_CRM_Index" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_index.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning on line 81</b> - no @package tag was used in a DocBlock for class WP_CRM_Index<br>
+<b>Warning on line 266</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_index.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_invoice.php"></a>
+<h1>wp_crm_invoice.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Invoice<br>
+<b>Warning on line 1722</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_invoice.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_list.php"></a>
+<h1>wp_crm_list.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_List<br>
+<b>Warning on line 460</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_list.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_location.php"></a>
+<h1>wp_crm_location.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Location<br>
+<b>Warning on line 75</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_location.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_log.php"></a>
+<h1>wp_crm_log.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Log<br>
+<b>Warning on line 53</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_log.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_mail.php"></a>
+<h1>wp_crm_mail.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Mail<br>
+<b>Warning on line 111</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_mail.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_mailagent.php"></a>
+<h1>wp_crm_mailagent.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_MailAgent<br>
+<b>Warning on line 40</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_mailagent.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_mailagent_site.php"></a>
+<h1>wp_crm_mailagent_site.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_MailAgent_Site<br>
+<b>Warning on line 17</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_mailagent_site.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_math_element.php"></a>
+<h1>wp_crm_math_element.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Math_Element<br>
+<b>Warning on line 8</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_math_element.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_math_set.php"></a>
+<h1>wp_crm_math_set.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Math_Set<br>
+<b>Warning on line 46</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_math_set.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_memo.php"></a>
+<h1>wp_crm_memo.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Memo<br>
+<b>Warning on line 75</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_memo.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_menu.php"></a>
+<h1>wp_crm_menu.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Menu<br>
+<b>Warning on line 41</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_menu.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_metro.php"></a>
+<h1>wp_crm_metro.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Metro<br>
+<b>Warning on line 109</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_metro.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_model.php"></a>
+<h1>wp_crm_model.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 15</b> - package default is already in category Math, will now replace with category default<br>
+<b>Warning on line 15</b> - no @package tag was used in a DocBlock for file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php<br>
+<b>Warning on line 110</b> - 
+duplicate class element "WP_CRM_Model" in file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_model.php will be ignored.
+Use an @ignore tag on the original if you want this case to be documented.<br>
+<b>Warning on line 110</b> - no @package tag was used in a DocBlock for class WP_CRM_Model<br>
+<a name="wp_crm_office.php"></a>
+<h1>wp_crm_office.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Office<br>
+<b>Warning on line 37</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_office.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_order.php"></a>
+<h1>wp_crm_order.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Order<br>
+<b>Warning on line 80</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_order.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_order_category.php"></a>
+<h1>wp_crm_order_category.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Order_Category<br>
+<b>Warning on line 20</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_order_category.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_participants.php"></a>
+<h1>wp_crm_participants.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Participants<br>
+<b>Warning on line 151</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_participants.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_payment.php"></a>
+<h1>wp_crm_payment.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Payment<br>
+<b>Warning on line 257</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_payment.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_person.php"></a>
+<h1>wp_crm_person.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Person<br>
+<b>Warning on line 439</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_person.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_price.php"></a>
+<h1>wp_crm_price.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Price<br>
+<b>Warning on line 115</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_price.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_product.php"></a>
+<h1>wp_crm_product.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Product<br>
+<b>Warning on line 615</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_product.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_queue.php"></a>
+<h1>wp_crm_queue.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Queue<br>
+<b>Warning on line 73</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_queue.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_receipt.php"></a>
+<h1>wp_crm_receipt.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Receipt<br>
+<b>Warning on line 86</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_receipt.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_resource.php"></a>
+<h1>wp_crm_resource.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Resource<br>
+<b>Warning on line 71</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_resource.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_responsible.php"></a>
+<h1>wp_crm_responsible.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Responsible<br>
+<b>Warning on line 24</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_responsible.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_room.php"></a>
+<h1>wp_crm_room.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Room<br>
+<b>Warning on line 98</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_room.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_room_block.php"></a>
+<h1>wp_crm_room_block.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Room_Block<br>
+<b>Warning on line 37</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_room_block.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_secureconn.php"></a>
+<h1>wp_crm_secureconn.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 15</b> - no @package tag was used in a DocBlock for file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_secureconn.php<br>
+<a name="wp_crm_securedata.php"></a>
+<h1>wp_crm_securedata.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 15</b> - no @package tag was used in a DocBlock for file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_securedata.php<br>
+<a name="wp_crm_secureleaf.php"></a>
+<h1>wp_crm_secureleaf.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 15</b> - no @package tag was used in a DocBlock for file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_secureleaf.php<br>
+<a name="wp_crm_secureserver.php"></a>
+<h1>wp_crm_secureserver.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_SecureServer<br>
+<b>Warning on line 3</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_secureserver.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_site.php"></a>
+<h1>wp_crm_site.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Site<br>
+<b>Warning on line 92</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_site.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_srp.php"></a>
+<h1>wp_crm_srp.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 15</b> - no @package tag was used in a DocBlock for file /mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_srp.php<br>
+<a name="wp_crm_state.php"></a>
+<h1>wp_crm_state.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_State<br>
+<b>Warning on line 146</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_state.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_stock.php"></a>
+<h1>wp_crm_stock.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Stock<br>
+<b>Warning on line 78</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_stock.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_table.php"></a>
+<h1>wp_crm_table.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Table<br>
+<b>Warning on line 51</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_table.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_task.php"></a>
+<h1>wp_crm_task.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Task<br>
+<b>Warning on line 49</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_task.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_tasklet.php"></a>
+<h1>wp_crm_tasklet.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Tasklet<br>
+<b>Warning on line 28</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_tasklet.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_template.php"></a>
+<h1>wp_crm_template.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Template<br>
+<b>Warning on line 81</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_template.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_theme.php"></a>
+<h1>wp_crm_theme.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Theme<br>
+<b>Warning on line 78</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_theme.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_timer.php"></a>
+<h1>wp_crm_timer.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Timer<br>
+<b>Warning on line 9</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_timer.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_tm_action.php"></a>
+<h1>wp_crm_tm_action.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_TM_Action<br>
+<b>Warning on line 86</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_tm_action.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_tm_array.php"></a>
+<h1>wp_crm_tm_array.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_TM_Array<br>
+<b>Warning on line 102</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_tm_array.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_tm_register.php"></a>
+<h1>wp_crm_tm_register.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_TM_Register<br>
+<b>Warning on line 32</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_tm_register.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_tm_task.php"></a>
+<h1>wp_crm_tm_task.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_TM_Task<br>
+<b>Warning on line 90</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_tm_task.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_tools.php"></a>
+<h1>wp_crm_tools.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Tools<br>
+<b>Warning on line 10</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_tools.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_trainer.php"></a>
+<h1>wp_crm_trainer.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_Trainer<br>
+<b>Warning on line 25</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_trainer.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_ui.php"></a>
+<h1>wp_crm_ui.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_UI<br>
+<b>Warning on line 45</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_ui.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+<a name="wp_crm_view.php"></a>
+<h1>wp_crm_view.php</h1>
+<h2>Warnings:</h2><br>
+<b>Warning on line 1</b> - no @package tag was used in a DocBlock for class WP_CRM_View<br>
+<b>Warning on line 431</b> - File "/mnt/www/coresecurity.ro/api.coresecurity.ro/wp-content/plugins/wp-crm/class/wp_crm_view.php" has no page-level DocBlock, use @package in the first DocBlock to create one<br>
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 29 Jan 2014 23:27:39 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</body>
+</html>

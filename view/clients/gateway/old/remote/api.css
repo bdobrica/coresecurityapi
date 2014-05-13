@@ -1,0 +1,21 @@
+.wp-crm-form-wrapper { overflow: hidden; }
+.wp-crm-form-column { width: 260px; margin: 0 10px 10px; padding: 5px; list-style-type: none; background: #eee; border-radius: 3px; }
+.wp-crm-form-column * { font-family: Calibri, Arial, Verdana, sans-serif; font-size: 11pt; }
+.wp-crm-form-column li { text-align: right; padding: 2px 0; }
+.wp-crm-form-column li>label { display: block; float: left; }
+.wp-crm-form-column input[type="text"] { width: 160px; }
+.wp-crm-form-tabs { list-style-type: none; text-align: center; width: 270px; margin: 0 10px 5px; padding: 0; }
+.wp-crm-form-tabs * { font-family: Calibri, Arial, Verdana, sans-serif; font-size: 11pt; font-weight: bold; }
+.wp-crm-form-tabs li { cursor: pointer; display: inline; padding: 5px 2px; text-align: center; }
+.wp-crm-form-collabel { font-family: Calibri, Arial, Verdana, sans-serif; font-size: 11pt; font-weight: bold; text-align: center; margin: 0 10px; width: 260px; background: #eee; padding: 0 5px; border-radius: 3px; }
+.wp-crm-form-buttons { clear: both; text-align: center; margin: 0 10px 10px; padding: 5px; background: #eee; border-radius: 3px; }
+.wp-crm-form-buttons ul { display: inline; text-align: center; }
+.wp-crm-form-buttons li { display: inline; }
+.wp-crm-form-basket { clear: both; margin: 0; padding: 0; list-style-type: none; }
+.wp-crm-form-basket li span:first-child { float: left; }
+.wp-crm-form-basket-total { font-size: 15pt; font-weight: bold; }
+.wp-crm-form-basketwrap { float: right; }
+.wp-crm-form-shadow { position: absolute; top: 0; left: 0; width: 0; height: 0; margin: 0; padding: 0; background: #fff; }
+.wp-crm-form-label { clear: both; text-align: center; background: #eee; margin: 0 10px 10px; padding: 5px; border-radius: 3px; font-family: Calibri, Arial, Verdana, sans-serif; font-size: 11pt; font-weight: bold; }
+.wp-crm-form-separator { clear: both; margin: 0 0 10px; padding: 0; }
+.wp-crm-form-participant { float: left; }

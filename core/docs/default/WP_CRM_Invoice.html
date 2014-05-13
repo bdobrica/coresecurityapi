@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class WP_CRM_Invoice</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class WP_CRM_Invoice</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Basket is an important class as it emulates a shopping basket and is an ancestor of Invoice.</p>
+<p class="description"><p>Basket can hold predefined Products or temporary (meta) one-use products. That's why it has the  const MetaSeries attached - to providy meta products with a unique SKU.</p></p>
+		<p class="notes">
+			Located in <a class="field" href="_wp_crm_invoice.php.html">/wp_crm_invoice.php</a> (line <span class="field">2</span>)
+		</p>
+		
+				
+		<pre><a href="../default/WP_CRM_Model.html">WP_CRM_Model</a>
+   |
+   --<a href="../default/WP_CRM_Basket.html">WP_CRM_Basket</a>
+      |
+      --WP_CRM_Invoice</pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../default/WP_CRM_Participants.html">WP_CRM_Participants</a></td>
+					<td>
+											Basket is an important class as it emulates a shopping basket and is an ancestor of Invoice.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendants</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<a href="#Advance_Invoice" title="details" class="const-name">Advance_Invoice</a> = 					<span class="var-type"> 8</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#Cache" title="details" class="const-name">Cache</a> = 					<span class="var-type"> 'cache/invoices'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#Discounted_Invoice" title="details" class="const-name">Discounted_Invoice</a> = 					<span class="var-type"> 4</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#Epsilon" title="details" class="const-name">Epsilon</a> = 					<span class="var-type"> 1</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#ID_Base" title="details" class="const-name">ID_Base</a> = 					<span class="var-type"> 24</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#Real_Invoice" title="details" class="const-name">Real_Invoice</a> = 					<span class="var-type"> 1</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#Storno_Invoice" title="details" class="const-name">Storno_Invoice</a> = 					<span class="var-type"> 2</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#Temporary_Prefix" title="details" class="const-name">Temporary_Prefix</a> = 					<span class="var-type"> 'P'</span>
+
+				</div>
+							</div>
+		</div>
+	</div>
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																												<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$F" title="details" class="var-name">$F</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$K" title="details" class="var-name">$K</a>
+				</div>
+																<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$Q" title="details" class="var-name">$Q</a>
+				</div>
+																								<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$T" title="details" class="var-name">$T</a>
+				</div>
+																				<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$buyer" title="details" class="var-name">$buyer</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$delegate" title="details" class="var-name">$delegate</a>
+				</div>
+																																								<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$seller" title="details" class="var-name">$seller</a>
+				</div>
+																			</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																												
+												<div class="method-definition">
+											<span class="method-result">WP_CRM_Invoice</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$data</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#back" title="details" class="method-name">back</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$echo</span> = <span class="var-default">TRUE</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$append</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#delete" title="details" class="method-name">delete</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#get" title="details" class="method-name">get</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$opts</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#is" title="details" class="method-name">is</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">'paid'</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#pay" title="details" class="method-name">pay</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$stamp</span> = <span class="var-default">0</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#save" title="details" class="method-name">save</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#set" title="details" class="method-name">set</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#view" title="details" class="method-name">view</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$echo</span> = <span class="var-default">TRUE</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$append</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$back</span> = <span class="var-default">FALSE</span>])
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$F" id="$F"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$F</span>
+			 = <span class="var-default">array (<br />		'new' =&gt; array (<br />			'stamp:date' =&gt; 'Data emiterii',<br />			'sid:seller' =&gt; 'Emitent',<br />			'buyer:buyer' =&gt; 'Cumparator',<br />			'products:product' =&gt; 'Produse',<br />			'mentions' =&gt; 'Mentiuni',<br />			'coupon' =&gt; 'Cupon',<br />			'paid:bool' =&gt; 'Plateste'<br />			),'edit'=&gt;array('stamp:date'=&gt;'Data emiterii','sid:seller'=&gt;'Emitent','buyer:buyer'=&gt;'Cumparator','products:product'=&gt;'Produse','mentions'=&gt;'Mentiuni','coupon'=&gt;'Cupon','paid:bool'=&gt;'Plateste'),'view'=&gt;array('series:series'=&gt;'Factura','paid%:%'=&gt;'Platita','paiddate:date'=&gt;'Din data','stamp:date'=&gt;'Inscriere','bid:buyer'=&gt;'Cumparator','buyer:entity'=&gt;'Tip','coupon'=&gt;'Cupon','products:products'=&gt;'Produse','value:float'=&gt;'Valoare','vat:float'=&gt;'TVA','seats:seat'=&gt;'Locuri','source:referer'=&gt;'Sursa'),'excerpt'=&gt;array('series:series'=&gt;'','paid%:%'=&gt;'','paiddate:date'=&gt;'Din data','stamp:date'=&gt;'Inscriere','bid:buyer'=&gt;'Cumparator','buyer:entity'=&gt;'Tip','coupon'=&gt;'Cupon','products:products'=&gt;'Produse','value:float'=&gt;'Valoare','vat:float'=&gt;'TVA','seats:seat'=&gt;'Locuri','source:referer'=&gt;'Sursa'),'safe'=&gt;array('stamp:date'=&gt;'Data inscriere','bid:safebuyer'=&gt;'Cumparator','series'=&gt;'Serie factura','value:float'=&gt;'Valoare','products:safeproducts'=&gt;'Produse','paid:bool'=&gt;'Platita'),'public'=&gt;array('stamp:date'=&gt;'Timp','bid:buyer'=&gt;'Cumparator','buyer'=&gt;'Tip','series'=&gt;'Serie','value:float'=&gt;'Valoare','vat:float'=&gt;'TVA','products:products'=&gt;'Produse','coupon'=&gt;'Cupon','source:referer'=&gt;'Sursa','paid:bool'=&gt;'Platita'),'extended'=&gt;array(),'private'=&gt;array(),'group'=&gt;array('series:series'=&gt;'Factura','paid%:%'=&gt;'Platita','stamp:date'=&gt;'Inscriere','buyer:entity'=&gt;'Tip','coupon'=&gt;'Cupon','products:products'=&gt;'Produse','value:float'=&gt;'Valoare','source:referer'=&gt;'Sursa'))</span>			(line <span class="line-number">77</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Model.html#var$F">WP_CRM_Model::$F</a></dt>
+						<dd>Pair of (actions, form elements).</dd>
+					</dl>
+		
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../default/WP_CRM_Participants.html#var$F">WP_CRM_Participants::$F</a>
+							</li>
+				</ul>
+		
+
+</div>
+<a name="var$K" id="$K"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$K</span>
+			 = <span class="var-default">array (<br />		'oid',<br />		'uid',<br />		'sid',<br />		'bid',<br />		'did',<br />		'iid',<br />		'buyer',<br />		'series',<br />		'number',<br />		'stamp',<br />		'value',<br />		'vat',<br />		'content',<br />		'coupon',<br />		'paidby',<br />		'paidvalue',<br />		'paiddate',<br />		'paiddetails',<br />		'mentions',<br />		'cookie',<br />		'ip',<br />		'source',<br />		'link',<br />		'affiliate',<br />		'heard',<br />		'hearddetails',<br />		'payload',<br />		'flags'<br />		)</span>			(line <span class="line-number">16</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#var$K">WP_CRM_Basket::$K</a></dt>
+					</dl>
+		
+		
+
+</div>
+<a name="var$Q" id="$Q"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$Q</span>
+			 = <span class="var-default">array (<br />		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',<br />		'`oid` int(11) NOT NULL DEFAULT 0',<br />		'`uid` int(11) NOT NULL DEFAULT 0',<br />		'`sid` int(11) NOT NULL DEFAULT 0',<br />		'`bid` int(11) NOT NULL DEFAULT 0',<br />		'`did` int(11) NOT NULL DEFAULT 0',<br />		'`iid` int(11) NOT NULL DEFAULT 0',<br />		'`buyer` enum(\'person\',\'company\') DEFAULT \'person\'',<br />		'`series` varchar(8) NOT NULL DEFAULT \'\'',<br />		'`number` int(11) NOT NULL DEFAULT 0',<br />		'`stamp` int(11) NOT NULL DEFAULT 0',<br />		'`value` float(9,2) NOT NULL DEFAULT 0.00',<br />		'`vat` float(9,2) NOT NULL DEFAULT 0.00',<br />		'`content` text',<br />		'`coupon` varchar(8) NOT NULL DEFAULT \'\'',<br />		'`paidby` enum(\'bank\',\'card\',\'cash\',\'taxr\',\'part\',\'none\') DEFAULT \'none\'',<br />		'`paidvalue` float(9,2) NOT NULL DEFAULT 0.00',<br />		'`paiddate` int(11) NOT NULL DEFAULT 0',<br />		'`paiddetails` text',<br />		'`mentions` text NOT NULL',<br />		'`cookie` int(11) NOT NULL DEFAULT 0',<br />		'`ip` varchar(15) NOT NULL DEFAULT \'127.0.0.1\'',<br />		'`source` text NOT NULL',<br />		'`link` int(11) NOT NULL DEFAULT 0',<br />		'`affiliate` int(11) NOT NULL DEFAULT 0',<br />		'`heard` enum(\'google\',\'facebook\',\'youtube\',\'radio\',\'tv\',\'print\',\'friend\',\'newsletter\',\'site\') DEFAULT \'google\'',<br />		'`hearddetails` text NOT NULL',<br />		'`payload` text NOT NULL',<br />		'`flags` int(11) NOT NULL DEFAULT 0',<br />		)</span>			(line <span class="line-number">46</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#var$Q">WP_CRM_Basket::$Q</a></dt>
+					</dl>
+		
+		
+
+</div>
+<a name="var$T" id="$T"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$T</span>
+			 = <span class="var-default"> 'invoices'</span>			(line <span class="line-number">15</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#var$T">WP_CRM_Basket::$T</a></dt>
+					</dl>
+		
+		
+
+</div>
+<a name="var$buyer" id="$buyer"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$buyer</span>
+						(line <span class="line-number">171</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$delegate" id="$delegate"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$delegate</span>
+						(line <span class="line-number">170</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$seller" id="$seller"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$seller</span>
+						(line <span class="line-number">169</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+							<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../default/WP_CRM_Basket.html">WP_CRM_Basket</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Basket.html#var$meta_id">WP_CRM_Basket::$meta_id</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Basket.html#var$meta_products">WP_CRM_Basket::$meta_products</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Basket.html#var$products">WP_CRM_Basket::$products</a></span><br>
+							</span>
+											</blockquote> 
+									<p>Inherited from <span class="classname"><a href="../default/WP_CRM_Model.html">WP_CRM_Model</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$data">WP_CRM_Model::$data</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$group">WP_CRM_Model::$group</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$ID">WP_CRM_Model::$ID</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$M_K">WP_CRM_Model::$M_K</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../default/WP_CRM_Model.html#var$U">WP_CRM_Model::$U</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																			<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">175</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">WP_CRM_Invoice</span>
+		<span class="method-name">
+			__construct
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$data</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$data</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#method__construct">WP_CRM_Basket::__construct()</a></dt>
+					</dl>
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../default/WP_CRM_Participants.html#method__construct">WP_CRM_Participants::__construct()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodback" id="back"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">back</span> (line <span class="line-number">1585</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			back
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$echo</span> = <span class="var-default">TRUE</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$append</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$echo</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$append</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddelete" id="delete"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">delete</span> (line <span class="line-number">1108</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			delete
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#methoddelete">WP_CRM_Basket::delete()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodget" id="get"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">get</span> (line <span class="line-number">548</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			get
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$opts</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$key</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$opts</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#methodget">WP_CRM_Basket::get()</a></dt>
+					</dl>
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../default/WP_CRM_Participants.html#methodget">WP_CRM_Participants::get()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodis" id="is"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">is</span> (line <span class="line-number">921</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			is
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">'paid'</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$key</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#methodis">WP_CRM_Basket::is()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodpay" id="pay"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">pay</span> (line <span class="line-number">201</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			pay
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$stamp</span> = <span class="var-default">0</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$stamp</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsave" id="save"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">save</span> (line <span class="line-number">941</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			save
+		</span>
+				()
+			</div>
+	
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#methodsave">WP_CRM_Basket::save()</a></dt>
+					</dl>
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../default/WP_CRM_Participants.html#methodsave">WP_CRM_Participants::save()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodset" id="set"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">set</span> (line <span class="line-number">389</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			set
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$key</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$value</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$key</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../default/WP_CRM_Basket.html#methodset">WP_CRM_Basket::set()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodview" id="view"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">view</span> (line <span class="line-number">1121</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			view
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$echo</span> = <span class="var-default">TRUE</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$append</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$back</span> = <span class="var-default">FALSE</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$echo</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$append</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$back</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../default/WP_CRM_Participants.html#methodview">WP_CRM_Participants::view()</a>
+							</li>
+				</ul>
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../default/WP_CRM_Basket.html">WP_CRM_Basket</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#method__construct">WP_CRM_Basket::__construct()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#methodadd">WP_CRM_Basket::add()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#methoddelete">WP_CRM_Basket::delete()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#methodget">WP_CRM_Basket::get()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#methodis">WP_CRM_Basket::is()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#methodsave">WP_CRM_Basket::save()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#methodset">WP_CRM_Basket::set()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#method__destruct">WP_CRM_Basket::__destruct()</a></span><br>
+													<span class="method-name"><a href="../default/WP_CRM_Basket.html#method__toString">WP_CRM_Basket::__toString()</a></span><br>
+											</blockquote>
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../default/WP_CRM_Model.html">WP_CRM_Model</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../default/WP_CRM_Model.html#method__construct">WP_CRM_Model::__construct()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendants</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+														| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constAdvance_Invoice" id="Advance_Invoice"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">Advance_Invoice</span>
+			 = <span class="const-default"> 8</span>
+			(line <span class="line-number">6</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCache" id="Cache"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">Cache</span>
+			 = <span class="const-default"> 'cache/invoices'</span>
+			(line <span class="line-number">10</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constDiscounted_Invoice" id="Discounted_Invoice"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">Discounted_Invoice</span>
+			 = <span class="const-default"> 4</span>
+			(line <span class="line-number">5</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constEpsilon" id="Epsilon"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">Epsilon</span>
+			 = <span class="const-default"> 1</span>
+			(line <span class="line-number">12</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constID_Base" id="ID_Base"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">ID_Base</span>
+			 = <span class="const-default"> 24</span>
+			(line <span class="line-number">13</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constReal_Invoice" id="Real_Invoice"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">Real_Invoice</span>
+			 = <span class="const-default"> 1</span>
+			(line <span class="line-number">3</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constStorno_Invoice" id="Storno_Invoice"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">Storno_Invoice</span>
+			 = <span class="const-default"> 2</span>
+			(line <span class="line-number">4</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constTemporary_Prefix" id="Temporary_Prefix"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">Temporary_Prefix</span>
+			 = <span class="const-default"> 'P'</span>
+			(line <span class="line-number">8</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+							<h4>Inherited Constants</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../default/WP_CRM_Basket.html">WP_CRM_Basket</a></span></p>
+					<blockquote>
+													<span class="const-title">
+								<span class="const-name"><a href="../default/WP_CRM_Basket.html#constMetaSeries">WP_CRM_Basket::MetaSeries</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 29 Jan 2014 23:27:38 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
+</html>

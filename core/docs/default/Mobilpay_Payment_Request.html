@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Mobilpay_Payment_Request</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Mobilpay_Payment_Request</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Class Mobilpay_Payment_Request</p>
+<p class="description"><p>This class can be used for accessing mobilpay.ro payment interface for your configured online services</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Claudiu Tudose</li>
+				<li><span class="field">version:</span> <p>1.0</p><p>This class uses  OpenSSL  In order to use the OpenSSL functions you need to install the OpenSSL package.  See PHP documentation for installing OpenSSL package</p></li>
+				<li><span class="field">copyright:</span> NETOPIA System</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_Mobilpay---Payment---Request.php.html">/Mobilpay/Payment/Request.php</a> (line <span class="field">13</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<a href="#PAYMENT_TYPE_CARD" title="details" class="const-name">PAYMENT_TYPE_CARD</a> = 					<span class="var-type"> 0x02</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PAYMENT_TYPE_SMS" title="details" class="const-name">PAYMENT_TYPE_SMS</a> = 					<span class="var-type"> 0x01</span>
+
+				</div>
+							</div>
+		</div>
+	</div>
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																																																																																																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$m_confirm_url" title="details" class="var-name">$m_confirm_url</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$m_currency" title="details" class="var-name">$m_currency</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$m_details" title="details" class="var-name">$m_details</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string(255)</span>
+					<a href="#$m_first_name" title="details" class="var-name">$m_first_name</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string(255)</span>
+					<a href="#$m_last_name" title="details" class="var-name">$m_last_name</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string(10)</span>
+					<a href="#$m_msisdn" title="details" class="var-name">$m_msisdn</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$m_params" title="details" class="var-name">$m_params</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$m_price" title="details" class="var-name">$m_price</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$m_return_url" title="details" class="var-name">$m_return_url</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$m_service" title="details" class="var-name">$m_service</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string(24)</span>
+					<a href="#$m_signature" title="details" class="var-name">$m_signature</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$m_timestamp" title="details" class="var-name">$m_timestamp</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$m_tran_id" title="details" class="var-name">$m_tran_id</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string(64)</span>
+					<a href="#$m_type" title="details" class="var-name">$m_type</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																												<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#buildQueryString" title="details" class="method-name">buildQueryString</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$params</span>)
+									</div>
+																
+												<div class="method-definition">
+											<span class="method-result">Mobilpay_Payment_Request</span>
+										<a href="#Mobilpay_Payment_Request" title="details" class="method-name">Mobilpay_Payment_Request</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#buildAccessParameters" title="details" class="method-name">buildAccessParameters</a>
+											(<span class="var-type">resource</span>&nbsp;<span class="var-name">$public_key</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">&$env_key</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">&$enc_data</span>)
+									</div>
+																								<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#builParametersList" title="details" class="method-name">builParametersList</a>
+										()
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$m_confirm_url" id="$m_confirm_url"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$m_confirm_url</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">64</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_confirm_url (Optional)	- URL of the seller that will be requested when mobilpay.ro will make  a decision about payment (e.g. confirmed, canceled). If it is not supplied the application will use  confirm URL configured for the specified service in control panel</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_currency" id="$m_currency"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$m_currency</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">38</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_details" id="$m_details"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$m_details</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">36</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_first_name" id="$m_first_name"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string(255)</span>
+			<span class="var-name">$m_first_name</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">71</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_first_name	(Optional)	- First name of the customer.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_last_name" id="$m_last_name"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string(255)</span>
+			<span class="var-name">$m_last_name</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">78</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_last_name	(Optional)	- Last name of the customer.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_msisdn" id="$m_msisdn"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string(10)</span>
+			<span class="var-name">$m_msisdn</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">86</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_msisdn	(Optional)		- MSISDN (mobile phone numner) of the customer. If it's supplied it should be in 07XXXXXXXX format.</p>
+<p class="description"><p>If it's supplied mobilpay.ro will use it for checking if payment is allowed for the specified service automaticaly</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_params" id="$m_params"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$m_params</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">92</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_params (Optional)		- additional parameters sent to mobilpay.ro secure payment portal</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_price" id="$m_price"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$m_price</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">37</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_return_url" id="$m_return_url"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$m_return_url</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">55</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_return_url (Optional) 	- URL where the user is redirected from mobilpay.Ro payment interface  when the transaction is canceled or confirmed. If it is not supplied the application will use  return URL configured for the specified service in control panel</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_service" id="$m_service"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$m_service</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">28</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_service (Mandatory)	- signature received from mobilpay.ro thet identifies the online service for which you are requesting a payment</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_signature" id="$m_signature"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string(24)</span>
+			<span class="var-name">$m_signature</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">23</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_signatue (Mandatory) 	- signature received from mobilpay.Ro that identifies merchant account</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_timestamp" id="$m_timestamp"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$m_timestamp</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">46</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_timetsamp (Mandatory)	- merchant's site datetime when the transaction was generated expressed as YYYYMMDDhhmmss</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_tran_id" id="$m_tran_id"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$m_tran_id</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">39</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$m_type" id="$m_type"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string(64)</span>
+			<span class="var-name">$m_type</span>
+			 = <span class="var-default"> self::PAYMENT_TYPE_SMS</span>			(line <span class="line-number">35</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">m_tran_id (Mandatory)	- payment transaction generated by seller; helps seller to interpret a request to return url; it should be unique for the specified service</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																			<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodbuildQueryString" id="buildQueryString"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method buildQueryString</span> (line <span class="line-number">151</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">void</span>
+		<span class="method-name">
+			buildQueryString
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$params</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$params</span>			</li>
+				</ul>
+		
+			
+	</div>
+
+<a name="methodMobilpay_Payment_Request" id="Mobilpay_Payment_Request"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor Mobilpay_Payment_Request</span> (line <span class="line-number">94</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">Mobilpay_Payment_Request</span>
+		<span class="method-name">
+			Mobilpay_Payment_Request
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodbuildAccessParameters" id="buildAccessParameters"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">buildAccessParameters</span> (line <span class="line-number">169</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">access Mobilpay.Ro secure payment portal</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			buildAccessParameters
+		</span>
+					(<span class="var-type">resource</span>&nbsp;<span class="var-name">$public_key</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">&$env_key</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">&$enc_data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">resource</span>
+				<span class="var-name">$public_key</span><span class="var-description">: <ul><li>obtained by calling openssl_pkey_get_public</li></ul></span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">&$env_key</span><span class="var-description">: <ul><li>returns envelope key base64 encoded or null if function fails</li></ul></span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">&$enc_data</span><span class="var-description">: <ul><li>returns data to post base64 encoded or null if function fails</li></ul></span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodbuilParametersList" id="builParametersList"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">builParametersList</span> (line <span class="line-number">99</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			builParametersList
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+														| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constPAYMENT_TYPE_CARD" id="PAYMENT_TYPE_CARD"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PAYMENT_TYPE_CARD</span>
+			 = <span class="const-default"> 0x02</span>
+			(line <span class="line-number">16</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPAYMENT_TYPE_SMS" id="PAYMENT_TYPE_SMS"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PAYMENT_TYPE_SMS</span>
+			 = <span class="const-default"> 0x01</span>
+			(line <span class="line-number">15</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+						
+		</div>
+	</div>
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 29 Jan 2014 23:27:38 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
+</html>

@@ -1,0 +1,2 @@
+This is where the magic happens! =)
+The folder contains all the parts of WP_CRM application written as classes. Classes are wrappers, usually for accessing a database stored object. For them, WP_CRM_Model is the abstract reference class. See /docs for documentation.

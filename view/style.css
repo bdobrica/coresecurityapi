@@ -1,0 +1,51 @@
+/**/
+.wp-crm-form-column input[name="close"] { float: left; }
+.wp-crm-form-column input[name="next"] { float: right; }
+
+/* Seller */
+.ui-widget-seller {  border-radius: 6px; border: 2px solid rgb(189, 195, 199); background: #fff; position: absolute; z-index: 99999; }
+.ui-widget-seller .ui-widget-seller-header { border-color: #eee; background-color: #eee; color: #000; margin: 1px; text-align: left; }
+.ui-widget-seller-list { text-align: left; max-height: 350px; overflow: auto; }
+.ui-widget-seller-list a { display: block; padding: 4px 16px 6px; background-color: #eee; margin: 1px; cursor: pointer; }
+.ui-widget-seller-list a:hover { background-color: #39f; }
+
+/* Buyer */
+.ui-widget-buyer { border-radius: 6px; border: 2px solid rgb(189, 195, 199); width: 100%; background: #fff; position: absolute; z-index: 99999; }
+.ui-widget-buyer .ui-widget-buyer-header { color: #000; margin: 1px; text-align: left; }
+.ui-widget-buyer-add { text-align: left; float: left; height: 440px; width: 50%; }
+.ui-widget-buyer-add input[type="text"] { width: 60%; float: right; }
+.ui-widget-buyer-add button { margin: 4px 24px 0; }
+.ui-widget-buyer-add label { width: 30%; line-height: 40px; height: 40px; display: block; float: left; }
+.ui-widget-buyer-add .radio { text-align: left; line-height: 24px; height: 24px; }
+.ui-widget-buyer-list { text-align: left; float: right; height: 440px; overflow: auto; width: 50%; }
+.ui-widget-buyer-list a { display: block; padding: 4px 16px 6px; background-color: #eee; margin: 1px; cursor: pointer; border-radius: 6px; }
+.ui-widget-buyer-list a:hover { text-decoration: none; background-color: rgb(93, 173, 226); }
+.widget-list-show {}
+.widget-list-hide { display: none!important; }
+
+/* Person */
+.ui-widget-person { background: #fff; border-color: #fff; box-shadow: 1px 1px 1px #eee; position: absolute; z-index: 99999; }
+.ui-widget-person .ui-widget-person-header { border-color: #eee; background-color: #eee; color: #000; margin: 1px; text-align: left; }
+.ui-widget-person-add { text-align: left; float: left; height: 360px; width: 250px; }
+.ui-widget-person-add input[type="text"] { margin: 0 16px; }
+.ui-widget-person-add button { margin: 4px 24px 0; }
+.ui-widget-person-add label { }
+.ui-widget-person-list { text-align: left; float: right; height: 360px; overflow: auto; width: 250px; }
+.ui-widget-person-list a { display: block; padding: 4px 16px 6px; background-color: #eee; margin: 1px; cursor: pointer; }
+.ui-widget-person-list a:hover { background-color: #39f; }
+
+/* Product */
+.ui-widget-product { border-radius: 6px; border: 2px solid rgb(189, 195, 199); background: rgb(249, 248, 243); width: 60%; position: absolute; z-index: 99999; }
+.ui-widget-product .ui-widget-product-header { border-color: #eee; background-color: #eee; color: #000; margin: 1px; text-align: left; }
+.ui-widget-product-add { text-align: left; float: left; height: 300px; width: 50%; }
+.ui-widget-product-add input[type="text"] { width: 60%; float: right; }
+.ui-widget-product-add button { margin: 4px 24px 0; }
+.ui-widget-product-add label {  width: 30%; float: left; line-height: 40px; height: 40px; display: block; }
+.ui-widget-product-list { text-align: left; float: right; height: 300px; overflow: auto; width: 350px; }
+.ui-widget-product-list input[type="text"] { width: 24px; margin: 0; text-align: right; }
+.ui-widget-product-list div { margin: 1px 0; line-height: 24px; }
+.ui-widget-product-list div button { float: right; height: 22px; }
+.ui-widget-product-basket {}
+.ui-widget-product-basket div { text-align: left; margin: 0; }
+.ui-widget-product-basket input[type="text"] { width: 48px; margin: 0; display: inline; }
+.ui-widget-product-basket button { margin: 0 0 0 24px; }
