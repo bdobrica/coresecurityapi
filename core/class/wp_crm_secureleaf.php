@@ -87,7 +87,7 @@ class WP_CRM_SecureLeaf extends WP_CRM_Model {
 		}
 
 	public function stick ($data) {
-		$head = unpack ('L*', substr ($data, 0, 16);
+		$head = unpack ('L*', substr ($data, 0, 16));
 		$d = substr ($data, 16);
 		$l = $head[2];
 		$s = $head[4];

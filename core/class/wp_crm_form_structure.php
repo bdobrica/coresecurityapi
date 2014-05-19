@@ -534,14 +534,14 @@ class WP_CRM_Form_Structure {
 
 		if (isset($object::$F['edit']) && !empty($object::$F['edit']))
 		foreach ($object::$F['edit'] as $info => $label)
-			self::_field (&$fields[0]['fields'], $object, $info, $label);
+			self::_field ($fields[0]['fields'], $object, $info, $label);
 		else
 		if (isset($object::$F['new']) && !empty($object::$F['new']))
 		foreach ($object::$F['new'] as $info => $label)
-			self::_field (&$fields[0]['fields'], $object, $info, $label);
+			self::_field ($fields[0]['fields'], $object, $info, $label);
 		else
 		foreach ($object::$F['public'] as $info => $label)
-			self::_field (&$fields[0]['fields'], $object, $info, $label);
+			self::_field ($fields[0]['fields'], $object, $info, $label);
 
 		return $fields;
 		}

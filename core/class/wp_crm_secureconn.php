@@ -130,7 +130,7 @@ class WP_CRM_SecureConn {
 				$len = unpack ('l*', $head);
 				
 				$f = fopen (self::Storage . '/' . $data['h'] . '.' . $data['c'], 'w');
-				$wrt = fwrite ($f, $bytes, 
+				//$wrt = fwrite ($f, $bytes, 
 				break;
 			case 'download':
 				/* we have a chunk that needs to be downloaded */
