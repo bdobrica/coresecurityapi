@@ -10,6 +10,8 @@ class WP_CRM_State {
 
 	const Login		= 7;
 	const Logged		= 3;
+	const SignUp		= 12;
+	const Forgot		= 13;
 
 	const AddObject		= 8;
 	const EditObject	= 9;

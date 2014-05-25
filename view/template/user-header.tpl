@@ -7,7 +7,7 @@
 			      <span class="icon-bar"></span>
 			</button>
 			<a id="main-menu-toggle" class="hidden-xs open"><i class="fa fa-bars"></i></a>		
-			<a class="navbar-brand col-md-2 col-sm-1 col-xs-2" href="/"><span>Core Security</span></a>
+			<a class="navbar-brand col-md-2 col-sm-1 col-xs-2" href="/"><span><?php bloginfo('name'); ?></span></a>
 			<div id="search" class="col-sm-4 col-xs-8 col-lg-3">
 				<select>
 					<option>everything</option>
@@ -277,7 +277,7 @@
 							</div>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a href="/profile"><i class="fa fa-user"></i> Profile</a></li>
+							<li><a href="/user"><i class="fa fa-user"></i> Profil</a></li>
 							<li><a href="/settings"><i class="fa fa-cog"></i> Settings</a></li>
 							<li><a href="/messages"><i class="fa fa-envelope"></i> Messages</a></li>
 							<li><a href="<?php echo wp_logout_url('/'); ?>"><i class="fa fa-off"></i> Logout</a></li>

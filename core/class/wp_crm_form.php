@@ -61,7 +61,7 @@ class WP_CRM_Form {
 					$this->fields[$label]['fields'][$key]['default'] = $this->_process($key, $field['type']);
 					if ($apply_filters && !empty($field['filters']))
 						foreach ($field['filters'] as $filter => $err_message) {
-							$error = $this->_filter ($this->fields[$label]['fields'][$key]['default'], $field['type'], $filter) ? $err_message : null;
+							$error = $this->_filter ($key, $this->fields[$label]['fields'][$key]['default'], $field['type'], $filter) ? $err_message : null;
 							if ($error)
 								$this->errors[] = $this->fields[$label]['fields'][$key]['error'] = $error;
 							}
@@ -171,14 +171,31 @@ class WP_CRM_Form {
 
 				foreach ($_out as $_row => $_cols) $out[$_rows[$_row]] = $_cols;
 				break;
+			case 'contact':
+				$out = array ();
+				foreach ($_POST as $_key => $_val) {
+					if (strpos ($_key, $key) !== 0) continue;
+					list ($_key, $_kid) = explode ('-', str_replace ($key . '-', '', $_key));
+					if (!empty ($_kid) && (strpos ($_kid, 'n') !== 0))
+						$out[$_kid][$_key] = $_val;
+					else
+						$out[0][(int) str_replace ('n', '', $_kid)][$_key] = $_val;
+					}
+				if (!empty($out[0]))
+					foreach ($out[0] as $_key => $_val)
+						$out[0][$_key]['type'] = 'WP_CRM_Person';
+				break;
 			default:
 				$out = $val;
 			}
 		return $out;
 		}
 	
-	private function _filter ($data, $type, $filter) {
+	private function _filter ($key, $data, $type, $filter) {
 		switch ((string) $filter) {
+			/*
+			 * return TRUE to raise the exception;
+			 */
 			case 'empty':
 				return empty($data) ? TRUE : FALSE;
 				break;
@@ -187,6 +204,22 @@ class WP_CRM_Form {
 				break;
 			case 'email':
 				return preg_match ('/^[a-z0-9._-]{2,}@[a-z0-9.-]{2,}\.[a-z]{2,4}$/', $data) ? FALSE : TRUE;
+				break;
+			case 'confirm':
+				return $_POST[$key] == $_POST[str_replace ('confirm_', '', $key)] ? FALSE : TRUE;
+				break;
+			case 'username_exists':
+				return username_exists ($data) ? TRUE : FALSE;
+				break;
+			case 'email_exists':
+				return email_exists ($data) ? TRUE : FALSE;
+				break;
+			case 'username_allowed':
+				return in_array (strtolower($data), array (
+					'adm', 'admin', 'administrator',
+					'root',
+					'webmaster'
+					));
 				break;
 			}
 		return FALSE;
@@ -211,7 +244,7 @@ class WP_CRM_Form {
 
 				if ($apply_filters && !empty($field['filters'])) {
 					foreach ($field['filters'] as $filter => $err_message) {
-						$error = $this->_filter ($this->fields[$label]['fields'][$key]['default'], $field['type'], $filter) ? $err_message : null;
+						$error = $this->_filter ($key, $this->fields[$label]['fields'][$key]['default'], $field['type'], $filter) ? $err_message : null;
 						if (!empty($_POST) && $error)
 							$this->errors[] = $this->fields[$label]['fields'][$key]['error'] = $error;
 						}
@@ -546,7 +579,7 @@ class WP_CRM_Form {
 				case 'file':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
-					$out .= '<div class="' . $this->class . '-file"><div class="' . $this->class . '-file-view">' . ($field['default'] ? '<img src="' . $field['default'] . '" />' : '') . '</div><input type="hidden" name="' . $key . '" value="' . $field['default'] . '" /><input type="button" name="' . $key . '-select" value="Select" class="' . $this->class . '-file-select" /><input type="button" name="' . $key . '-upload" value="Upload" class="' . $this->class . '-file-upload" /><div class="' . $this->class . '-file-progress"><div class="' . $this->class . '-file-bar"></div></div></div>';
+					$out .= '<div class="' . $this->class . '-file"><div class="' . $this->class . '-file-view">' . ($field['default'] ? '<img src="' . $field['default'] . '" />' : '') . '</div><input type="hidden" name="' . $key . '" value="' . $field['default'] . '" /><input type="button" name="' . $key . '-select" value="Select" class="' . $this->class . '-file-select btn btn-warning" /> <input type="button" name="' . $key . '-upload" value="Upload" class="' . $this->class . '-file-upload btn btn-success" /><div class="' . $this->class . '-file-progress"><div class="' . $this->class . '-file-bar"></div></div></div>';
 					break;
 				case 'filedrop':
 					//$out .= '<div class="' . $this->class . '-filedrop" rel="' . $key . '"><input type="hidden" name="' . $key . '" value="' . $field['default'] . '" /><div class="' . $this->class . '-filedrop-preview"><span class="' . $this->class . '-filedrop-preview-image"><img src="' . $field['default'] . '" alt="" title="" /><span class="' . $this->class . '-filedrop-uploaded"></span></span><div class="' . $this->class . '-filedrop-progress"><div class="' . $this->class . '-filedrop-progressbar"></div></div></div><span class="' . $this->class . '-filedrop-message">Pentru upload, trage fisierul peste acest text!</span></div>';
@@ -556,6 +589,55 @@ class WP_CRM_Form {
 <button class="btn btn-primary"><i class="fui-plus"></i></button>
 <button class="btn btn-danger"><i class="fui-cross"></i></button>
 </div><div class="' . $this->class . '-seats-canvas"></div>';
+					break;
+				case 'contact':
+					if ($field['label']) $out .= '<label>' . $field['label'] . '</label>';
+					if ($field['help']) $out .= '<label>' . $field['help'] . '</label>';
+					$tabs = array (
+						);
+					$panes = array (
+						);
+
+
+					foreach ($field['default'] as $cid => $cdata) {
+						print_r($cdata);
+						if ($cid == 0) continue;
+						$tabs[] = '<li><a href="#contact-' . $cid . '">' . $cdata['title'] . '</a></li>';
+						
+						$pane = '<div class="tab-pane" id="contact-' . $cid . '">';
+						foreach ($field['default'][0] as $skey => $label) {
+							$pane .= '<label>' . $label . '</label>
+	<input class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" type="text" value="' . $cdata[$skey] . '" name="' . $key . '-' . $skey . '-' . $cid . '" />';
+							}
+						$pane .= '<br />
+		<input class="' . $this->class . '-tab-del btn btn-danger' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" type="button" value="-" name="tabdel" />
+		<div class="' . $this->class . '-separator"></div>
+	</div>';
+						$panes[] = $pane;
+						}
+
+					$tab = '<li class="active"><a href="#add"><i class="fa fa-plus"></i></a></li>';
+					$pane = '<div class="tab-pane active" id="add">';
+					foreach ($field['default'][0] as $skey => $label) {
+						$pane .= '<label>' . $label . '</label>
+<input class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" type="text" value="" name="' . $key . '-' . $skey . '" />';
+						}
+					$pane .= '<br />
+	<input class="' . $this->class . '-tab-add btn btn-primary' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" type="button" value="+" name="tabadd" />
+	<div class="' . $this->class . '-separator"></div>
+</div>';
+					$tabs[] = $tab;
+					$panes[] = $pane;
+
+					
+					$out .= '<div class="' . $this->class . '-contacts">
+	<ul class="nav nav-tabs">
+		' . implode ("\n", $tabs) . '
+	</ul>
+	<div class="tab-content">
+		' . implode ("\n", $panes) . '
+	</div>
+</div>';
 					break;
 				default:
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';

@@ -75,10 +75,11 @@ class WP_CRM_Theme {
 		wp_enqueue_script ('twitter-booster-prettify', $url . '/ui/js/bootstrap/js/google-code-prettify/prettify.js', array (), '0.1');
 		*/
 
-		wp_enqueue_script ('twitter-bootstrap-select', $url . '/ui/js/bootstrap-select.js', array (), '0.1');
-		wp_enqueue_script ('twitter-bootstrap-switch', $url . '/ui/js/bootstrap-switch.js', array (), '0.1');
-		wp_enqueue_script ('jquery-ui-checkbox', $url . '/ui/js/flatui-checkbox.js', array (), '0.1');
-		wp_enqueue_script ('jquery-ui-radio', $url . '/ui/js/flatui-radio.js', array (), '0.1');
+	
+		wp_enqueue_script ('twitter-bootstrap-select', $url . '/assets/js/bootstrap-select.js', array (), '0.1');
+		wp_enqueue_script ('twitter-bootstrap-switch', $url . '/assets/js/bootstrap-switch.js', array (), '0.1');
+		wp_enqueue_script ('jquery-ui-checkbox', $url . '/assets/js/flatui-checkbox.js', array (), '0.1');
+		wp_enqueue_script ('jquery-ui-radio', $url . '/assets/js/flatui-radio.js', array (), '0.1');
 
 		wp_enqueue_script ('wp-crm-jquery-migrate', $url . '/assets/js/jquery-migrate-1.2.1.min.js');
 		wp_enqueue_script ('wp-crm-bootstrap', $url . '/assets/js/bootstrap.min.js');

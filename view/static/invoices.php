@@ -3,7 +3,8 @@
 App Title: Facturi
 App Description:
 App Size: 2
-App Style: 
+App Style:
+App Icon: files-o 
 */
 $list = new WP_CRM_List ('WP_CRM_Invoice', current_user_can ('add_users') ? null : array ($wp_crm_office_query ? $wp_crm_office_query : sprintf ('uid=%d', $current_user->ID)));
 $actions = array (

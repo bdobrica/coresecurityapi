@@ -723,6 +723,24 @@ var $wpcrmui = new function () {
 					$wpcrmui.txt.find('.wp-crm-form-person').person({title:'Persoana',url:'/wp-content/themes/wp-crm/ajax/widget/person.php'});
 					$wpcrmui.txt.find('.wp-crm-form-product').product({title:'Produse',url:'/wp-content/themes/wp-crm/ajax/widget/product.php'});
 
+					$wpcrmui.txt.find('.wp-crm-form-tab-add').click(function(e){
+						var p = jQuery(e.target).parent();
+						var r = jQuery(e.target).parent().parent().prev().find('.active');
+						var n = jQuery('.tab-pane', jQuery(e.target).parent().parent()).length;
+						var q = p.clone().removeClass('active').insertBefore(p);
+						q[0].id = 'newtab' + n;
+						r.clone().removeClass('active').html('<a href="#newtab' + n + '">' + jQuery('input[type="text"]', p).first().val() + '</a>').insertBefore(r).find('a').on('click', function(f){f.preventDefault();jQuery(this).tab('show')});
+						jQuery('input[type="text"]', p).val('');
+						jQuery('input[type="text"]', q).each(function(m,i){
+							i.name += '-n' + n;
+							});
+						jQuery('input[type="button"]', q).val('-').removeClass('btn-primary').removeClass('wp-crm-form-tab-add').addClass('btn-danger').click(function(f){
+							jQuery('.active', jQuery(f.target).parent().parent().prev()).remove();
+							jQuery('li a', jQuery(f.target).parent().parent().prev()).first().tab('show');
+							jQuery(f.target).parent().remove();
+							});
+						});
+
 					$wpcrmui.txt.find('.wp-crm-form-date').datepicker({dateFormat: 'dd-mm-yy', dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'], firstDay: 1, monthNames:['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie']});
 					$wpcrmui.txt.find('.wp-crm-form-matrix-add-row').click(function(e){
 						e.preventDefault();

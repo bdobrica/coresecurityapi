@@ -35,8 +35,12 @@ class WP_CRM_Plugin_Wrapper {
 				}
 			fclose ($f);
 			}
+		/*
+		 * scan for apps
+		 */
+		WP_CRM_App::scan ();
 
-		// create role - wordpress prevents redefining roles
+		// create roles - wordpress prevents redefining roles
 
 		/*
 		 * wp_crm_admin is ROOT

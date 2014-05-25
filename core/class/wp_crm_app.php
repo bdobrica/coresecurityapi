@@ -60,7 +60,8 @@ class WP_CRM_App extends WP_CRM_Model {
 						$app = array (	'slug' => '',
 								'title' => '',
 								'size' => '',
-								'style' => '');
+								'style' => '',
+								'icon' => '');
 						$flag = 0;
 						$key = '';
 						while ($l = fgets ($f)) {

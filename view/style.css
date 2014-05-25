@@ -49,3 +49,16 @@
 .ui-widget-product-basket div { text-align: left; margin: 0; }
 .ui-widget-product-basket input[type="text"] { width: 48px; margin: 0; display: inline; }
 .ui-widget-product-basket button { margin: 0 0 0 24px; }
+
+/* File */
+.wp-crm-form-file { width: 80%; margin: 4px 15px 6px; float: right; text-align: left; }
+.wp-crm-form-filedrop { width: 80%; margin: 4px 15px 6px 18px; height: 66px; float: right; }
+.wp-crm-form-filedrop-message { clear: both; width: 100%; text-align: center; display: block; padding: 4px 0; }
+.wp-crm-form-filedrop-preview img { width: 10%; float: left; margin: 2px; }
+.wp-crm-form-filedrop-progress { width: 85%; height: 24px; margin-top: 12px; overflow: hidden; float: right; border: 1px solid #eee; border-radius: 3px; }
+.wp-crm-form-filedrop-progressbar { position: relative; height: 24px; background: #c00; width: 0; }
+.wp-crm-form-hidden,
+.wp-crm-form-hidden * { width: 0; height: 0; overflow: none; }
+
+/* Buttons */
+.wp-crm-form-buttons { margin-top: 5px; }

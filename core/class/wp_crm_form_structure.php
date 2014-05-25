@@ -99,6 +99,68 @@ class WP_CRM_Form_Structure {
 						)
 					);
 				break;
+			case WP_CRM_State::SignUp:
+			case 'signup':
+				$this->fields = array (
+					array (
+						'class' => 'signup-form',
+						'fields' => array (
+							'username' => array (
+								'placeholder' => 'Nume',
+								'label' => 'Nume',
+								'filters' => array (
+									'empty' => 'Numele de utilizator este obligatoriu.',
+									'username_allowed' => 'Numele de utilizator ales este rezervat.',
+									'username_exists' => 'Numele de utilizator ales este deja folosit de un alt utilizator.',
+									)
+								),
+							'email' => array (
+								'placeholder' => 'E-Mail',
+								'label' => 'E-Mail',
+								'filters' => array (
+									'empty' => 'Numele de utilizator este obligatoriu.',
+									'email' => 'Adresa de E-mail nu este valida.',
+									'email_exists' => 'Adresa de E-mail este deja folosita de un alt utilizator.',
+									)
+								),
+							'password' => array (
+								'placeholder' => 'Parola',
+								'label' => 'Parola',
+								'type' => 'password',
+								'filters' => array (
+									'empty' => 'Parola este obligatorie.',
+									)
+								),
+							/*
+							 * SYNTAX: in order to apply confirm filters, the field's key shoud be confirm_{field key to be confirmed}
+							 */
+							'confirm_password' => array (
+								'placeholder' => 'Confirma Parola',
+								'label' => 'Confirma Parola',
+								'type' => 'password',
+								'filters' => array (
+									'empty' => 'Parola este obligatorie.',
+									'cofirm' => 'Parola introdusa nu a fost confirmata.',
+									)
+								)
+							)
+						),
+					array (
+						'class' => 'login-buttons',
+						'fields' => array (
+							'next' => array (
+								'type' => 'submit',
+								'label' => 'Inregistrare &raquo;',
+								'class' => 'btn btn-primary',
+								'method' => 'post',
+								'action' => '',
+								'next' => WP_CRM_State::Login,
+								'callback' => 'WP_CRM::signup'
+								)
+							)
+						)
+					);
+				break;
 			case WP_CRM_State::Participants:
 			case 'participants':
 				$this->fields = array ();
@@ -498,6 +560,13 @@ class WP_CRM_Form_Structure {
 					'options' => $object::$F['opts']
 					);
 				break;
+			case 'contact':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'contact',
+					'default' => $object->get ($key)
+					);
+				break;
 			default:
 				$fields[$key] = array (
 					'label' => $label,
@@ -511,6 +580,10 @@ class WP_CRM_Form_Structure {
 			array (
 				'class' => strtolower(get_class($object)),
 				'fields' => array (
+					'object' => array (
+						'type' => 'hidden',
+						'default' => get_class ($object) . '-' . $object->get ()
+						)
 					)
 				),
 			array (

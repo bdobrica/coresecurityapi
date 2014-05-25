@@ -27,7 +27,7 @@ class WP_CRM_Exception extends Exception {
 	const Invalid_SRP_Command	= 25;
 	
 	public function __construct ($code = 0, $message = null) {
-		parent::__construct ($code, $message);
+		parent::__construct ((string) $message, (int) $code);
 		}
 
 	public function get ($key = null) {

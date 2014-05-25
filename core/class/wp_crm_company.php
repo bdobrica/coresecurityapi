@@ -10,10 +10,29 @@ class WP_CRM_Company extends WP_CRM_Model {
 
 	const Logo		= 'cache/logos';
 
+	private static $TYPE = array (
+		'uat'		=> array (
+					'title' => 'Unitate Administrativ Teritoriala'
+					),
+		'ong'		=> array (
+					'title' => 'Organizatie Non-Guvernamentala'
+					),
+		'srl'		=> array (
+					'title' => 'Societate cu Raspundere Limitata'
+					),
+		'pfa'		=> array (
+					'title' => 'Persoana Fizica Autorizata'
+					),
+		'sa'		=> array (
+					'title' => 'Societate pe Actiuni'
+					),
+		);
+
 	public static $T = 'companies';
 	protected static $K = array (
 		'oid',
 		'uid',
+		'type',
 		'name',
 		'description',
 		'url',
@@ -45,6 +64,7 @@ class WP_CRM_Company extends WP_CRM_Model {
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
 		'`oid` int(11) NOT NULL DEFAULT 0',			/* = office id (link to WP_CRM_Office) */
 		'`uid` int(11) NOT NULL DEFAULT 0',			/* = user id (link to WP_CRM_User) */
+		'`type` enum(\'uat\', \'ong\', \'srl\', \'pfa\', \'sa\') NOT NULL DEFAULT \'srl\'',
 		'`name` text NOT NULL',
 		'`description` text NOT NULL',
 		'`logo` text NOT NULL',
@@ -78,36 +98,20 @@ class WP_CRM_Company extends WP_CRM_Model {
 			'name' => 'Companie',
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
-			'phone' => 'Telefon',
-			'email' => 'E-mail',
 			'address' => 'Adresa',
+			'contact:contact' => 'Contact',
 			'logo:file' => 'Logo'
 			),
 		'view' => array (
 			'name' => 'Companie',
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
-			'phone' => 'Telefon',
-			'email' => 'E-mail',
 			'address' => 'Adresa',
+			'contact:contact' => 'Contact',
 			'logo:file' => 'Logo'
 //			'account' => 'Cont',
 //			'bank' => 'Banca'
 			),
-		'public' => array (
-			'name' => 'Companie',
-			'uin' => 'Cod Fiscal',
-			'rc' => 'Reg. Com.',
-			'phone' => 'Telefon',
-			'email' => 'E-mail',
-			'address' => 'Adresa',
-//			'account' => 'Cont',
-//			'bank' => 'Banca'
-			),
-		'extended' => array (
-			),
-		'private' => array (
-			)
 		);
 
 	private $flags;
@@ -142,6 +146,19 @@ class WP_CRM_Company extends WP_CRM_Model {
 	public function set ($key = null, $value = null) {
 		global $wpdb;
 
+		if (is_array ($key)) {
+			if (!empty ($key))
+			foreach ($key as $_key => $_value) {
+				switch ((string) $_key) {
+					case 'contact':
+						$wp_crm_structure = new WP_CRM_Company_Structure ($this->ID);
+						$wp_crm_structure->set ($_value);
+						unset ($key['contact']);
+						break;
+					}
+				}
+			}
+
 		parent::set ($key, $value);
 		}
 
@@ -157,6 +174,10 @@ class WP_CRM_Company extends WP_CRM_Model {
 		TODO: create language file
 		*/
 				return 'In atentia: ';
+				break;
+			case 'contact':
+				$wp_crm_contact = new WP_CRM_Company_Structure ((int) $this->ID);
+				return $wp_crm_contact->get ();
 				break;
 			}
 		

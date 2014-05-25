@@ -62,7 +62,7 @@ abstract class WP_CRM_Model {
 			)
 		);
 	/**
-	 * List of column declarations for the table structure. The ID column is added by default.
+	 * List of column declarations for the table structure. The ID column is not added by default.
 	 * @var array
 	 */
 	protected static $Q;

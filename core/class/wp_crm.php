@@ -119,6 +119,8 @@ class WP_CRM {
 		list ($req_o, $filter) = explode (';', $req);
 		list ($class, $id) = explode ('-', $req_o);
 
+		print_r ($req);
+
 		if (!class_exists ($class)) die ('Err.1');
 		if (!is_numeric($id)) die ('Err.2');
 
@@ -137,6 +139,7 @@ class WP_CRM {
 				$object->save ();
 				}
 			catch (WP_CRM_Exception $wp_crm_exception) {
+				print_r ($wp_crm_exception);
 				}
 			}
 		}
@@ -153,6 +156,31 @@ class WP_CRM {
 			), false);
 
 		if (!is_wp_error($user)) $current_user = $user;
+		}
+
+	public static function signup ($data = null) {
+		global
+			$wpdb,
+			$wp_crm_state;
+
+		$user = wp_create_user ($data['username'], $data['password'], $data['email']);
+		$current_user = new WP_User ($user);
+		/**
+		 * wp_crm_customer is the simplest role that a wp_crm user can have.
+		 */
+		$current_user->set_role ('wp_crm_customer');
+		/**
+		 * create aditional structures for each registered user:
+		 */
+		try {
+			$wp_crm_person = new WP_CRM_Person ($data['email']);
+			}
+		catch (WP_CRM_Exception $wp_crm_exception) {
+			$wp_crm_person = new WP_CRM_Person (array (
+				'email' => $data['email']
+				));
+			$wp_crm_person->save ();
+			}
 		}
 
 	public static function newsletter ($data = null) {

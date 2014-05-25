@@ -4,6 +4,7 @@ App Title: Coupons
 App Description:
 App Size: 1
 App Style:
+App Icon: money
 */
 $list = new WP_CRM_List ('WP_CRM_Coupon');
 ini_set ('display_errors', 1);

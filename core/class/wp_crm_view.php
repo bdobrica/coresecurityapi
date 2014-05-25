@@ -78,7 +78,7 @@ class WP_CRM_View {
 						$cols = array ();
 						$rows = array ();
 
-						if (current_user_can ('wp_crm_work') || current_user_can ('add_users'))
+						if (current_user_can ('wp_crm_work') || current_user_can ('wp_crm_shop') || current_user_can ('add_users'))
 							$fields = $class::$F['view'];
 						else
 							$fields = $class::$F['safe'];

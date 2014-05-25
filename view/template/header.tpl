@@ -5,8 +5,8 @@
 	
 	<!-- start: Meta -->
 	<meta charset="utf-8">
-	<title>Core Security API</title>
-	<meta name="description" content="Core Security API">
+	<title><?php bloginfo('name'); ?></title>
+	<meta name="description" content="<?php bloginfo('name'); echo ' - '; bloginfo('description'); ?>">
 	<meta name="author" content="Bogdan Dobrica / Core Security Advisers">
 	<meta name="keyword" content="Complete E-Commerce Solution for SMEs">
 	<!-- end: Meta -->

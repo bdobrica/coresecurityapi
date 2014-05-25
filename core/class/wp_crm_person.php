@@ -1,10 +1,5 @@
 <?php
 class WP_CRM_Person extends WP_CRM_Model {
-	const Padding		= 9327432;
-	const First_Flag	= 2;
-	const Terms_Flag	= 4;
-	const Raiffeisen_Flag	= 16;
-
 	public static $T = 'persons';
 	protected static $K = array (
 		'name',
@@ -29,9 +24,6 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'notes',
 		'stamp',
 		'language',
-		'package',	# IMPORTANT! REMEMBER TO REMOVE IT AFTER EVENT!!!
-		'box',		# IMPORTANT! REMEMBER TO REMOVE IT AFTER EVENT!!!
-		'fix',		# IMPORTANT! REMEMBER TO REMOVE IT AFTER EVENT!!!
 		'flags'
 		);
 	public static $F = array (
@@ -65,6 +57,9 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'private' => array (
 			)
 		);
+	protected static $U = array (
+		'email'
+		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
 		'`uin` varchar(13) NOT NULL DEFAULT \'\'',
@@ -84,19 +79,15 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'`email` varchar(64) NOT NULL DEFAULT \'\'',
 		'`phone` varchar(12) NOT NULL DEFAULT \'\'',
 		'`company` varchar(64) NOT NULL DEFAULT \'\'',
-		'`position` varchar(64) NOT NULL DEFALT \'\'',
+		'`position` varchar(64) NOT NULL DEFAULT \'\'',
 		'`language` varchar(2) NOT NULL DEFAULT \'ro\'',
 		'`card` int(10) NOT NULL DEFAULT 0',
 		'`password` varchar(40) NOT NULL DEFAULT \'\'',
 		'`notes` text NOT NULL',
 		'`stamp` int(11) NOT NULL DEFAULT 0',
-		'`package` varchar(8) NOT NULL DEFAULT \'\'',
-		'`box` varchar(2) NOT NULL DEFAULT \'\'',
-		'`fix` int(11) NOT NULL DEFAULT 0',
 		'`flags` int(11) NOT NULL DEFAULT 0',
+		'UNIQUE(`email`)',
 		'FULLTEXT KEY `first_name` (`first_name`,`last_name`,`name`,`email`)',
-		'KEY `package` (`package`)',
-		'KEY `box` (`box`)'
 		);
 
 	private $flags;

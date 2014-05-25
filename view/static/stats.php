@@ -3,7 +3,8 @@
 App Title: Statistici
 App Description:
 App Size: 2
-App Style: 
+App Style:
+App Icon: bar-chart-o 
 */
 $list = new WP_CRM_List ('WP_CRM_Invoice', array ('uid='.$current_user->ID));
 

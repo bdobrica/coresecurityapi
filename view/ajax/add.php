@@ -9,7 +9,7 @@ global
 
 $wp_crm_buyer = new WP_CRM_Buyer ();
 $wp_crm_state = new WP_CRM_State ();
-$wp_crm_state->set ('state', WP_CRM_State::EditObject);
+$wp_crm_state->set ('state', WP_CRM_State::AddObject);
 
 $data = $_GET['object'] ? $_GET['object'] : $_POST['object'];
 
@@ -45,7 +45,6 @@ $form = new WP_CRM_Form ($structure);
 $form->set ('state', $wp_crm_state->get());
 
 if ($_POST['object']) {
-	print_r($_POST);
 	$form->action ();
 	}
 

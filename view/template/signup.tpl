@@ -11,7 +11,7 @@
 					<?php $form->render (TRUE); ?>	
 					
 					<a class="pull-left" href="/reset">Ai uitat parola?</a>
-					<a class="pull-right" href="/signup">Inregistreaza-te!</a>
+					<a class="pull-right" href="/">Autentifica-te!</a>
 					
 					<div class="clearfix"></div>				
 						
