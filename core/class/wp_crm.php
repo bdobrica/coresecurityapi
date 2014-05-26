@@ -119,7 +119,7 @@ class WP_CRM {
 		list ($req_o, $filter) = explode (';', $req);
 		list ($class, $id) = explode ('-', $req_o);
 
-		print_r ($req);
+		//print_r ($req);
 
 		if (!class_exists ($class)) die ('Err.1');
 		if (!is_numeric($id)) die ('Err.2');
@@ -139,7 +139,7 @@ class WP_CRM {
 				$object->save ();
 				}
 			catch (WP_CRM_Exception $wp_crm_exception) {
-				print_r ($wp_crm_exception);
+				//print_r ($wp_crm_exception);
 				}
 			}
 		}

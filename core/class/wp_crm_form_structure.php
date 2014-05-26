@@ -358,8 +358,9 @@ class WP_CRM_Form_Structure {
 		}
 
 	private static function _field (&$fields, $object, $info, $label) {
+		if (!empty($info) && (strpos ($info, '?') !== FALSE)) list ($info, $cond) = explode ('?', $info);
 		list ($key, $type) = explode (':', $info);
-		if (strpos ($type, ';') !== FALSE) list ($type, $opts) = explode (';', $type);
+		if (!empty($type) && (strpos ($type, ';') !== FALSE)) list ($type, $opts) = explode (';', $type);
 		switch ((string) $type) {
 			case 'html':
 				$fields[$key] = array (
@@ -573,6 +574,12 @@ class WP_CRM_Form_Structure {
 					'default' => $object->get ($key)
 					);
 			}
+		/**
+		 * Condition is written as key=value
+		 * If the "key"-named field has value "value", then
+		 * Show the current field. Else, hide it.
+		 */
+		if (!empty ($cond)) $fields[$key]['condition'] = $cond;
 		}
 
 	private static function _process ($object) {

@@ -94,8 +94,12 @@ abstract class WP_CRM_Structure {
 
 		$leaves = array ();
 
-		$sql = $wpdb->prepare ('select * from `' . $wpdb->prefix . static::$T . '` where oid=%d;', $this->OID);
-		$objs = $wpdb->get_results ($sql);
+		if ($this->OID) {
+			$sql = $wpdb->prepare ('select * from `' . $wpdb->prefix . static::$T . '` where oid=%d;', $this->OID);
+			$objs = $wpdb->get_results ($sql);
+			}
+		else
+			$objs = NULL;
 		/**
 		 * Building the tree from SQL results. Works only with OBJECT query output
 		 * as it is passed by reference, not by value.

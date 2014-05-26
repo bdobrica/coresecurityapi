@@ -868,7 +868,14 @@ var $wpcrmui = new function () {
 					$wpcrmui.txt.find('.wp-crm-form-textarea').each(function(n,r){
 						$wpcrmui.rte.push(jQuery(r).tinyeditor().rte);
 						});
-					$wpcrmui.txt.find('.tab-pane').each(function(n,p){if (n>0) jQuery(p).removeClass('active');});
+					jQuery('.wp-crm-form-cond', $wpcrmui.txt).each(function(n,i){
+						var c = jQuery(i).attr('rel').split('=');
+						jQuery(i).hide();
+						jQuery('[name="' + c[0] + '"]', jQuery(i).parent()).on('change', function(e){
+							if (jQuery(e.target).val() == c[1]) jQuery(i).show(); else jQuery(i).hide();
+							});
+						});
+					//$wpcrmui.txt.find('.tab-pane').each(function(n,p){if (n>0) jQuery(p).removeClass('active');});
 
 					if (typeof(f) == 'function') f();
 					});

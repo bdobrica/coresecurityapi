@@ -150,7 +150,6 @@ class WP_CRM_List {
 			foreach ($class::$F['excerpt'] as $field => $label) {
 				$row[] = $item->get ($field);
 				}
-			print_r($row);
 			$table->push ($row, WP_CRM_Table::Rows);
 			}
 

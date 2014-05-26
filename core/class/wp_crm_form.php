@@ -271,6 +271,7 @@ class WP_CRM_Form {
 		if (is_null ($wrap)) $wrap = array ('<' . self::$ITEMSTAG . '>', '</' . self::$ITEMSTAG . '>');
 		global $wp_crm_state;
 
+
 		$data = $wp_crm_state->get ('data');
 
 		if (is_array($field)) {
@@ -600,7 +601,6 @@ class WP_CRM_Form {
 
 
 					foreach ($field['default'] as $cid => $cdata) {
-						print_r($cdata);
 						if ($cid == 0) continue;
 						$tabs[] = '<li><a href="#contact-' . $cid . '">' . $cdata['title'] . '</a></li>';
 						
@@ -616,8 +616,8 @@ class WP_CRM_Form {
 						$panes[] = $pane;
 						}
 
-					$tab = '<li class="active"><a href="#add"><i class="fa fa-plus"></i></a></li>';
-					$pane = '<div class="tab-pane active" id="add">';
+					$tab = '<li class="active"><a href="#contact-new"><i class="fa fa-plus"></i></a></li>';
+					$pane = '<div class="active tab-pane" id="contact-new">';
 					foreach ($field['default'][0] as $skey => $label) {
 						$pane .= '<label>' . $label . '</label>
 <input class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" type="text" value="" name="' . $key . '-' . $skey . '" />';
@@ -629,7 +629,6 @@ class WP_CRM_Form {
 					$tabs[] = $tab;
 					$panes[] = $pane;
 
-					
 					$out .= '<div class="' . $this->class . '-contacts">
 	<ul class="nav nav-tabs">
 		' . implode ("\n", $tabs) . '
@@ -649,6 +648,14 @@ class WP_CRM_Form {
 				$wrap = array (
 					str_replace ('>', ' class="' . $this->class . '-error">', $wrap[0]),
 					'<span class="' . $this->class . '-error-hint">' . $field['error'] . '</span>' . $wrap[1] );
+
+
+			if ($field['condition']) {
+				if (($p = strpos ($wrap[0], 'class="')) !== FALSE)
+					$wrap[0] = substr ($wrap[0], 0, $p) . 'rel="' . $field['condition'] . '" class="' . $this->class . '-cond ' . substr ($wrap[0], $p+7);
+				else
+					$wrap[0] = substr ($wrap[0], 0, -1) . ' rel="' . $field['condition'] . '" class="' . $this->class . '-cond">';
+				}
 
 			return $wrap[0] . $out . $wrap[1];
 			}

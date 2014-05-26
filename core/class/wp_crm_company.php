@@ -10,15 +10,15 @@ class WP_CRM_Company extends WP_CRM_Model {
 
 	const Logo		= 'cache/logos';
 
-	private static $TYPE = array (
+	private static $TYPES = array (
 		'uat'		=> array (
-					'title' => 'Unitate Administrativ Teritoriala'
+					'title' => 'Unitate Administrativ Teritoriala',
 					),
 		'ong'		=> array (
 					'title' => 'Organizatie Non-Guvernamentala'
 					),
 		'srl'		=> array (
-					'title' => 'Societate cu Raspundere Limitata'
+					'title' => 'Societate cu Raspundere Limitata',
 					),
 		'pfa'		=> array (
 					'title' => 'Persoana Fizica Autorizata'
@@ -27,12 +27,30 @@ class WP_CRM_Company extends WP_CRM_Model {
 					'title' => 'Societate pe Actiuni'
 					),
 		);
+	private static $INTERESTS = array (
+		'Agricultura',
+		'Cercetare',
+		'Cooperare Transfrontaliera',
+		'Cooperare UE',
+		'Dezvoltare rurala',
+		'Dezvoltare urbana',
+		'Energie',
+		'IMM',
+		'Infrastructura',
+		'Intreprinderi medii',
+		'Mediu',
+		'Piscicultura',
+		'Resurse umane',
+		'Servicii sociale',
+		'Turism',
+		);
 
 	public static $T = 'companies';
 	protected static $K = array (
 		'oid',
 		'uid',
 		'type',
+		'interests',
 		'name',
 		'description',
 		'url',
@@ -65,6 +83,7 @@ class WP_CRM_Company extends WP_CRM_Model {
 		'`oid` int(11) NOT NULL DEFAULT 0',			/* = office id (link to WP_CRM_Office) */
 		'`uid` int(11) NOT NULL DEFAULT 0',			/* = user id (link to WP_CRM_User) */
 		'`type` enum(\'uat\', \'ong\', \'srl\', \'pfa\', \'sa\') NOT NULL DEFAULT \'srl\'',
+		'`interests` text NOT NULL',
 		'`name` text NOT NULL',
 		'`description` text NOT NULL',
 		'`logo` text NOT NULL',
@@ -99,6 +118,11 @@ class WP_CRM_Company extends WP_CRM_Model {
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
 			'address' => 'Adresa',
+			'type:array;types' => 'Tip',
+			'csize?type=srl' => 'Dimensiune',
+			'urban?type=uat' => 'Urban sau rural?',
+			'developed?type=uat' => 'Zona defavorizata?',
+			'population?type=uat' => 'Populatie',
 			'contact:contact' => 'Contact',
 			'logo:file' => 'Logo'
 			),
@@ -107,6 +131,7 @@ class WP_CRM_Company extends WP_CRM_Model {
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
 			'address' => 'Adresa',
+			'type:array;types' => 'Tip',
 			'contact:contact' => 'Contact',
 			'logo:file' => 'Logo'
 //			'account' => 'Cont',
@@ -178,6 +203,13 @@ class WP_CRM_Company extends WP_CRM_Model {
 			case 'contact':
 				$wp_crm_contact = new WP_CRM_Company_Structure ((int) $this->ID);
 				return $wp_crm_contact->get ();
+				break;
+			case 'types':
+				$out = array ();
+				foreach (self::$TYPES as $key => $values) {
+					$out[$key] = $values['title'];
+					}
+				return $out;
 				break;
 			}
 		
