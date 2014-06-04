@@ -27,7 +27,9 @@ if (!is_user_logged_in()) {
 	$form->set ('state', $wp_crm_state->get());
 
 	$form->action ();
-	if ($current_user->ID) { header ('Location: /'); exit (1); }
+	if ($current_user->ID && !in_array ($wp_crm_state->get(), array (
+                WP_CRM_State::SignUp
+                ))) { header ('Location: /'); exit (1); }
 	}
 else {
 	$current_user = wp_get_current_user ();
@@ -38,9 +40,11 @@ else {
 
 get_header ();
 
-if ($current_user->ID) {
+if ($current_user->ID && !in_array ($wp_crm_state->get(), array (
+		WP_CRM_State::SignUp
+		))) {
 	$wp_crm_offices = get_user_meta ($current_user->ID, '_wp_crm_offices', TRUE);
-	$wp_crm_office_query = is_numeric ($wp_crm_offices) ? sprintf ('oid=%d', $wp_crm_offices) : !empty($wp_crm_offices) ? sprintf ('oid in (%s)', implode (',', $wp_crm_offices)) : '';
+	$wp_crm_office_query = is_numeric ($wp_crm_offices) ? sprintf ('oid=%d', $wp_crm_offices) : (!empty($wp_crm_offices) ? sprintf ('oid in (%s)', implode (',', $wp_crm_offices)) : '');
 
 
 	include (dirname (__FILE__) . '/template/user-header.tpl');
@@ -75,6 +79,21 @@ else {
 		</div>
 		<?php }
 	else {
+		if ($static == 'activate') {
+			$sql = $wpdb->prepare ('select ID from `' . $wpdb->prefix . 'users` where user_login=%s;', urldecode($_GET['l']));
+			$user_id = $wpdb->get_var ($sql);
+			if ($user_id) {
+				$user = new WP_User ($user_id);
+				if (strtolower ($_GET['h']) == md5 ($user_id . $user->user_email)) {
+					if ($user->has_cap ('wp_crm_wakeup')) {
+						$user->set_role ('wp_crm_customer');
+						$awaken = TRUE;
+						}
+					}
+				}
+			else
+				$awaken = FALSE;
+			}
 		include (dirname (__FILE__) . '/template/login.tpl');
 		}
 	}

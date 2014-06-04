@@ -115,10 +115,19 @@ class WP_CRM_View {
 									$debug ++;
 									$rows[$c][] = self::render ($item->get ($key), $type, 32);
 									}
+
+								try {
+									$owned = method_exists ($item, 'is') ? $item->is ('owned') : NULl;
+									}
+								catch (WP_CRM_Exception $wp_crm_exception) {
+									$owned = NULL;
+									}
+
 								if (!empty($this->actions))
 									$rows[$c][] = self::render (array (
 										'id' => get_class($item) . '-' . $item->get(),
 										'class' => $this->class,
+										'owned' => $owned,
 										'actions' => $this->actions ), 'actions');
 								$c++;
 								}
@@ -129,7 +138,7 @@ class WP_CRM_View {
 						$this->out = '<div class="' . $this->class . '-app ' . $this->class . '-app-size-' . $object->get('size') . '">' . $object->render () . '</div>';
 						break;
 					case 'WP_CRM_Menu':
-						if ($object->get ('render') == WP_CRM_Menu::WP_CRM_MENU_DASHBOARD) {
+						if ($object->get ('render') == WP_CRM_Menu::WP_CRM_Menu_Dashboard) {
 							$this->out = '<div class="' . $this->class . '-menu-wrap">';
 							$this->out .= '<div class="' . $this->class . '-menu">';
 							foreach (($object->get()) as $app) {
@@ -307,7 +316,7 @@ class WP_CRM_View {
 					else {
 						foreach ($data['actions'] as $key => $val) {
 							if ($key == 'add') continue;
-							$out[] = '<button class="btn btn-xs btn-block btn-primary ' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '">' . $val . '</button></li>' . "\n";
+							$out[] = '<button class="btn btn-xs btn-block btn-' . ($data['owned'] ? 'danger' : 'primary') . ' ' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '">' . $val . '</button></li>' . "\n";
 							$c++;
 							}
 						return implode (' ', $out);

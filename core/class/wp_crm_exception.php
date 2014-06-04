@@ -25,6 +25,8 @@ class WP_CRM_Exception extends Exception {
 	const Invalid_Username		= 23;
 	const Invalid_Session		= 24;
 	const Invalid_SRP_Command	= 25;
+	const Missing_Person		= 26;
+	
 	
 	public function __construct ($code = 0, $message = null) {
 		parent::__construct ((string) $message, (int) $code);

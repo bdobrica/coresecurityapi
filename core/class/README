@@ -1,2 +1,12 @@
 This is where the magic happens! =)
 The folder contains all the parts of WP_CRM application written as classes. Classes are wrappers, usually for accessing a database stored object. For them, WP_CRM_Model is the abstract reference class. See /docs for documentation.
+
+Usually, objects are extensions of WP_CRM_Model which implements an abstract interface to access database properties. In order to create a new object description, let's say WP_CRM_New_Object copy the first part of the wp_crm_model.php file to override the $T, $K, $M_K, $F, $Q variables. The file holding WP_CRM_New_Object should be named wp_crm_new_object.php.
+$T = the name of the table (minus the prefix). It will usually be new_objects for WP_CRM_New_Object
+$K = holds all the columns of the table $T, minus the `id` column (which is int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT). All objects should have this column created.
+$M_K = holds all the columns of the meta table. The meta table is created automagically using this information.
+$F = holds all form structure. It has several important sectios: new (what fields are needed to create a new object), edit (what fields should be updated on modifying an object), view (what fields should appear when listing objects) etc. Each section contains pairs with the following structure (key:type => label). They are processed by WP_CRM_Form_Structure and WP_CRM_Form to produce forms that create/edit objects.
+
+An important object is the WP_CRM_List object which searches the database and creates lists of objects from class names and filtering elements.
+
+Another abstract interface is WP_CRM_Structure.

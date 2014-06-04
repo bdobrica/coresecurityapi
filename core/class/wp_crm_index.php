@@ -19,7 +19,7 @@ class WP_CRM_Index {
 		'object',
 		'content'
 		);
-	protected static $F = array (
+	public static $F = array (
 		'new' => array (
 			),
 		'view' => array (

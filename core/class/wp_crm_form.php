@@ -61,7 +61,7 @@ class WP_CRM_Form {
 					$this->fields[$label]['fields'][$key]['default'] = $this->_process($key, $field['type']);
 					if ($apply_filters && !empty($field['filters']))
 						foreach ($field['filters'] as $filter => $err_message) {
-							$error = $this->_filter ($key, $this->fields[$label]['fields'][$key]['default'], $field['type'], $filter) ? $err_message : null;
+							$error = self::filter ($key, $this->fields[$label]['fields'][$key]['default'], $field['type'], $filter) ? $err_message : null;
 							if ($error)
 								$this->errors[] = $this->fields[$label]['fields'][$key]['error'] = $error;
 							}
@@ -127,6 +127,10 @@ class WP_CRM_Form {
 				list ($type, $id) = explode ('-', self::_request ($key . '-id'));
 				$out = $type == 'person' ? new WP_CRM_Person ((int) $id) : new WP_CRM_Company ((int) $id);
 				break;
+			case 'file':
+				$out = json_decode (stripslashes ($val));
+				$out = is_null ($out) ? $val : $out;
+				break;
 			case 'product':
 				$out = array ('old' => array (), 'new' => array ());
 				foreach ($_POST as $key => $val) {
@@ -191,7 +195,7 @@ class WP_CRM_Form {
 		return $out;
 		}
 	
-	private function _filter ($key, $data, $type, $filter) {
+	public static function filter ($key, $data, $type, $filter) {
 		switch ((string) $filter) {
 			/*
 			 * return TRUE to raise the exception;
@@ -244,7 +248,7 @@ class WP_CRM_Form {
 
 				if ($apply_filters && !empty($field['filters'])) {
 					foreach ($field['filters'] as $filter => $err_message) {
-						$error = $this->_filter ($key, $this->fields[$label]['fields'][$key]['default'], $field['type'], $filter) ? $err_message : null;
+						$error = self::filter ($key, $this->fields[$label]['fields'][$key]['default'], $field['type'], $filter) ? $err_message : null;
 						if (!empty($_POST) && $error)
 							$this->errors[] = $this->fields[$label]['fields'][$key]['error'] = $error;
 						}
@@ -510,8 +514,8 @@ class WP_CRM_Form {
 				case 'matrix':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
-					$out .= '<div class="' . $this->class . '-matrix-wrapper">';
 					$out .= '<div class="' . $this->class . '-separator"></div>';
+					$out .= '<div class="' . $this->class . '-matrix-wrapper">';
 					$matrix = $field['default'];
 					$rows = 0;
 					if (!empty($matrix)) {
@@ -522,14 +526,14 @@ class WP_CRM_Form {
 								$out .= '<' . self::$GROUPTAG . ' class="' . $this->class . '-matrix-row">';
 								$del = '<' . self::$GROUPTAG . ' class="' . $this->class . '-matrix-row">';
 								$out .= '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-date">&nbsp;</' . self::$ITEMSTAG . '>';
-								$del .= '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-add-row"><button class="btn btn-sm btn-success ' . $this->class . '-matrix-add-row fui-plus"></button></' . self::$ITEMSTAG . '>';
+								$del .= '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-add-row"><button class="btn btn-sm btn-success ' . $this->class . '-matrix-add-row fa fa-plus"></button></' . self::$ITEMSTAG . '>';
 								$cols = 0;
 								foreach ($data as $col => $value) {
 									$out .= '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell"><input type="text" name="' . $key . '_col_' . ($cols + 1) . '" class="form-control input-sm" value="' . $col . '" /></' . self::$ITEMSTAG . '>';
-									$del .= $cols ? '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-delete-col"><button class="btn btn-sm btn-danger ' . $this->class . '-matrix-del-col fui-cross"></button></' . self::$ITEMSTAG . '>' : '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-delete-col">&nbsp;</' . self::$ITEMSTAG . '>';
+									$del .= $cols ? '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-delete-col"><button class="btn btn-sm btn-danger ' . $this->class . '-matrix-del-col fa fa-times"></button></' . self::$ITEMSTAG . '>' : '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-delete-col">&nbsp;</' . self::$ITEMSTAG . '>';
 									$cols ++;
 									}
-								$out .= '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-add-col"><button class="btn btn-sm btn-success ' . $this->class . '-matrix-add-col fui-plus"></button></' . self::$ITEMSTAG . '>';
+								$out .= '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-add-col"><button class="btn btn-sm btn-success ' . $this->class . '-matrix-add-col fa fa-plus"></button></' . self::$ITEMSTAG . '>';
 								$out .= '</' . self::$GROUPTAG . '>';
 								$del .= '</' . self::$GROUPTAG . '>';
 								$out .= '</' . self::$ITEMSTAG . '>';
@@ -542,7 +546,7 @@ class WP_CRM_Form {
 								foreach ($data as $col => $value) {
 									$out .= '<' . self::$ITEMSTAG . '><input class="form-control input-sm" type="text" name="' . $key . '_cell_' . ($rows + 1) . '_' . ($cols + 1) . '" value="' . $value . '" /></' . self::$ITEMSTAG . '>';
 									}
-								if ($rows) $out .= '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-delete-row"><button class="btn btn-sm btn-danger fui-cross"></button></' . self::$ITEMSTAG . '>';
+								if ($rows) $out .= '<' . self::$ITEMSTAG . ' class="' . $this->class . '-matrix-cell-delete-row"><button class="btn btn-sm btn-danger fa fa-times"></button></' . self::$ITEMSTAG . '>';
 								$out .= '</' . self::$GROUPTAG . '>';
 								}
 							$out .= '</' . self::$ITEMSTAG . '>';
@@ -577,10 +581,38 @@ class WP_CRM_Form {
 						$tab = 'none';
 					$out .= '<div class="' . $this->class . '-tabs"><' . self::$GROUPTAG . ' class="nav nav-tabs nav-append-content">' . $nav . '</' . self::$GROUPTAG . '><div class="tab-content">' . $tab . '</div></div>';
 					break;
-				case 'file':
+				case 'logo':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
 					$out .= '<div class="' . $this->class . '-file"><div class="' . $this->class . '-file-view">' . ($field['default'] ? '<img src="' . $field['default'] . '" />' : '') . '</div><input type="hidden" name="' . $key . '" value="' . $field['default'] . '" /><input type="button" name="' . $key . '-select" value="Select" class="' . $this->class . '-file-select btn btn-warning" /> <input type="button" name="' . $key . '-upload" value="Upload" class="' . $this->class . '-file-upload btn btn-success" /><div class="' . $this->class . '-file-progress"><div class="' . $this->class . '-file-bar"></div></div></div>';
+					break;
+				case 'file':
+					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
+					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
+
+					$out .= '<div class="' . $this->class . '-file">';
+					$out .= '<div class="' . $this->class . '-file-view"></div>';
+					$out .= '<input type="hidden" name="' . $key . '" value="' . ($field['default'] ? str_replace ('"', '&quot;', (json_encode ($field['default']))) : '') . '" />';
+					
+					if (is_array ($field['default']))
+						$field['default'] = $field['default'][0];
+
+					$out .= '<div class="row">
+					<div class="col-md-2">
+						<span class="' . $this->class . '-file-name">' . (is_object ($field['default']) ? ('<a href="' . $field['default']->url . '" target="_blank" />' . $field['default']->name . ' <i class="fa fa-external-link"></i></a>') : '') . '</span>
+					</div>
+					<div class="col-md-1">
+						<input type="button" name="' . $key . '-select" value="Select" class="' . $this->class . '-file-select btn btn-warning" />
+					</div>
+					<div class="col-md-1">
+						<input type="button" name="' . $key . '-upload" value="Upload" class="' . $this->class . '-file-upload btn btn-success" />
+					</div>
+					<div class="col-md-2">
+						<div class="' . $this->class . '-file-progress progress slim ui-progressbar progressGreen simpleProgress"><div class="' . $this->class . '-file-bar ui-progressbar-value"></div></div>
+					</div>';
+
+					$out .= '</div></div>';
+
 					break;
 				case 'filedrop':
 					//$out .= '<div class="' . $this->class . '-filedrop" rel="' . $key . '"><input type="hidden" name="' . $key . '" value="' . $field['default'] . '" /><div class="' . $this->class . '-filedrop-preview"><span class="' . $this->class . '-filedrop-preview-image"><img src="' . $field['default'] . '" alt="" title="" /><span class="' . $this->class . '-filedrop-uploaded"></span></span><div class="' . $this->class . '-filedrop-progress"><div class="' . $this->class . '-filedrop-progressbar"></div></div></div><span class="' . $this->class . '-filedrop-message">Pentru upload, trage fisierul peste acest text!</span></div>';
@@ -641,7 +673,7 @@ class WP_CRM_Form {
 				default:
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
-					$out .= '<input type="text"' . (isset($field['placeholder']) ? (' placeholder="' . $field['placeholder'] . '"') : '') . 'class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="'.$key.'" value="'.$field['default'].'" />';
+					$out .= '<input type="text"' . (isset($field['placeholder']) ? (' placeholder="' . $field['placeholder'] . '" ') : '') . ' class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="'.$key.'" value="'.$field['default'].'" />';
 				}
 
 			if ($field['error'])

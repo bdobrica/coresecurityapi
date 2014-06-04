@@ -1,7 +1,7 @@
 <?php
 class WP_CRM_Menu extends WP_CRM_Model {
-	const WP_CRM_MENU_LIST		= 1;
-	const WP_CRM_MENU_DASHBOARD	= 2;
+	const WP_CRM_Menu_List		= 1;
+	const WP_CRM_Menu_Dashboard	= 2;
 
 	public static $T = 'menus';
 	protected static $K = array (
@@ -20,7 +20,7 @@ class WP_CRM_Menu extends WP_CRM_Model {
 	public function __construct ($data = null, $render = null) {
 		global $wpdb;
 
-		$this->render = is_null ($render) ? self::WP_CRM_MENU_DASHBOARD : (int) $render;
+		$this->render = is_null ($render) ? self::WP_CRM_Menu_Dashboard : (int) $render;
 
 		$this->apps = array ();
 		$sql = $wpdb->prepare ('select aid from `' . $wpdb->prefix . self::$T . '` where uid=%d;', (int) $data);
@@ -31,6 +31,19 @@ class WP_CRM_Menu extends WP_CRM_Model {
 				$sql = 'select id from `' . $wpdb->prefix . WP_CRM_App::$T . '`;';
 				$apps = $wpdb->get_col ($sql);
 				}
+			}
+
+		/**
+		 * Add a profile app (if it exists) to all users.
+		 */
+		$sql = 'select id from `' . $wpdb->prefix . WP_CRM_App::$T . '` where slug=\'user\';';
+		$profile = $wpdb->get_var ($sql);
+		if ($profile) {
+			if (empty ($apps))
+				$apps = array ($profile);
+			else
+				if (!in_array ($profile, $apps))
+					$apps = array_merge (array ($profile), $apps);
 			}
 
 		if (!empty($apps))

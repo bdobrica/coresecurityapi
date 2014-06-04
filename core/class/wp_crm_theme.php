@@ -103,7 +103,7 @@ class WP_CRM_Theme {
 		wp_enqueue_script ('wp-crm-custom', $url . '/assets/js/custom.min.js');
 		wp_enqueue_script ('wp-crm-core', $url . '/assets/js/core.min.js');
 
-		wp_enqueue_script ('wp-crm', $url . '/script/wp-crm.js', array ('jquery'), '0.1');
+		wp_enqueue_script ('wp-crm', $url . '/script/wp-crm.js', array ('jquery'), '0.3');
 		}
 
 	public static function head () {

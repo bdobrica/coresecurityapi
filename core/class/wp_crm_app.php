@@ -30,13 +30,13 @@ class WP_CRM_App extends WP_CRM_Model {
 	protected static $U = array (
 		'slug'
 		);
-	protected static $F = array (
-		'public' => array (
+	public static $F = array (
+		'new' => array (
 			),
-		'extended' => array (
+		'edit' => array (
 			),
-		'private' => array (
-			)
+		'view' => array (
+			),
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',

@@ -42,7 +42,7 @@ abstract class WP_CRM_Structure {
 	 * @see WP_CRM_Form::_render()
 	 * @var array
 	 */
-	protected static $F = array (
+	public static $F = array (
 		'new' => array (
 			),
 		'edit' => array (
@@ -108,7 +108,7 @@ abstract class WP_CRM_Structure {
 			foreach ($objs as $obj) {
 				$class = $obj->type;
 				try {
-					$reference = new $class ($obj->rid);
+					$reference = $class ? new $class ($obj->rid) : null;
 					}
 				catch (WP_CRM_Exception $wp_crm_exception) {
 					$reference = null;

@@ -13,7 +13,7 @@ class WP_CRM_Room_Block extends WP_CRM_Model {
 		'left',
 		'numbering'
 		);
-	protected static $F = array (
+	public static $F = array (
 		'new' => array (
 			),
 		'view' => array (

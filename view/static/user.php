@@ -23,7 +23,7 @@ $form->set ('state', $wp_crm_state->get());
 
 if ($_POST['object']) $form->action ();
 $form->render (TRUE);
-
+/*
 $wp_crm_offices = new WP_CRM_List ('WP_CRM_Office', array ($wp_crm_office_query ? $wp_crm_office_query : 1));
 
 if ($wp_crm_offices->is ('empty')) {
@@ -51,4 +51,5 @@ else
 			));
 		unset ($view);
 		}
+*/
 ?>

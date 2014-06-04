@@ -9,19 +9,16 @@
 			<a id="main-menu-toggle" class="hidden-xs open"><i class="fa fa-bars"></i></a>		
 			<a class="navbar-brand col-md-2 col-sm-1 col-xs-2" href="/"><span><?php bloginfo('name'); ?></span></a>
 			<div id="search" class="col-sm-4 col-xs-8 col-lg-3">
-				<select>
-					<option>everything</option>
-					<option>messages</option>
-					<option>comments</option>
-					<option>users</option>
-			  	</select>
-				<input type="text" placeholder="search" />
+				<!--select>
+					<option>cauta</option>
+			  	</select-->
+				<input type="text" placeholder="cauta" />
 				<i class="fa fa-search"></i>
 			</div>
 			<!-- start: Header Menu -->
 			<div class="nav-no-collapse header-nav">
 				<ul class="nav navbar-nav pull-right">
-					<li class="dropdown hidden-xs">
+					<!--li class="dropdown hidden-xs">
 						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 							<i class="fa fa-warning"></i>
 							<span class="number">11</span>
@@ -105,7 +102,7 @@
 							</li>	
 						</ul>
 					</li>
-					<!-- start: Notifications Dropdown -->
+					<!-- start: Notifications Dropdown --
 					<li class="dropdown hidden-xs">
 						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 							<i class="fa fa-tasks"></i>
@@ -165,8 +162,8 @@
 							</li>	
 						</ul>
 					</li>
-					<!-- end: Notifications Dropdown -->
-					<!-- start: Message Dropdown -->
+					<!-- end: Notifications Dropdown --
+					<!-- start: Message Dropdown --
 					<li class="dropdown hidden-xs">
 						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 							<i class="fa fa-envelope"></i>
@@ -259,14 +256,14 @@
 							<li>
                         		<a class="dropdown-menu-sub-footer">View all messages</a>
 							</li>	
-						</ul>
+						</ul
 					</li>
-					<!-- end: Message Dropdown -->
+					<!-- end: Message Dropdown --
 					<li>
 						<a class="btn" href="#">
 							<i class="fa fa-wrench"></i>
 						</a>
-					</li>
+					</li-->
 					<!-- start: User Dropdown -->
 					<li class="dropdown">
 						<a class="btn account dropdown-toggle" data-toggle="dropdown" href="#">
@@ -299,7 +296,7 @@
 			<div id="sidebar-left" class="col-lg-2 col-sm-1 ">
 
 				<div class="sidebar-nav nav-collapse collapse navbar-collapse">
-					<?php $wp_crm_menu->set ('render', WP_CRM_Menu::WP_CRM_MENU_LIST);
+					<?php $wp_crm_menu->set ('render', WP_CRM_Menu::WP_CRM_Menu_List);
 					$view = new WP_CRM_View ($wp_crm_menu);
 					unset ($view); ?>
 					<!--ul class="nav main-menu">

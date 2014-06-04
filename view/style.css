@@ -51,7 +51,7 @@
 .ui-widget-product-basket button { margin: 0 0 0 24px; }
 
 /* File */
-.wp-crm-form-file { width: 80%; margin: 4px 15px 6px; float: right; text-align: left; }
+.wp-crm-form-file { margin: 4px 15px 6px; text-align: left; }
 .wp-crm-form-filedrop { width: 80%; margin: 4px 15px 6px 18px; height: 66px; float: right; }
 .wp-crm-form-filedrop-message { clear: both; width: 100%; text-align: center; display: block; padding: 4px 0; }
 .wp-crm-form-filedrop-preview img { width: 10%; float: left; margin: 2px; }
@@ -60,5 +60,23 @@
 .wp-crm-form-hidden,
 .wp-crm-form-hidden * { width: 0; height: 0; overflow: none; }
 
+/* Matrix Input */
+.wp-crm-form-matrix-wrapper { margin: 4px 15px 6px; text-align: left; }
+.wp-crm-form .wp-crm-form-matrix { margin: 0; padding: 0; width: 100%; }
+.wp-crm-form-matrix>div { clear: both; margin: 0; padding: 0; }
+.wp-crm-form-matrix .wp-crm-form-matrix-row { margin: 0; padding: 0; display: block; width: 100%; }
+.wp-crm-form-matrix-row div { margin: 0; padding: 0; display: block; width: 66px; float: left; text-align: center!important; }
+.wp-crm-form-matrix-row div input[type="text"] { margin: 4px 6px; }
+.wp-crm-form-matrix .wp-crm-form-matrix-cell { }
+.wp-crm-form-matrix .wp-crm-form-matrix-cell-add-row,
+.wp-crm-form-matrix .wp-crm-form-matrix-cell-date { width: 120px; text-align: center; display: block; float: left; }
+.wp-crm-form-matrix .btn { margin: 0!important; }
+
 /* Buttons */
-.wp-crm-form-buttons { margin-top: 5px; }
+.wp-crm-form-login-buttons,
+.wp-crm-form-buttons { margin: 1em 0; }
+
+/* Pro-Youth Specific */
+.wp-crm-form-separator { clear: both; }
+#content { background: #fff url(assets/img/template/main-bg.png) no-repeat top center; }
+.login-box { background-color: transparent; border: 1px solid #ccc; border-radius: 3px; }

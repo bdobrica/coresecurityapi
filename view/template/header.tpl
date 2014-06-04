@@ -20,7 +20,7 @@
 	<link href="<?php echo $URL; ?>/assets/css/style.min.css" rel="stylesheet">
 	<link href="<?php echo $URL; ?>/assets/css/retina.min.css" rel="stylesheet">
 	<link href="<?php echo $URL; ?>/assets/css/print.css" rel="stylesheet" type="text/css" media="print"/>
-	<link href="<?php echo $URL; ?>/style.css" rel="stylesheet">
+	<link href="<?php echo $URL; ?>/style.css?v=0.1" rel="stylesheet">
 	<!-- end: CSS -->
 	
 

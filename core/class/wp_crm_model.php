@@ -28,7 +28,8 @@ abstract class WP_CRM_Model {
 	 * The attached database meta table structure. No ID column is added by default.
 	 * The meta table is self::$T suffixed with '_meta'. Only if !empty ($M_K) then
 	 * the class contains a meta table. Meta keys can be used together with normal keys.
-	 * Meta keys have to indexes: oid (object id) and gid (group id) 
+	 * Meta keys have to indexes: oid (object id) and gid (group id)
+	 * Meta keys are only represented in lowercase!
 	 * @var array
 	 */
 	protected static $M_K = array ();
@@ -47,7 +48,7 @@ abstract class WP_CRM_Model {
 	 * @see WP_CRM_Form::_render()
 	 * @var array
 	 */
-	protected static $F = array (
+	public static $F = array (
 		'new' => array (
 			),
 		'edit' => array (
@@ -121,6 +122,46 @@ abstract class WP_CRM_Model {
 		return str_replace(array(' ', '-'), '_', strtolower(trim($key)));
 		}
 
+	public static function _unserialize ($data) {
+		if (preg_match ('/^a:\d+:{.*?}$/', $data)) {
+			$out = unserialize ($data);
+			return is_array ($out) ? $out : $data;
+			}
+		if (preg_match ('/^o:\d+:"[a-z0-9_]+":\d+:{.*?}$/', $data)) {
+			$out = unserialize ($data);
+			return is_object ($out) ? $out : $data;
+			}
+		return $data;
+		}
+
+	private function _meta_get ($key = null, $opts = null) {
+		global $wpdb;
+
+		$slug = static::slug ($key);
+		if (empty (static::$M_K) || (!in_array ($slug, static::$M_K)))
+			return FALSE;
+		if (isset($this->data[$slug]))
+			return $this->data[$slug];
+		
+		$sql = $wpdb->prepare ('select meta_value from `' . $wpdb->prefix . static::$T . '_meta` where oid=%d and meta_key=%s;', array (
+				$this->ID,
+				$slug
+				));
+		$values = $wpdb->get_col ($sql);
+
+		if (empty ($values))
+			return FALSE;
+
+		if (count ($values) == 1)
+			return $this->data[$slug] = self::_unserialize($values[0]);
+
+		$this->data[$slug] = array ();
+		foreach ($values as $value)
+			$this->data[$slug][] = self::_unserialize($value);
+
+		return $this->data[$slug];
+		}
+
 	public function get ($key = null, $opts = null) {
 		if (is_null($key)) return $this->ID;
 		$slug = static::slug ($key);
@@ -129,7 +170,71 @@ abstract class WP_CRM_Model {
 			return $this->data[$slug];
 		#if (in_array ($slug, static::$K))
 		#	return (string) $this->data[$slug];
+		$value = $this->_meta_get ($key, $opts);
+		return $value !== FALSE ? $value : $this->ID;
+
 		return $this->ID;
+		}
+
+	private function _meta_set ($key = null, $value = null, $single = TRUE) {
+		global $wpdb;
+		if (is_null($key)) return FALSE;
+
+		$slug = static::slug ($key);
+		if (empty (static::$M_K) || (!in_array ($slug, static::$M_K)))
+			return FALSE;
+
+		if ($single) {
+			$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . static::$T . '_meta` where oid=%d and meta_key=%s;', array (
+					$this->ID,
+					$slug
+					));
+			$ids = $wpdb->get_col ($sql);
+			if (empty ($ids)) {
+				$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '_meta` (oid, meta_key, meta_value) values (%d, %s, %s);', array (
+						$this->ID,
+						$slug,
+						(is_array ($value) || is_object ($value)) ? serialize ($value) : $value
+						));
+				$wpdb->query ($sql);
+				return TRUE;
+				}
+			if (count ($ids) == 1) {
+				$sql = $wpdb->prepare ('update `' . $wpdb->prefix . static::$T . '_meta` set meta_value=%s where oid=%d and meta_key=%s;', array (
+						(is_array ($value) || is_object ($value)) ? serialize ($value) : $value,
+						$this->ID,
+						$slug
+						));
+				$wpdb->query ($sql);
+				return TRUE;
+				}
+			reset ($ids);
+
+			$count = 0;
+			foreach ($ids as $id) {
+				if ($count < 1) {
+					$sql = $wpdb->prepare ('update `' . $wpdb->prefix . static::$T . '_meta` set meta_value=%s where id=%d;', array (
+							(is_array ($value) || is_object ($value)) ? serialize ($value) : $value,
+							$id
+							));
+					$wpdb->query ($sql);
+					}
+				else {
+					$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . static::$T . '_meta` where id=%d;', $id);
+					$wpdb->query ($sql);
+					}
+				$count ++;
+				}
+			}
+		else {
+			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '_meta` (oid, meta_key, meta_value) values (%d, %s, %s);', array (
+					$this->ID,
+					$slug,
+					(is_array ($value) || is_object ($value)) ? serialize ($value) : $value
+					));
+			$wpdb->query ($sql);
+			return TRUE;
+			}
 		}
 
 	public function set ($key = null, $value = null) {
@@ -143,6 +248,10 @@ abstract class WP_CRM_Model {
 			
 				foreach ($keys as $key => $value) {
 					$slug = static::slug ($key);
+					if (in_array($slug, static::$M_K)) {
+						$this->_meta_set ($key, $value);
+						continue;
+						}
 					if (!in_array($slug, static::$K))
 						continue;
 						//throw new WP_CRM_Exception (__CLASS__ . ' :: Invalid Assignment', WP_CRM_Exception::Invalid_Assignment);
@@ -161,6 +270,10 @@ abstract class WP_CRM_Model {
 			}
 		else {
 			$slug = static::slug ($key);
+			if (in_array ($slug, static::$M_K)) {
+				$this->_meta_set ($key, $value);
+				return;
+				}
 			if (!in_array($slug, static::$K)) throw new WP_CRM_Exception (WP_CRM_Exception::Invalid_Assignment, __CLASS__ . ' (' . $key . ') :: Invalid Assignment');
 			$this->data[$slug] = $value;
 
@@ -316,10 +429,27 @@ abstract class WP_CRM_Model {
 			'drop table `' . $wpdb->prefix . static::$T . '`;' :
 			'create table `' . $wpdb->prefix . static::$T . '` (' . implode (',', static::$Q) . ') engine=MyISAM default charset=utf8;';
 
-		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '\';') != ($wpdb->prefix . static::$T)) {
-			#echo $sql;
+		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '\';') != ($wpdb->prefix . static::$T))
 			$wpdb->query ($sql);
-			}
+
+		/**
+		 * Create META table if needed.
+		 */
+		if (empty (static::$M_K)) return;
+		$sql = $uninstall ?
+			'drop table `' . $wpdb->prefix . static::$T . '_meta`;' :
+			'create table `' . $wpdb->prefix . static::$T . '_meta` (
+				`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+				`oid` int(11) NOT NULL DEFAULT 0,
+				`gid` int(11) NOT NULL DEFAULT 0,
+				`meta_key` varchar(64) NOT NULL DEFAULT \'\',
+				`meta_value` text NOT NULL,
+				KEY `oid` (`oid`),
+				KEY `gid` (`gid`),
+				KEY `meta_key` (`meta_key`)
+				) engine MyISAM default charset=utf8;';
+		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '_meta\';') != ($wpdb->prefix . static::$T . '_meta'))
+			$wpdb->query ($sql);
 		}
 
 	public function delete () {

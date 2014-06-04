@@ -1,0 +1,10 @@
+Most of the backend interface actions happen here. Pressing a button with a wp-crm-view-{action}
+class should call {action}.php from within this directory.
+In order for this to happen, the action should be attached in scripts/wp-crm.js.
+Future idea: to automatically bind wp-crm-view-{action} to {action}.php.
+
+More ideas:
+In order for the {action}.php to close the window, should return OK as the first two characters
+of the response. Further, the next characters should be a json encoding of the set properties,
+(key, value) pairs to allow the browser to update the fields from the same row as the action
+button, that have the attribute "rel" set to "key".

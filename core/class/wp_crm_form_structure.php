@@ -69,13 +69,15 @@ class WP_CRM_Form_Structure {
 						'class' => 'login-form',
 						'fields' => array (
 							'username' => array (
-								'placeholder' => 'Nume',
+								'placeholder' => 'Nume de utilizator',
+								'label' => 'Nume de utilizator',
 								'filters' => array (
 									'empty' => 'Numele de utilizator este obligatoriu.',
 									)
 								),
 							'password' => array (
 								'placeholder' => 'Parola',
+								'label' => 'Parola',
 								'type' => 'password',
 								'filters' => array (
 									'empty' => 'Parola este obligatorie.',
@@ -106,12 +108,34 @@ class WP_CRM_Form_Structure {
 						'class' => 'signup-form',
 						'fields' => array (
 							'username' => array (
-								'placeholder' => 'Nume',
-								'label' => 'Nume',
+								'placeholder' => 'Nume de utilizator',
+								'label' => 'Nume de utilizator',
 								'filters' => array (
 									'empty' => 'Numele de utilizator este obligatoriu.',
 									'username_allowed' => 'Numele de utilizator ales este rezervat.',
 									'username_exists' => 'Numele de utilizator ales este deja folosit de un alt utilizator.',
+									)
+								),
+							'first_name' => array (
+								'placeholder' => 'Prenume',
+								'label' => 'Prenume',
+								'filters' => array (
+									'empty' => 'Mentionarea prenumelui este obligatorie.',
+									)
+								),
+							'last_name' => array (
+								'placeholder' => 'Nume',
+								'label' => 'Nume',
+								'filters' => array (
+									'empty' => 'Mentionarea numelui este obligatorie.',
+									)
+								),
+							'phone' => array (
+								'placeholder' => 'Telefon',
+								'label' => 'Telefon',
+								'filters' => array (
+									'empty' => 'Mentionarea telefonului este obligatorie.',
+									'phone' => 'Numarul de telefon nu este valid.',
 									)
 								),
 							'email' => array (
@@ -131,7 +155,7 @@ class WP_CRM_Form_Structure {
 									'empty' => 'Parola este obligatorie.',
 									)
 								),
-							/*
+							/**
 							 * SYNTAX: in order to apply confirm filters, the field's key shoud be confirm_{field key to be confirmed}
 							 */
 							'confirm_password' => array (

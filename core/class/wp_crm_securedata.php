@@ -23,7 +23,7 @@ class WP_CRM_SecureData extends WP_CRM_Model {
 		'hash',			# file hash (not piece hash)
 		'stamp',		# modified time
 		);
-	protected static $F = array (
+	public static $F = array (
 		'new' => array (
 			),
 		'edit' => array (

@@ -28,7 +28,8 @@ class WP_CRM_List {
 					catch (WP_CRM_Exception $wp_crm_exception) {
 						}
 					}
-		$this->sort ('stamp', 'desc');
+		//$this->sort ('stamp', 'desc');
+		$this->sort ('id', 'asc');
 		if (!empty($this->list))
 			reset ($this->list);
 		}
@@ -36,6 +37,11 @@ class WP_CRM_List {
 	/*
 	INFO: compare functions
 	*/
+	private static function id_compare ($a, $b) {
+		if ($a->get () < $b->get ()) return -1;
+		if ($a->get () > $b->get ()) return  1;
+		return 0;
+		}
 	private static function stamp_compare ($a, $b) {
 		if ($a->get ('stamp') < $b->get ('stamp')) return -1;
 		if ($a->get ('stamp') > $b->get ('stamp')) return  1;
@@ -125,6 +131,10 @@ class WP_CRM_List {
 			case 'stamp':
 				if (!empty($this->list))
 					usort ($this->list, array ('WP_CRM_List', 'stamp_compare'));
+				break;
+			default:
+				if (!empty($this->list))
+					usort ($this->list, array ('WP_CRM_List', 'id_compare'));
 				break;
 			}
 		if ($opts == 'desc' && (!empty($this->list)))

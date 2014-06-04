@@ -32,7 +32,7 @@ class WP_CRM_SecureLeaf extends WP_CRM_Model {
 		'version',		# file version
 		'stamp',		# leaf creation date
 		);
-	protected static $F = array (
+	public static $F = array (
 		'new' => array (
 			),
 		'edit' => array (

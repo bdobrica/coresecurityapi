@@ -7,7 +7,7 @@ class WP_CRM_Trainer extends WP_CRM_Model {
 		'name',
 		'description'
 		);
-	protected static $F = array (
+	public static $F = array (
 		'new' => array (
 			),
 		'view' => array (

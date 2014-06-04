@@ -26,8 +26,12 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'language',
 		'flags'
 		);
+	protected static $M_K = array (
+		'id_copy',
+		'diploma_copy'
+		);
 	public static $F = array (
-		'view' => array (
+		'new' => array (
 			'first_name' => 'Prenume',
 			'last_name' => 'Nume',
 			'email' => 'E-Mail',
@@ -36,7 +40,18 @@ class WP_CRM_Person extends WP_CRM_Model {
 			'phone' => 'Telefon',
 			'uin' => 'CNP',
 			),
-		'public' => array (
+		'edit' => array (
+			'first_name' => 'Prenume',
+			'last_name' => 'Nume',
+			'email' => 'E-Mail',
+			'address' => 'Adresa',
+			'county' => 'Judet',
+			'phone' => 'Telefon',
+			'uin' => 'CNP',
+			'id_copy:file' => 'Copie BI/CI/Pasaport',
+			'diploma_copy:file' => 'Ultima diploma de studii'
+			),
+		'view' => array (
 			'first_name' => 'Prenume',
 			'last_name' => 'Nume',
 			'email' => 'E-Mail',

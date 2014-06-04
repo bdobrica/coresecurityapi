@@ -3,6 +3,7 @@ class WP_CRM_Mail extends WP_CRM_Model {
 	const Debug = false;
 	public static $T = 'mails';
 	protected static $K = array (
+		'oid',
 		'cid',
 		'secure',
 		'host',
@@ -14,6 +15,7 @@ class WP_CRM_Mail extends WP_CRM_Model {
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`oid` int(11) NOT NULL DEFAULT 0',
 		'`cid` int(11) NOT NULL DEFAULT 0',
 		'`secure` enum(\'none\',\'ssl\') NOT NULL DEFAULT \'none\'',
 		'`host` varchar(128) NOT NULL DEFAULT \'\'',
@@ -24,7 +26,7 @@ class WP_CRM_Mail extends WP_CRM_Model {
 		'`flags` int(11) NOT NULL DEFAULT 0'
 		);
 	public static $F = array (
-		'view' => array (
+		'new' => array (
 			'cid:company' => 'Companie',
 			'name' => 'Nume',
 			'secure' => 'SSL',
@@ -33,7 +35,16 @@ class WP_CRM_Mail extends WP_CRM_Model {
 			'username' => 'Utilizator',
 			'password' => 'Parola'
 			),
-		'public' => array (
+		'edit' => array (
+			'cid:company' => 'Companie',
+			'name' => 'Nume',
+			'secure' => 'SSL',
+			'host' => 'Server Mail',
+			'port' => 'Port Server',
+			'username' => 'Utilizator',
+			'password' => 'Parola'
+			),
+		'view' => array (
 			'cid:company' => 'Companie',
 			'name' => 'Nume',
 			'secure' => 'SSL',
@@ -53,6 +64,22 @@ class WP_CRM_Mail extends WP_CRM_Model {
 	public function __construct ($data = null) {
 		$this->interface = new PHPMailer (true);
 		$this->interface->IsSMTP ();
+
+		if (is_null ($data)) {
+			$admins = get_users (array ('role' => 'administrator', 'orderby' => 'ID', 'number' => 1));
+
+			if (empty ($admins)) throw new WP_CRM_Exception (0);
+			$admin = $admins[0];
+
+			$wp_crm_offices = get_user_meta ($admin->ID, '_wp_crm_offices', TRUE);
+			$wp_crm_office_query = is_numeric ($wp_crm_offices) ? sprintf ('oid=%d', $wp_crm_offices) : (!empty($wp_crm_offices) ? sprintf ('oid in (%s)', implode (',', $wp_crm_offices)) : '');
+			$wp_crm_mails = new WP_CRM_List ('WP_CRM_Mail', $wp_crm_office_query ? array ($wp_crm_office_query) : null);
+
+			if ($wp_crm_mails->is ('empty')) throw new WP_CRM_Exception (0);
+			$wp_crm_mail = $wp_crm_mails->get ('first');
+
+			$data = (int) $wp_crm_mail->get ();
+			}
 
 		parent::__construct ($data);
 

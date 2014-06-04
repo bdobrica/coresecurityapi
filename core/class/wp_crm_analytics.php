@@ -11,7 +11,7 @@ class WP_CRM_Analytics extends WP_CRM_Model {
 		'action',
 		'coupon'
 		);
-	protected static $F = array (
+	public static $F = array (
 		'new' => array (
 			),
 		'view' => array (

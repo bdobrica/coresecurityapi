@@ -1,5 +1,14 @@
 <div class="row">
-	<div class="col-md-6">
+	Alege unul dintre cursurile de mai jos la care vrei sa participi. Te poti inscrie numai intr-una dintre sesiunile afisate mai jos.
+	<?php
+	$list = new WP_CRM_List ('WP_CRM_Product');
+	$list->sort ('id');
+	$view = new WP_CRM_View ($list, array (
+			'buy' => 'Inscrie-te!',
+			));
+	unset ($view);
+	?>
+	<!--div class="col-md-6">
 		<div class="box">
 			<div class="box-header">
 				<h2><i class="fa fa-check"></i>Office</h2>
@@ -20,5 +29,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div-->
+	Platforma de inscriere este inca in curs de dezvoltare. Urmareste-ne zilnic pentru a vedea noi facilitati.
 </div><!-- end: row -->

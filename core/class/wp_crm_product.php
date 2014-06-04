@@ -89,11 +89,19 @@ class WP_CRM_Product extends WP_CRM_Model {
 			$data = $wpdb->get_row ($sql, ARRAY_A);
 			if (is_null ($data)) throw new WP_CRM_Exception (WP_CRM_Exception::Invalid_ID);
 			}
+		if (is_array($data) && isset($data['code'])) {
+			$data['series'] = parent::parse ('series', $data['code']);
+			$data['number'] = parent::parse ('number', $data['code']);
+			/**
+			 * Should set a default value for series/number.
+			 */
+			}
 
 		parent::__construct ($data);
 		}
 
-	public function is ($key) {
+	public function is ($key = null, $opts = null) {
+		global $wpdb;
 		/*
 		DIFF: $key == 'trash' no longer needed
 		*/
@@ -101,8 +109,75 @@ class WP_CRM_Product extends WP_CRM_Model {
 			case 'active':
 				return $this->data['state'] ? TRUE : FALSE;
 				break;
+			case 'owned':
+				if (is_null ($opts)) {
+					$current_user = wp_get_current_user ();
+					try {
+						$buyer = new WP_CRM_Person ($current_user->user_email);
+						}
+					catch (WP_CRM_Exception $wp_crm_exception) {
+						throw new WP_CRM_Exception (WP_CRM_Exception::Missing_Person);
+						}
+					}
+				if (is_object ($opts))
+					$buyer = $opts;
+
+				$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where pid=%d and bid=%d;', array (
+						$this->ID,
+						$buyer->get ()
+						));
+				if ($wpdb->get_var ($sql)) return TRUE;
+				break;
+			case 'series owned':
+				if (is_null ($opts)) {
+					$current_user = wp_get_current_user ();
+					try {
+						$buyer = new WP_CRM_Person ($current_user->user_email);
+						}
+					catch (WP_CRM_Exception $wp_crm_exception) {
+						throw new WP_CRM_Exception (WP_CRM_Exception::Missing_Person);
+						}
+					}
+				if (is_object ($opts))
+					$buyer = $opts;
+
+				$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where code like %s and bid=%d;', array (
+						$this->get ('series') . '%',
+						$buyer->get ()
+						));
+				if ($wpdb->get_var ($sql)) return TRUE;
+				break;
 			}
 		return FALSE;
+		}
+
+	public function buy ($buyer = null) {
+		global
+			$current_user,
+			$wpdb;
+
+		if (is_null ($buyer)) {
+			$current_user = wp_get_current_user ();
+			try {
+				$buyer = new WP_CRM_Person ($current_user->user_email);
+				}
+			catch (WP_CRM_Exception $wp_crm_exception) {
+				throw new WP_CRM_Exception (0);
+				}
+			}
+
+		if (is_object ($buyer)) {
+			if ($this->is ('series owned', $buyer)) throw new WP_CRM_Exception (0);
+
+			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . WP_CRM_Basket::$T . '` (bid, pid, code, stamp) values (%d, %d, %s, %ld);', array (
+					$buyer->get(),
+					$this->ID,
+					$this->get ('code'),
+					time ()
+					));
+			$wpdb->query ($sql);
+			return TRUE;
+			}
 		}
 
 	public function set ($key = null, $value = null) {
@@ -120,6 +195,13 @@ class WP_CRM_Product extends WP_CRM_Model {
 					), $key);
 
 		if (is_object ($value)) $value = $value->get ();
+		if (is_string ($key) && ($key == 'code')) {
+			$key = array (
+				'series' => parent::parse ('series', $value),
+				'number' => parent::parse ('number', $value)
+				);
+			$value = null;
+			}
 		return parent::set ($key, $value);
 		}
 

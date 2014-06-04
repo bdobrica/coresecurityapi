@@ -161,14 +161,20 @@ class WP_CRM {
 	public static function signup ($data = null) {
 		global
 			$wpdb,
-			$wp_crm_state;
+			$wp_crm_state,
+			$current_user;
 
 		$user = wp_create_user ($data['username'], $data['password'], $data['email']);
 		$current_user = new WP_User ($user);
 		/**
 		 * wp_crm_customer is the simplest role that a wp_crm user can have.
 		 */
-		$current_user->set_role ('wp_crm_customer');
+		/**
+		 * actually, wp_crm_user is the simplest role we have. he can only wp_crm_sleep
+		 * meening it need to be woken up by some event. usually, following a link
+		 * from a confirmation email.
+		 */
+		$current_user->set_role ('wp_crm_subscriber');
 		/**
 		 * create aditional structures for each registered user:
 		 */
@@ -177,10 +183,38 @@ class WP_CRM {
 			}
 		catch (WP_CRM_Exception $wp_crm_exception) {
 			$wp_crm_person = new WP_CRM_Person (array (
+				'first_name' => $data['first_name'],
+				'last_name' => $data['last_name'],
+				'phone' => $data['phone'],
 				'email' => $data['email']
 				));
 			$wp_crm_person->save ();
 			}
+		/**
+		 * send an email: 
+		 */
+		$hash = md5 ($current_user->ID . $current_user->user_email);
+
+		$wp_crm_mail = new WP_CRM_Mail ();
+	
+		$wp_crm_mail->send ($current_user->user_email, array (
+			'subject' => 'Activare cont utilizator platforma ' . get_bloginfo ('name'),
+			'content' => 'Iti multumim ca te-ai inregistrat pentru a deveni membru al platformei ' . get_bloginfo ('name') . '!<br />
+Pentru a putea beneficia in totalitate de facilitatile oferite, trebuie sa activezi contul creat prin accesarea link-ului de mai jos:<br /><br />
+' . get_bloginfo ('url') . '/activate?h=' . $hash . '&l=' . urlencode($current_user->user_login) . '<br /><br />
+Iti multumim!<br />
+--<br />
+Echipa ' . get_bloginfo ('name')
+			));
+		}
+
+	public static function activate ($data = null) {
+		if (!is_numeric ($data)) return FALSE;
+		$user = new WP_User ((int) $data);
+		if (!$user->has_cap ('wp_crm_wakeup')) return TRUE;
+		$user->set_role ('wp_crm_customer');
+		
+		return TRUE;
 		}
 
 	public static function newsletter ($data = null) {

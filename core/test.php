@@ -10,9 +10,11 @@ spl_autoload_register (function ($class) {
 	});
 
 
-WP_CRM_Company_Structure::install ();
+#WP_CRM_Requirement::install ();
+#WP_CRM_Company_Structure::install ();
 #WP_CRM_Person::install ();
 #WP_CRM_App::scan ();
+echo WP_CONTENT_DIR;
 #$actions = WP_CRM_Action::scan ();
 
 #print_r($actions);

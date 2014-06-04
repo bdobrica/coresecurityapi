@@ -376,6 +376,7 @@ var $wpcrmui = new function () {
 	this.srt = null;
 	this.grp = 0;
 	this.flg = 0;
+	this.ldg = null; // loading window
 
 	this.tswap = function (m, n) {
 		if (m == n) return 0;
@@ -516,8 +517,16 @@ var $wpcrmui = new function () {
 		var wo = function (e, u, v) {
 			e.preventDefault();
 			e.stopPropagation();
+			$wpcrmui.ldg.show();
 			$wpcrmui.txt.empty();
 			jQuery.get (u, 'object='+jQuery(e.target).attr('rel'), function(d){
+				$wpcrmui.ldg.hide();
+				if (d.indexOf ('OK') == 0) {
+					if (d.length > 4)
+						var o = JSON && JSON.parse (d.substr(2)) || jQuery.parseJSON(d.substr(2));
+					// need a better action:
+					window.location.reload ();
+					}
 				$wpcrmui.txt.html(d);
 				$wpcrmui.window(1, function(){
 					$wpcrmui.txt.find('input[type="text"]').keydown(function(f){
@@ -613,6 +622,10 @@ var $wpcrmui = new function () {
 			var u = '/wp-content/themes/wp-crm/ajax/price.php';
 			wo (e, u);
 			});
+		jQuery('.wp-crm-view-buy').click(function(e){
+			var u = '/wp-content/themes/wp-crm/ajax/buy.php';
+			wo (e, u);
+			});
 		jQuery('.wp-crm-view-delete').click(function(e){
 			var u = '/wp-content/themes/wp-crm/ajax/delete.php';
 			var v = function () {
@@ -686,7 +699,55 @@ var $wpcrmui = new function () {
 				});
 			});
 
-		jQuery('body').append('<div class="wp-crm-view-shadow"></div><div class="alert wp-crm-view-window"><div class="wp-crm-view-window-header"><button class="close fui-cross wp-crm-view-window-close"></button></div><div class="wp-crm-view-window-content"></div></div>');
+		jQuery('body').append('<div class="wp-crm-view-shadow"></div>');
+
+		/* actions */
+		jQuery('.wp-crm-form-file').each(function(i,u){
+			u = jQuery(u);
+			var h = jQuery('[type="hidden"]', u);
+			var f = jQuery('<form/>').addClass('wp-crm-form-hidden');
+			var s = jQuery('<input/>', {type: 'file', name: h[0].name});
+			(f.append(s)).insertAfter(u);
+			s.change(function(e){
+				jQuery('.wp-crm-form-file-name', u).html(s.val());
+				});
+			jQuery('.wp-crm-form-file-select', u).click(function(e){
+				e.preventDefault();
+				s.click();
+				});
+			jQuery('.wp-crm-form-file-upload', u).click(function(e){
+				e.preventDefault();
+				jQuery.ajax({
+					url: '/wp-content/themes/wp-crm/ajax/upload.php',
+					type: 'POST',
+					xhr: function(){
+						var mx = jQuery.ajaxSettings.xhr();
+						if (mx.upload) mx.upload.addEventListener('progress', function (f) {
+							if (f.lengthComputable) {
+								var p = Math.ceil (100 * f.loaded / f.total);
+								jQuery ('.wp-crm-form-file-bar', u).width(p + '%');
+								}
+							}, false);
+						return mx;
+						},
+					success: function(r){
+						var d = jQuery.parseJSON(r);
+						if (d.error) alert ('error!');
+						else {
+							var n = jQuery('.wp-crm-form-file-name', u);
+							var l = '<a href="' + d[0].url + '" target="_blank">' + n.html() + ' <i class="fa fa-external-link"></i></a>';
+							n.html(l);
+							h.val(r);
+							jQuery ('.wp-crm-form-file-bar', u).width('100%');
+							}
+						},
+					data: new FormData (f[0]),
+					cache: false,
+					contentType: false,
+					processData: false
+					});
+				});
+			});
 		jQuery('.wp-crm-view-window-close').click(function(e){
 			e.preventDefault();
 			$wpcrmui.window(0);
@@ -696,6 +757,8 @@ var $wpcrmui = new function () {
 		this.win = jQuery('.modal'); // jQuery('.wp-crm-view-window');
 		this.ttl = jQuery('.modal-title'); //jQuery('.wp-crm-view-window-header');
 		this.txt = jQuery('.modal-body'); //jQuery('.wp-crm-view-window-content');
+		this.ldg = jQuery('.loading');
+		this.ldg.hide ();
 		};
 
 	this.progress = function (e){
@@ -749,37 +812,37 @@ var $wpcrmui = new function () {
 						r.find('input').each(function(i,j){
 							j.name = $wpcrmui.rowcol (j.name, 1);
 							});
-						var b = jQuery('<button class="btn btn-sm btn-danger fui-cross"></button>').click(function(ee){ ee.preventDefault(); jQuery(ee.target).parent().parent().parent().remove(); });
-						r.children('ul').append(jQuery('<li>').append(b));
+						var b = jQuery('<button class="btn btn-sm btn-danger fa fa-times"></button>').click(function(ee){ ee.preventDefault(); jQuery(ee.target).parent().parent().parent().remove(); });
+						r.children('fieldset').append(jQuery('<div>').append(b));
 						r.find('.wp-crm-form-date').attr("id", "").removeClass('hasDatepicker').removeData('datepicker').unbind().datepicker({dateFormat: 'dd-mm-yy', dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'], firstDay: 1, monthNames:['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie']});
 						});
 					$wpcrmui.txt.find('.wp-crm-form-matrix-add-col').click(function(e){
 						e.preventDefault();
 						var k = 0;
-						jQuery(e.target).parent().parent().find('li').each(function(i,u){
+						jQuery(e.target).parent().parent().find('div').each(function(i,u){
 							if (jQuery(u)[0] === jQuery(e.target).parent()[0]) k = i - 1;
 							});
-						jQuery(e.target).parent().parent().parent().parent().find('ul').each(function(i,u){
+						jQuery(e.target).parent().parent().parent().parent().find('fieldset').each(function(i,u){
 							if (jQuery(u).parent().hasClass('wp-crm-form-matrix-row-delete')) {
-								var b = jQuery('<button class="btn btn-sm btn-danger fui-cross"></button>').click(function(ee){
+								var b = jQuery('<button class="btn btn-sm btn-danger fa fa-times"></button>').click(function(ee){
 									ee.preventDefault ();
 
 									var kk = 0;
-									jQuery(ee.target).parent().parent().find('li').each(function(ii,uu){
+									jQuery(ee.target).parent().parent().find('div').each(function(ii,uu){
 										if (jQuery(uu)[0] === jQuery(ee.target).parent()[0]) kk = ii;
 										});
 
-									jQuery(ee.target).parent().parent().parent().parent().find('ul').each(function(ii,uu){
-										jQuery('li', jQuery(uu)).each(function(jj,ll){
+									jQuery(ee.target).parent().parent().parent().parent().find('fieldset').each(function(ii,uu){
+										jQuery('div', jQuery(uu)).each(function(jj,ll){
 											if (jj == kk) jQuery(ll).remove();
 											});
 										});
 									
 									});
-								jQuery(u).append(jQuery('<li>').append(b));
+								jQuery(u).append(jQuery('<div>').append(b));
 								return;
 								}
-							jQuery('li', jQuery(u)).each(function(j,l){
+							jQuery('div', jQuery(u)).each(function(j,l){
 								if (j == k) {
 									jQuery(l).clone().insertAfter(jQuery(l)).find('input').each(function(m,n){
 										n.name = $wpcrmui.rowcol (n.name, 0, 1);

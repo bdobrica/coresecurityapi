@@ -12,7 +12,7 @@ class WP_CRM_Action extends WP_CRM_Model {
 		'exec',
 		'flags'
 		);
-	protected static $F = array (
+	public static $F = array (
 		'public' => array (
 			),
 		'extended' => array (

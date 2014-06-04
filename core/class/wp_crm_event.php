@@ -8,7 +8,7 @@ class WP_CRM_Event extends WP_CRM_Model {
 		'filter',		# limit actions based on this filter, array of statements concatenated with and
 		'flags'
 		);
-	protected static $F = array (
+	public static $F = array (
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
