@@ -76,10 +76,8 @@
 .wp-crm-form-login-buttons,
 .wp-crm-form-buttons { margin: 1em 0; }
 
-/* Pro-Youth Specific */
+/* E-Invest Specific */
 .wp-crm-form-separator { clear: both; }
-#content { background: #fff url(assets/img/template/main-bg.png) no-repeat top center; }
-.login-box { background-color: transparent; border: 1px solid #ccc; border-radius: 3px; }
 .wp-crm-view-loading { position: absolute; left: 50%; width: 320px; height: 100px; background: #fff; border: 2px solid #eee; border-radius: 6px; box-shadow: 3px 3px 3px #eee;  margin-left: -160px; z-index: 9999; }
 .wp-crm-view-loading-title { text-align: center; padding: 5px; font-weight: bold; display: block; }
 .wp-crm-view-loading .progress { margin: 20px 9px 30px; width: 300px; }

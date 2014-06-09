@@ -1,65 +1,55 @@
-<div class="row">
-	<ol class="breadcrumb">
-		<li><a href="/">Prima Pagina</a></li>
-		<li><a href=""></a></li>
-	</ol>
-	<h1><small>Bine ai venit, <?php echo $wp_crm_user->get ('first_name'); ?>!</small></h1>
-	<div class="alert alert-info">
-		Alege unul dintre cursurile de mai jos la care vrei sa participi. Te poti inscrie numai intr-una dintre sesiunile afisate mai jos. Si nu uita sa iti actualizezi profilul! Poti apasa <a href="/user"><i class="fa fa-user"></i> aici</a> sau in meniul din stanga.
-	</div>
-	<?php
-	$list = new WP_CRM_List ('WP_CRM_Product');
-	$list->sort ('id');
+<?php
+/*
+App Title: Companii
+App Description:
+App Size: 1
+App Style:
+App Icon: gears 
+*/
+
+try {
+	$wp_crm_person = new WP_CRM_Person ($current_user->user_email);
+	}
+catch (WP_CRM_Exception $wp_crm_exception) {
+	$wp_crm_person = new WP_CRM_Person (array (
+		'email' => $current_user->user_email
+		));
+	$wp_crm_person->save ();
+	}
+
+$structure = new WP_CRM_Form_Structure ($wp_crm_person);
+$form = new WP_CRM_Form ($structure);
+$form->set ('state', $wp_crm_state->get());
+
+if ($_POST['object']) $form->action ();
+$form->render (TRUE);
+
+
+$offices = new WP_CRM_List ('WP_CRM_Office', array (is_numeric ($wp_crm_offices) ? sprintf ('id=%d', $wp_crm_offices) : (!empty($wp_crm_offices) ? sprintf ('id in (%s)', implode (',', $wp_crm_offices)) : 1)));
+
+if ($offices->is ('empty')) {
+	$office = new WP_CRM_Office (array ('name' => $current_user->user_email));
+	$office->save ();
+
+	$list = new WP_CRM_List ('WP_CRM_Company', array ('oid=' . $office->get ()));
 	$view = new WP_CRM_View ($list, array (
-			'buy' => 'Inscrie-te!',
-			));
+		'add' => 'Organizatie Noua',
+		'view' => 'Vezi',
+		'memo' => 'Memo',
+		'delete' => 'Sterge'
+		));
 	unset ($view);
-	
-	$list = $wp_crm_user->get ('products');
-	$list->sort ('id');
-
-	if ($list->is ('empty')) {
-	?>
-	<div class="alert alert-warning">
-		Foloseste butoanele albastre &laquo;Inscrie-te!&raquo; pentru a alege cursul pe care doresti sa-l urmezi.
-	</div>
-	<?php } else { ?>
-
-	<hr />	
-	<div class="alert alert-warning">
-		Mai jos ai lista cursurilor la care te-ai inscris:
-	</div>
-
-	<?php
-		$view = new WP_CRM_View ($list);
+	}
+else
+	foreach ($offices->get () as $office) {
+		$list = new WP_CRM_List ('WP_CRM_Company', array ('oid=' . $office->get ()));
+		$view = new WP_CRM_View ($list, array (
+			'add' => 'Organizatie Noua',
+			'edit' => 'Modifica',
+			'view' => 'Vezi',
+			'memo' => 'Memo',
+			'delete' => 'Sterge'
+			));
 		unset ($view);
 		}
-
-	?>
-	<hr />
-	<!--div class="col-md-6">
-		<div class="box">
-			<div class="box-header">
-				<h2><i class="fa fa-check"></i>Office</h2>
-				<div class="box-icon">
-					<a href="" class="btn-setting"><i class="fa fa-wrench"></i></a>
-					<a href="" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
-					<a href="" class="btn-close"><i class="fa fa-times"></i></a>
-				</div>
-				<div class="nav nav-tabs">
-					<li class="active"><a href="#co">Co</a></li>
-				</div>
-			</div>
-
-			<div class="box-content">
-				<div class="tab-content">
-					<div id="co" class="tab-pane active">
-					</div>
-				</div>
-			</div>
-		</div>
-	</div-->
-	<div class="alert alert-success">
-	Platforma de inscriere este inca in curs de dezvoltare. Urmareste-ne zilnic pentru a vedea noi facilitati.
-	</div>
-</div><!-- end: row -->
+?>

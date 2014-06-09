@@ -1,10 +1,10 @@
 <?php
 /*
-App Title: Profil
+App Title: Companii
 App Description:
 App Size: 1
 App Style:
-App Icon: user 
+App Icon: gears 
 */
 
 try {
@@ -23,14 +23,15 @@ $form->set ('state', $wp_crm_state->get());
 
 if ($_POST['object']) $form->action ();
 $form->render (TRUE);
-/*
-$wp_crm_offices = new WP_CRM_List ('WP_CRM_Office', array ($wp_crm_office_query ? $wp_crm_office_query : 1));
 
-if ($wp_crm_offices->is ('empty')) {
-	$wp_crm_office = new WP_CRM_Office (array ('name' => $current_user->user_email));
-	$wp_crm_office->save ();
 
-	$list = new WP_CRM_List ('WP_CRM_Company', array ('oid=' . $wp_crm_office->get ()));
+$offices = new WP_CRM_List ('WP_CRM_Office', array (is_numeric ($wp_crm_offices) ? sprintf ('id=%d', $wp_crm_offices) : (!empty($wp_crm_offices) ? sprintf ('id in (%s)', implode (',', $wp_crm_offices)) : 1)));
+
+if ($offices->is ('empty')) {
+	$office = new WP_CRM_Office (array ('name' => $current_user->user_email));
+	$office->save ();
+
+	$list = new WP_CRM_List ('WP_CRM_Company', array ('oid=' . $office->get ()));
 	$view = new WP_CRM_View ($list, array (
 		'add' => 'Organizatie Noua',
 		'view' => 'Vezi',
@@ -40,8 +41,8 @@ if ($wp_crm_offices->is ('empty')) {
 	unset ($view);
 	}
 else
-	foreach ($wp_crm_offices->get () as $wp_crm_office) {
-		$list = new WP_CRM_List ('WP_CRM_Company', array ('oid=' . $wp_crm_office->get ()));
+	foreach ($offices->get () as $office) {
+		$list = new WP_CRM_List ('WP_CRM_Company', array ('oid=' . $office->get ()));
 		$view = new WP_CRM_View ($list, array (
 			'add' => 'Organizatie Noua',
 			'edit' => 'Modifica',
@@ -51,5 +52,4 @@ else
 			));
 		unset ($view);
 		}
-*/
 ?>
