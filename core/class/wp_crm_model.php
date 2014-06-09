@@ -150,7 +150,7 @@ abstract class WP_CRM_Model {
 		$values = $wpdb->get_col ($sql);
 
 		if (empty ($values))
-			return FALSE;
+			return null;
 
 		if (count ($values) == 1)
 			return $this->data[$slug] = self::_unserialize($values[0]);
@@ -165,7 +165,8 @@ abstract class WP_CRM_Model {
 	public function get ($key = null, $opts = null) {
 		if (is_null($key)) return $this->ID;
 		$slug = static::slug ($key);
-		if ($slug == 'keys') return static::$K;
+		if ($slug == 'keys')
+			return static::$K;
 		if (isset($this->data[$slug]))
 			return $this->data[$slug];
 		#if (in_array ($slug, static::$K))
@@ -284,6 +285,31 @@ abstract class WP_CRM_Model {
 				$wpdb->query ($sql);
 				}
 			}
+		}
+
+	public function field ($key, $context = 'edit') {
+		$out = array (
+			'info' => '',
+			'label' => ''
+			);
+
+		if (empty (static::$F[$context])) return $out;
+
+		foreach (static::$F[$context] as $info => $label) {
+			if (strpos ($info, $key) === 0) {
+				$seps = array ();
+				if (($sep = strpos ($info, '?')) !== FALSE) $seps[] = $sep;
+				if (($sep = strpos ($info, ':')) !== FALSE) $seps[] = $sep;
+				if (($sep = strpos ($info, ';')) !== FALSE) $seps[] = $sep;
+				$sep = !empty ($seps) ? min ($seps) : 0;
+				if (($sep == 0) || (($sep > 0) && (substr ($info, 0, $sep) == $key))) {
+					$out['info'] = $info;
+					$out['label'] = $label;
+					break;
+					}
+				}
+			}
+		return $out;
 		}
 
 	public function json ($data = FALSE) {

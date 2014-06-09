@@ -43,6 +43,9 @@ get_header ();
 if ($current_user->ID && !in_array ($wp_crm_state->get(), array (
 		WP_CRM_State::SignUp
 		))) {
+	
+	$wp_crm_user = new WP_CRM_User ($current_user->ID);
+
 	$wp_crm_offices = get_user_meta ($current_user->ID, '_wp_crm_offices', TRUE);
 	$wp_crm_office_query = is_numeric ($wp_crm_offices) ? sprintf ('oid=%d', $wp_crm_offices) : (!empty($wp_crm_offices) ? sprintf ('oid in (%s)', implode (',', $wp_crm_offices)) : '');
 

@@ -5,8 +5,6 @@
  * it doesn't allow delivery, until a contract is signed and uploaded.
  */
 class WP_CRM_Requirement extends WP_CRM_Model {
-	const Buyer	= 1;
-	const Seller	= 2;
 	/**
 	 * The attached database table, no prefix
 	 * @var string
@@ -16,15 +14,14 @@ class WP_CRM_Requirement extends WP_CRM_Model {
 	 * The attached database table structure. The ID column is added by default.
 	 * @var array
 	 */
-	protected static $K = array (
-		'pid',					// WP_CRM_Product ID, WP_CRM_Requirements are only for Products
-							// WP_CRM_Requirements are only for: buyers (if person or company) and sellers (inventory, resources and tasks)
+	protected static $K = array (			// still wondering if this should be applied on instances or objects?
+		'oid',					// the object that has this requirements attached
+		'class',				// the class of the object that has this requirements attached
+		'event',				// the WP_CRM_Event slug that triggered the action
 		'title',				// WP_CRM_Requirement title
-		'entity',				// buyer || seller
-		'type',					// person, company || inventory, resource, task
-		'key',					// entity key that is observed
-		'filter',				// entity filter applied on the entity key
-		'stamp'					// timestamp
+		'key',					// the property of the object passed inside the WP_CRM_Event's context
+		'filter',				// an array of filters to be applied on the object(key) value
+		'stamp'					// creation timestamp
 		);
 	/**
 	 * The attached database meta table structure. No ID column is added by default.
@@ -75,14 +72,38 @@ class WP_CRM_Requirement extends WP_CRM_Model {
 	 */
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
-		'`pid` int(11) NOT NULL DEFAULT 0',
+		'`oid` int(11) NOT NULL DEFAULT 0',
+		'`class` varchar(64) NOT NULL DEFAULT \'\'',
+		'`event` varchar(32) NOT NULL DEFAULT \'\'',
 		'`title` text NOT NULL',
-		'`entity` int(1) NOT NULL DEFAULT 0',
-		'`type` varchar(64) NOT NULL DEFAULT \'\'',
 		'`key` varchar(64) NOT NULL DEFAULT \'\'',
 		'`filter` text NOT NULL',
 		'`stamp` int(11) NOT NULL DEFAULT 0'
 		);
 
+	private $object;
+
+	public function is ($key = null, $opts = null) {
+		switch ((string) $key) {
+			case 'met':
+				$this->object = is_object ($this->object) ? $this->object : (is_object ($opts) ? $opts : new $this->data['class'] ((int) $this->data['oid']));
+
+				if (!is_object ($this->object))
+					return TRUE;
+				if (($this->object->get () != $this->data['oid']) || (get_class ($this->object) != $this->data['class']))
+					return TRUE;
+
+				$filters = self::_unserialize ($this->data['filter']);
+				if (is_string ($filters)) $filters = array ($filters);
+
+				$errors = FALSE;
+				if (!empty ($filters))
+					foreach ($filters as $filter)
+						$errors |= WP_CRM_Form::filter ($this->data['key'], $this->object->get ($this->data['key']), null, $filter);
+
+				return $errors ? FALSE : TRUE;
+				break;
+			}
+		}
 	}
 ?>

@@ -1,7 +1,7 @@
 <?php
 define ('WP_USE_THEMES', false);
 include (dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/wp-blog-header.php');
-include (dirname(__FILE__) . '/common.php');
+#include (dirname(__FILE__) . '/common.php');
 
 global
 	$wp_crm_buyer,
@@ -12,6 +12,7 @@ $wp_crm_state = new WP_CRM_State ();
 $wp_crm_state->set ('state', WP_CRM_State::AddObject);
 
 $event = substr (basename(__FILE__), 0, strrpos (basename (__FILE__), '.'));
+$event = 'buy';
 
 $data = $_GET['object'] ? $_GET['object'] : $_POST['object'];
 
@@ -22,49 +23,25 @@ if (!class_exists ($class)) die ('Err.');
 if (!is_numeric($id)) die ('Err.');
 
 $object = new $class ((int) $id);
-	
-if ($_SERVER['REMOTE_ADDR'] == '86.127.44.197') {
-////////////////////////////////////////////////////////////////////////////////////////
+
 $requirements = new WP_CRM_List ('WP_CRM_Requirement', array (
-					sprintf ('event=\'%s\'', $event),
+					sprintf ('event=%s', $event),
 					sprintf ('oid=%d', $object->get()),
-					sprintf ('class=\'%s\'', get_class ($object))
+					sprintf ('class=%s', get_class ($object))
 					));
 
-$structure = new WP_CRM_Form_Structure ($requirements, $object);
-if (!$structure->is ('empty')) {
-	$form = new WP_CRM_Form ($structure);
-	$form->set ('state', $wp_crm_state->get());
+print_r ($requirements);
 
-	if ($_POST['object']) {
-		$form->action ();
-		}
-
-	echo 'Campurile de mai jos sunt obligatorii pentru inscrierea la curs!'; 
-	$form->render (TRUE);
-	}
-else {
-	try {
-		$object->buy ();
-		echo 'OK';
-		}
-	catch (WP_CRM_Exception $wp_crm_exception) {
-		echo 'EROARE: Te-ai inscris deja la acest curs!';
-		}
-	}
-////////////////////////////////////////////////////////////////////////////////////////
-
-} else {
-////////////////////////////////////////////////////////////////////////////////////////
+/*
 try {
 	$object->buy ();
-	echo 'FELICITARI! Te-ai inscris la curs!';
+	echo 'OK';
 	}
 catch (WP_CRM_Exception $wp_crm_exception) {
 	echo 'EROARE: Te-ai inscris deja la acest curs!';
 	}
-////////////////////////////////////////////////////////////////////////////////////////
-}
+*/
+
 /*
 $structure = new WP_CRM_Form_Structure ($object);
 if (!empty ($append)) 

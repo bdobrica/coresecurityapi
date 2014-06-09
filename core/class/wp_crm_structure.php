@@ -67,7 +67,7 @@ abstract class WP_CRM_Structure {
 	 */
 	private $OID;
 	/**
-	 * The company hierarchy.
+	 * The hierarchy.
 	 * @var array
 	 */
 	private $tree;

@@ -2,11 +2,11 @@
 class WP_CRM_Form_Structure {
 	private $fields;
 
-	public function __construct ($data = null) {
+	public function __construct ($data = null, $context = null) {
 		global $wp_crm_state;
 
 		if (is_object($data) && property_exists($data, 'F'))
-			$this->fields = self::_process ($data);
+			$this->fields = self::_process ($data, $context);
 		else
 		switch ((string) $data) {
 			case WP_CRM_State::NewsRegistered:
@@ -472,6 +472,15 @@ class WP_CRM_Form_Structure {
 					'options' => $object->get ($opts)
 					);
 				break;
+			case 'multi':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'select',
+					'default' => $object->get ($key),
+					'options' => $object->get ($opts),
+					'multiple' => TRUE
+					);
+				break;
 			case 'date':
 				$data = $object->get ($key);
 				$data = is_numeric($data) ? $data : strtotime($data);
@@ -592,6 +601,13 @@ class WP_CRM_Form_Structure {
 					'default' => $object->get ($key)
 					);
 				break;
+			case 'switch':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'switch',
+					'default' => $object->get ($key)
+					);
+				break;
 			default:
 				$fields[$key] = array (
 					'label' => $label,
@@ -606,7 +622,56 @@ class WP_CRM_Form_Structure {
 		if (!empty ($cond)) $fields[$key]['condition'] = $cond;
 		}
 
-	private static function _process ($object) {
+	private static function _process ($object, $context = null) {
+		if (get_class ($object) == 'WP_CRM_List') {
+			switch ($object->get ('class')) {
+				case 'WP_CRM_Requirement':
+					$fields = array (
+						array (
+							'class' => 'requirements',
+							'fields' => array (
+								)
+							),
+						array (
+							'class' => 'buttons',
+							'fields' => array (
+								'close' => array (
+									'type' => 'close',
+									'label' => 'Anuleaza &raquo;',
+									),
+								'next' => array (
+									'type' => 'submit',
+									'label' => 'Actualizeaza &raquo;',
+									'method' => 'post',
+									'action' => '',
+									'callback' => 'WP_CRM::save',
+									'next' => WP_CRM_State::SaveObject
+									)
+								)
+							)
+						);
+
+					if (is_object ($context)) {
+						$fields[0]['fields']['object'] = array (
+							'type' => 'hidden',
+							'default' => get_class ($context) . '-' . $context->get ()
+							);
+						}
+
+					if ($object->is ('empty')) return $fields;
+					foreach ($object->get() as $requirement) {
+						if (is_object ($context) && !$requirement->is ('met', $context)) {
+							$type = $context->field ($requirement->get ('key'));
+							self::_field ($fields[0]['fields'], $context, $type['info'], $type['label']);
+							}
+						}
+
+					if (count ($fields[0]['fields']) < 2) $fields = array ();
+					break;
+				}
+			return $fields;
+			}
+
 		$fields = array (
 			array (
 				'class' => strtolower(get_class($object)),
@@ -661,6 +726,14 @@ class WP_CRM_Form_Structure {
 
 	public function get ($key = null, $options = null) {
 		return $this->fields;
+		}
+
+	public function is ($key = null, $opts = null) {
+		switch ((string) $key) {
+			case 'empty':
+				return empty ($this->fields) ? TRUE : FALSE;
+				break;
+			}
 		}
 
 	public function __toString () {

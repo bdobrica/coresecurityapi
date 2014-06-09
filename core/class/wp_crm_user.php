@@ -21,17 +21,40 @@ class WP_CRM_User extends WP_CRM_Model {
 		);
 	public static $F = array (
 		'new' => array (
+			'user_login' => 'Nume utilizator',
+			'user_nicename' => 'Nume',
+			'user_pass' => 'Parola',
+			'user_email' => 'Adresa de email'
 			),
 		'view' => array (
+			'user_login' => 'Nume utilizator',
+			'user_nicename' => 'Nume',
+			'user_email' => 'Adresa de email'
 			),
 		'edit' => array (
+			'user_login' => 'Nume utilizator',
+			'user_nicename' => 'Nume',
+			'user_pass' => 'Parola',
+			'user_email' => 'Adresa de email'
 			)
 		);
 	protected static $Q = null;
 	private $SRP = '$';
 
+	private $person;
+
 	public function __construct ($data = null) {
-		global $wpdb;
+		global
+			$current_user,
+			$wpdb;
+
+		if (is_null ($data)) {
+			$current_user = wp_get_current_user ();
+			$data = (int) $current_user->ID;
+			if (!$data)
+				throw new WP_CRM_Exception (WP_CRM_Exception::Invalid_ID);
+			}
+
 		if (is_string ($data) && !is_numeric ($data)) {
 			$sql = $wpdb->prepare ('select * from `' . $wpdb->prefix . self::$T . '` where user_login=%s;', array ($data));
 			$row = $wpdb->get_row ($sql, ARRAY_A);
@@ -43,6 +66,38 @@ class WP_CRM_User extends WP_CRM_Model {
 				throw new WP_CRM_Exception (WP_CRM_Exception::Invalid_ID);
 			}
 		parent::__construct ($data);
+
+		try {
+			$this->person = new WP_CRM_Person ($this->data['user_email']);
+			}
+		catch (WP_CRM_Exception $wp_crm_exception) {
+			$this->person = null;
+			}
+		}
+
+	public function get ($key = null, $opts = null) {
+		global $wpdb;
+
+		if (is_string ($key)) {
+			switch ($key) {
+				case 'products':
+					$product_ids = '0';
+					if (is_object ($this->person)) {
+						$sql = $wpdb->prepare ('select group_concat(pid) from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where bid=%d;', $this->person->get());
+						$product_ids = $wpdb->get_var ($sql);
+						}
+					return new WP_CRM_List ('WP_CRM_Product', array ('id in (' . $product_ids . ')'));
+					break;
+				case 'first_name':
+				case 'last_name':
+					if (is_object ($this->person)) {
+						return $this->person->get ($key);
+						}
+					break;
+				}
+			}
+
+		return parent::get ($key, $opts);
 		}
 
 	public function save () {

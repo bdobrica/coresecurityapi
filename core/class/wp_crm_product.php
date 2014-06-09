@@ -101,7 +101,9 @@ class WP_CRM_Product extends WP_CRM_Model {
 		}
 
 	public function is ($key = null, $opts = null) {
-		global $wpdb;
+		global
+			$wp_crm_buyer,
+			$wpdb;
 		/*
 		DIFF: $key == 'trash' no longer needed
 		*/
@@ -110,40 +112,22 @@ class WP_CRM_Product extends WP_CRM_Model {
 				return $this->data['state'] ? TRUE : FALSE;
 				break;
 			case 'owned':
-				if (is_null ($opts)) {
-					$current_user = wp_get_current_user ();
-					try {
-						$buyer = new WP_CRM_Person ($current_user->user_email);
-						}
-					catch (WP_CRM_Exception $wp_crm_exception) {
-						throw new WP_CRM_Exception (WP_CRM_Exception::Missing_Person);
-						}
-					}
-				if (is_object ($opts))
-					$buyer = $opts;
+				$buyer = is_null ($opts) ? (is_object ($wp_crm_buyer) ? $wp_crm_buyer : null) : $opts;
 
-				$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where pid=%d and bid=%d;', array (
+				$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where pid=%d and bid=%d and buyer=%s;', array (
 						$this->ID,
-						$buyer->get ()
+						$buyer->get (),
+						$buyer->get ('type')
 						));
 				if ($wpdb->get_var ($sql)) return TRUE;
 				break;
 			case 'series owned':
-				if (is_null ($opts)) {
-					$current_user = wp_get_current_user ();
-					try {
-						$buyer = new WP_CRM_Person ($current_user->user_email);
-						}
-					catch (WP_CRM_Exception $wp_crm_exception) {
-						throw new WP_CRM_Exception (WP_CRM_Exception::Missing_Person);
-						}
-					}
-				if (is_object ($opts))
-					$buyer = $opts;
+				$buyer = is_null ($opts) ? (is_object ($wp_crm_buyer) ? $wp_crm_buyer : null) : $opts;
 
-				$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where code like %s and bid=%d;', array (
+				$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where code like %s and bid=%d and buyer=%s;', array (
 						$this->get ('series') . '%',
-						$buyer->get ()
+						$buyer->get (),
+						$buyer->get ('type')
 						));
 				if ($wpdb->get_var ($sql)) return TRUE;
 				break;
@@ -153,25 +137,19 @@ class WP_CRM_Product extends WP_CRM_Model {
 
 	public function buy ($buyer = null) {
 		global
-			$current_user,
+			$wp_crm_buyer,
 			$wpdb;
 
-		if (is_null ($buyer)) {
-			$current_user = wp_get_current_user ();
-			try {
-				$buyer = new WP_CRM_Person ($current_user->user_email);
-				}
-			catch (WP_CRM_Exception $wp_crm_exception) {
-				throw new WP_CRM_Exception (0);
-				}
-			}
+		if (is_object ($wp_crm_buyer) && !is_object ($buyer))
+			$buyer = $wp_crm_buyer;
 
 		if (is_object ($buyer)) {
 			if ($this->is ('series owned', $buyer)) throw new WP_CRM_Exception (0);
 
-			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . WP_CRM_Basket::$T . '` (bid, pid, code, stamp) values (%d, %d, %s, %ld);', array (
-					$buyer->get(),
+			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . WP_CRM_Basket::$T . '` (bid, pid, buyer, code, stamp) values (%d, %d, %s, %s, %ld);', array (
+					$buyer->get (),
 					$this->ID,
+					$buyer->get ('type'),
 					$this->get ('code'),
 					time ()
 					));
@@ -181,8 +159,18 @@ class WP_CRM_Product extends WP_CRM_Model {
 		}
 
 	public function set ($key = null, $value = null) {
-		global $wpdb;
-		if (is_string ($key))
+		global
+			$wp_crm_buyer,
+			$wpdb;
+
+		if (is_string ($key)) {
+			if (strpos ($key, 'buyer_') === 0) {
+				$key = substr ($key, 6);
+				if (is_object ($wp_crm_buyer))
+					return $wp_crm_buyer->set ($key, $value);
+				}
+			else {
+				}
 			$key = str_replace (array (
 					'location',
 					'user',
@@ -194,19 +182,67 @@ class WP_CRM_Product extends WP_CRM_Model {
 					'tid',
 					), $key);
 
-		if (is_object ($value)) $value = $value->get ();
-		if (is_string ($key) && ($key == 'code')) {
-			$key = array (
-				'series' => parent::parse ('series', $value),
-				'number' => parent::parse ('number', $value)
-				);
-			$value = null;
+			if ($key == 'code') {
+				$key = array (
+					'series' => parent::parse ('series', $value),
+					'number' => parent::parse ('number', $value)
+					);
+				$value = null;
+				}
 			}
+
+		if (is_array ($key)) {
+			$keys = array_keys ($key);
+			if (in_array ('code', $keys)) {
+				$key['series'] = parent::parse ('series', $key['code']);
+				$key['number'] = parent::parse ('number', $key['code']);
+				$key['code'] = null;
+				}
+			$buyer = array ();
+			if (!empty ($keys))
+				foreach ($keys as $local_key)
+					if (strpos ($local_key, 'buyer_') === 0)
+						$buyer[$local_key] = $key[$local_key];
+
+			if (!empty ($buyer) && $wp_crm_buyer)
+				$wp_crm_buyer->set ($buyer);
+
+			return parent::set ($key);
+			}
+
+		if (is_object ($value)) $value = $value->get ();
 		return parent::set ($key, $value);
 		}
 
+	public function field ($key, $context = 'edit') {
+		global $wp_crm_buyer;
+
+		if (strpos ($key, 'buyer_') === 0) {
+			$key = substr ($key, 6);
+			if (!is_object ($wp_crm_buyer))
+				return array ('info' => '', 'label' => '');
+			$field = $wp_crm_buyer->field ($key, $context);
+			$field['info'] = 'buyer_' . $field['info'];
+			return $field;
+			}
+		return parent::field ($key, $context);
+		}
+
 	public function get ($key = null, $opts = null) {
-		global $wpdb;
+		global
+			$wp_crm_buyer,
+			$wpdb;
+
+		if (is_string ($key)) {
+			if (strpos ($key, 'buyer_') === 0) {
+				$key = substr ($key, 6);
+				if (is_object ($wp_crm_buyer)) {
+					return $wp_crm_buyer->get ($key);
+					}
+				}
+			else {
+				}
+			}
 
 		if (is_object ($opts) && ($opts instanceof WP_CRM_Invoice))
 			switch ((string) $key) {

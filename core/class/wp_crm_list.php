@@ -1,6 +1,9 @@
 <?php
 class WP_CRM_List {
 	protected $list;
+
+	public $F = array (); // for compatibility issues
+
 	private $filter;
 	/*
 	TODO: use grouping

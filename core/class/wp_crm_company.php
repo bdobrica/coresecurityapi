@@ -11,14 +11,20 @@ class WP_CRM_Company extends WP_CRM_Model {
 	const Logo		= 'cache/logos';
 
 	private static $TYPES = array (
+		'srl'		=> array (
+					'title' => 'Societate cu Raspundere Limitata',
+					'types' => array (
+						'srl-ue' => 'Microintreprindere',
+						'srl-se' => 'Intreprindere mica',
+						'srl-me' => 'Intreprindere mijlocie',
+						'srl-le' => 'Intreprindere mare'
+						)
+					),
 		'uat'		=> array (
 					'title' => 'Unitate Administrativ Teritoriala',
 					),
 		'ong'		=> array (
 					'title' => 'Organizatie Non-Guvernamentala'
-					),
-		'srl'		=> array (
-					'title' => 'Societate cu Raspundere Limitata',
 					),
 		'pfa'		=> array (
 					'title' => 'Persoana Fizica Autorizata'
@@ -54,61 +60,55 @@ class WP_CRM_Company extends WP_CRM_Model {
 		'name',
 		'description',
 		'url',
-		'logo',
 		'email',
 		'rc',
 		'uin',
-		'capital',
 		'address',
 		'county',
 		'phone',
 		'fax',
 		'bank',
 		'account',
-		'treasury',
-		'treasury_account',
-		'default_vat',
-		'invoice_series',
-		'invoice_number',
-		'director',
-		'templates',
-		'register',
-		'online',
-		'mobilpay',
-		'payment',
 		'flags'
 		);
+
+	protected static $M_K = array (
+		'logo',							// the logo of this company
+		'director',						// who is the manager of this company
+		'capital',						// the amount of social capital
+		'default_vat',						// what is the default vat for invoices
+		'invoice_series',					// the invoices' series
+		'invoice_number',					// the invoices' current number
+		'templates',						// buying wizzard templates
+		'treasury',						// if it has a treasury account, at which treasury
+		'treasury_account',					// if it has a treasury account, which is it
+		'register',
+		'online',						// if it has e-payment methods enabled. 1 = credit europe / 2 = mobilpay 
+		'mobilpay',						// the mobilpay key for the e-payment
+		'payment',						//
+		'size',							// the size of the organization
+		'rural',						// if the organization is in the rural area, this should be 1
+		'unfavorable'						// if the organization is from an unfavorable area
+		);
+
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
 		'`oid` int(11) NOT NULL DEFAULT 0',			/* = office id (link to WP_CRM_Office) */
 		'`uid` int(11) NOT NULL DEFAULT 0',			/* = user id (link to WP_CRM_User) */
-		'`type` enum(\'uat\', \'ong\', \'srl\', \'pfa\', \'sa\') NOT NULL DEFAULT \'srl\'',
+		'`type` varchar(6) NOT NULL DEFAULT \'srl\'',
 		'`interests` text NOT NULL',
 		'`name` text NOT NULL',
 		'`description` text NOT NULL',
-		'`logo` text NOT NULL',
 		'`url` text NOT NULL',
 		'`email` varchar(128) NOT NULL DEFAULT \'\'',
 		'`rc` varchar(32) NOT NULL DEFAULT \'\'',
 		'`uin` varchar(13) NOT NULL DEFAULT \'\'',
-		'`capital` float(9,2) NOT NULL DEFAULT 200.00',
 		'`address` text NOT NULL',
 		'`county` varchar(32) NOT NULL DEFAULT \'\'',
 		'`phone` varchar(10) NOT NULL DEFAULT \'\'',
 		'`fax` varchar(10) NOT NULL DEFAULT 0',
 		'`bank` text NOT NULL',
 		'`account` text NOT NULL',
-		'`treasury` text NOT NULL',
-		'`treasury_account` text NOT NULL',
-		'`default_vat` float(4,2) NOT NULL DEFAULT 24.00',
-		'`invoice_series` varchar(4) NOT NULL DEFAULT \'\'',
-		'`invoice_number` int(11) NOT NULL DEFAULT 0',
-		'`director` int(11) NOT NULL DEFAULT 0',
-		'`templates` text NOT NULL',
-		'`register` int(11) NOT NULL DEFAULT 0',
-		'`online` int(11) NOT NULL DEFAULT 0 COMMENT \'|1 = crediteurope; |2 = mobilpay\'',
-		'`mobilpay` varchar(25) NOT NULL DEFAULT \'\'',
-		'`payment` int(11) NOT NULL DEFAULT 0',
 		'`flags` int(1) NOT NULL DEFAULT 0',
 		'FULLTEXT KEY `name` (`name`,`email`)'
 		);
@@ -117,14 +117,14 @@ class WP_CRM_Company extends WP_CRM_Model {
 			'name' => 'Companie',
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
-			'address' => 'Adresa',
+			'address' => 'Adresa (Strada, Numar, Oras)',
 			'type:array;types' => 'Tip',
-			'csize?type=srl' => 'Dimensiune',
-			'urban?type=uat' => 'Urban sau rural?',
-			'developed?type=uat' => 'Zona defavorizata?',
+			'interests:multi;interests' => 'Domenii de interes',
+			'size?type=uat' => 'Populatie',
+			'rural:switch?type=uat' => 'UAT in mediul rural?',
+			'developed:switch?type=uat' => 'UAT in zona defavorizata?',
 			'population?type=uat' => 'Populatie',
-			'contact:contact' => 'Contact',
-			'logo:file' => 'Logo'
+			'contact:contact' => 'Persoane de Contact',
 			),
 		'view' => array (
 			'name' => 'Companie',
@@ -132,8 +132,6 @@ class WP_CRM_Company extends WP_CRM_Model {
 			'rc' => 'Reg. Com.',
 			'address' => 'Adresa',
 			'type:array;types' => 'Tip',
-			'contact:contact' => 'Contact',
-			'logo:file' => 'Logo'
 //			'account' => 'Cont',
 //			'bank' => 'Banca'
 			),
@@ -207,9 +205,18 @@ class WP_CRM_Company extends WP_CRM_Model {
 			case 'types':
 				$out = array ();
 				foreach (self::$TYPES as $key => $values) {
-					$out[$key] = $values['title'];
+					if (isset ($values['types']) && is_array ($values['types']))
+						$out[$key] = array (
+							'title' => $values['title'],
+							'items' => $values['types']
+							);
+					else
+						$out[$key] = $values['title'];
 					}
 				return $out;
+				break;
+			case 'interests':
+				return self::$INTERESTS;
 				break;
 			}
 		

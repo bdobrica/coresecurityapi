@@ -311,7 +311,7 @@ class WP_CRM_View {
 							$out[] = '<li><a class="' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '" href="#">' . $val . '</a></li>' . "\n";
 							$c++;
 							}
-						return '<div class="btn-group"><button class="btn btn-primary btn-xs">Actions</button><button class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button><span class="dropdown-arrow dropdown-arrow-inverse"></span><ul class="dropdown-menu dropdown-inverse pull-right ' . $data['class'] . '-actions-wrap">' . "\n" . implode (' ', $out) . "\n" . '</ul></div>';
+						return '<div class="btn-group"><button class="btn btn-primary btn-xs">Actiuni</button><button class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button><span class="dropdown-arrow dropdown-arrow-inverse"></span><ul class="dropdown-menu dropdown-inverse pull-right ' . $data['class'] . '-actions-wrap">' . "\n" . implode (' ', $out) . "\n" . '</ul></div>';
 						}
 					else {
 						foreach ($data['actions'] as $key => $val) {

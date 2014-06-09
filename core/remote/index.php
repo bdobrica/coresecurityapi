@@ -70,9 +70,9 @@ $wp_crm_log->save ();
 		<title>Bilete de Succes &raquo;</title>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-		<script src="http://www.biletedesucces.ro/wp-content/plugins/wp-crm/remote/api.js?v=0.5"></script>
+		<script src="<?php echo plugins_url ('api.js', __FILE__); ?>?v=0.5"></script>
 
-		<link rel="stylesheet" type="text/css" href="http://www.biletedesucces.ro/wp-content/plugins/wp-crm/remote/api.css?v=0.5" />
+		<link rel="stylesheet" type="text/css" href="<?php echo plugins_url ('api.css', __FILE__); ?>?v=0.5" />
 	</head>
 	<body>
 		<div class="wp-crm-form-body">

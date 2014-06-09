@@ -4,7 +4,7 @@ class WP_CRM_Event extends WP_CRM_Model {
 	protected static $K = array (
 		'eid',			# parent events (can create a chain of events)
 		'event',		# event unique identifier, like "timer", camelcase, firstletter small
-		'context',		# context description: serialized array of object => type pairs
+		'context',		# context description: serialized array of (object => type) pairs
 		'filter',		# limit actions based on this filter, array of statements concatenated with and
 		'flags'
 		);

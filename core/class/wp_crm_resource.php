@@ -8,9 +8,27 @@ class WP_CRM_Resource extends WP_CRM_Model {
 	public static $T = 'resources';
 
 	protected static $K = array (
+		'oid',				// the organization group
+		'cid',				// the id of the company that is keeping track of this resources.
+		'title',			// the name of the resource
+		'description',			// some description of the resource
+		);
+
+	public static $F = array (
+		'new' => array (
+			),
+		'edit' => array (
+			),
+		'view' => array (
+			)
 		);
 	
 	protected static $Q = array (
+		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`oid` int(11) NOT NULL DEFAULT 0',
+		'`cid` int(11) NOT NULL DEFAULT 0',
+		'`title` text NOT NULL',
+		'`description` text NOT NULL',
 		);
 	}
 ?>

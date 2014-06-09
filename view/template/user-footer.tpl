@@ -19,7 +19,7 @@
 	</div><!-- /.modal -->
 	
 	<div class="clearfix"></div>
-	
+
 	<footer>
 		
 		<div class="row">

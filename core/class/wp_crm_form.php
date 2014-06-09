@@ -223,7 +223,7 @@ class WP_CRM_Form {
 					'adm', 'admin', 'administrator',
 					'root',
 					'webmaster'
-					));
+					)) ? TRUE : FALSE;
 				break;
 			}
 		return FALSE;
@@ -358,12 +358,30 @@ class WP_CRM_Form {
 						if (!$field['wrap']) $out .= '<' . self::$ITEMSTAG . '><label class="radio ' . $this->class . '-label"><input type="radio" name="' . $key . '" value="' . $ki . '" data-toggle="radio" ' . ($field['default'] === $k ? ' checked' : '') . ' /> ' . $v . '</label></' . self::$ITEMSTAG . '>';
 					$out .= '</' . self::$GROUPTAG . '>';
 					break;
+				case 'switch':
+					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
+					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
+					$out .= '<label class="switch pull-right">
+<input name="' . $key . '" class="switch-input" type="checkbox"></input>
+<span class="switch-label" data-off="Off" data-on="On"></span>
+<span class="switch-handle"></span>
+</label>';
+					$out .= '<div class="' . $this->class . '-separator"></div>';
+					break;
 				case 'select':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
-					$out .= '<div class="mbl select-wrap"><select name="' . $key . '" class="select-block select-sm ' . $this->class . '-select">';
-					foreach ($field['options'] as $k => $v)
-						$out .= '<option value="'.$k.'"'.($k == $field['default'] ? ' selected' : '').'>'.$v.'</option>';
+					$out .= '<div class="controls"><select name="' . $key . '" class="form-control ' . $this->class . '-select"' . (isset($field['multiple']) ? ' multiple' : '') . '>';
+					foreach ($field['options'] as $k => $v) {
+						if (isset ($v['items']) && is_array ($v['items']) && !empty ($v['items'])) {
+							$out .= '<optgroup label="' . $v['title'] . '">';
+							foreach ($v['items'] as $_k => $_v)
+								$out .= '<option value="' . $_k . '"' . ($_k == $field['default'] ? ' selected' : '' ) . '>' . $_v . '</option>';
+							$out .= '</optgroup>';
+							}
+						else
+							$out .= '<option value="'.$k.'"'.($k == $field['default'] ? ' selected' : '').'>'.$v.'</option>';
+						}
 					$out .= '</select></div>';
 					$out .= '<div class="' . $this->class . '-separator"></div>';
 					break;
@@ -598,16 +616,16 @@ class WP_CRM_Form {
 						$field['default'] = $field['default'][0];
 
 					$out .= '<div class="row">
-					<div class="col-md-2">
-						<span class="' . $this->class . '-file-name">' . (is_object ($field['default']) ? ('<a href="' . $field['default']->url . '" target="_blank" />' . $field['default']->name . ' <i class="fa fa-external-link"></i></a>') : '') . '</span>
-					</div>
-					<div class="col-md-1">
-						<input type="button" name="' . $key . '-select" value="Select" class="' . $this->class . '-file-select btn btn-warning" />
-					</div>
-					<div class="col-md-1">
-						<input type="button" name="' . $key . '-upload" value="Upload" class="' . $this->class . '-file-upload btn btn-success" />
+					<div class="col-md-4">
+						<span class="' . $this->class . '-file-name">' . (is_object ($field['default']) ? ('<a href="' . $field['default']->url . '" target="_blank" />' . $field['default']->name . ' <i class="fa fa-external-link"></i></a>') : 'Apasa butonul Select pentru a alege un fisier, urmat de Upload pentru a-l incarca.') . '</span>
 					</div>
 					<div class="col-md-2">
+						<input type="button" name="' . $key . '-select" value="Select" class="' . $this->class . '-file-select form-control btn btn-warning" />
+					</div>
+					<div class="col-md-2">
+						<input type="button" name="' . $key . '-upload" value="Upload" class="' . $this->class . '-file-upload form-control btn btn-success" />
+					</div>
+					<div class="col-md-4">
 						<div class="' . $this->class . '-file-progress progress slim ui-progressbar progressGreen simpleProgress"><div class="' . $this->class . '-file-bar ui-progressbar-value"></div></div>
 					</div>';
 
