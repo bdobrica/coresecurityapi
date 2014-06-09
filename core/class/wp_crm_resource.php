@@ -10,6 +10,9 @@ class WP_CRM_Resource extends WP_CRM_Model {
 	protected static $K = array (
 		'oid',				// the organization group
 		'cid',				// the id of the company that is keeping track of this resources.
+		'tid',				// the task id that uses this resource. all resources are used in some task.
+						// tasks make up processes which in turn are attached to products
+						// processes may be attached to companies and offices also!
 		'title',			// the name of the resource
 		'description',			// some description of the resource
 		);

@@ -133,8 +133,12 @@ abstract class WP_CRM_Structure {
 		global $wpdb;
 		if (is_array ($key)) {
 			if (!empty ($key)) {
+				$ids = array ();
 				foreach ($key as $_key => $_value) {
 					if ($_key == 0) {
+						/**
+						 * Here the new objects are added inside the structure
+						 */
 						foreach ($_value as $_values) {
 							$inserts = array ();
 							$values = array ();
@@ -147,27 +151,35 @@ abstract class WP_CRM_Structure {
 									$escape[] = '%s';
 									unset ($_values[$slug]);
 									}
-								try {
-									$reference = new $class ($_values);
-									$reference->save ();
-									
-									$inserts[] = 'oid';
-									$values[] = $this->OID;
-									$escape[] = '%d';
-									
-									$inserts[] = 'rid';
-									$values[] = $reference->get ();
-									$escape[] = '%d';
-									}
-								catch (WP_CRM_Exception $wp_crm_exception) {
-									}
+								}
+
+							try {
+								$reference = new $class ($_values);
+								$reference->save ();
 								
+								$inserts[] = 'oid';
+								$values[] = $this->OID;
+								$escape[] = '%d';
+								
+								$inserts[] = 'rid';
+								$values[] = $reference->get ();
+								$escape[] = '%d';
+
 								$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '` (' . implode ($inserts, ',') . ') values (' . implode ($escape, ',') . ');', $values);
 								$wpdb->query ($sql);
+								if ($wpdb->insert_id)
+									$ids[] = $wpdb->insert_id;
+								}
+							catch (WP_CRM_Exception $wp_crm_exception) {
 								}
 							}
 						}
 					else {
+						/**
+						 * Here the old objects are updated inside the structure
+						 */
+						$ids[] = $_key;
+
 						$updates = array ();
 						$values = array ();
 						foreach (static::$K as $slug) {
@@ -179,16 +191,31 @@ abstract class WP_CRM_Structure {
 							}
 						if (!empty ($updates)) {
 							$values[] = $_key;
-							$sql = $wpdb->prepare ('update ' . $wpdb->prefix . static::$T . ' set ' . implode ($updates, ',') . ' where id=%d;', $values);
+							$values[] = $this->OID;
+
+							$sql = $wpdb->prepare ('update ' . $wpdb->prefix . static::$T . ' set ' . implode ($updates, ',') . ' where id=%d and oid=%d;', $values);
 							$wpdb->query ($sql);
 							}
 						
 						$class = $this->list[$_key]['type'];
-						$reference = new $class ($this->list[$_key]['rid']);
-						$reference->set ($_value);
+						if (class_exists ($class)) {
+							$reference = new $class ($this->list[$_key]['rid']);
+							$reference->set ($_value);
+							}
 						}
 					}
+				$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . static::$T . ' where oid=%d;', $this->OID);
+				$old = $wpdb->get_col ($sql);
+				if (!empty ($old)) $del = array_diff ($old, $ids);
+				if (!empty ($del)) {
+					$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . static::$T . ' where id in (' . implode (',', $del) . ') and oid=%d;', $this->OID);
+					$wpdb->query ($sql);
+					}
 				}
+			}
+		else {
+			$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . static::$T . ' where oid=%d;', $this->OID);
+			$wpdb->query ($sql);
 			}
 		}
 

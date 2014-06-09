@@ -15,8 +15,6 @@ list ($class, $id) = $_GET['object'] ? explode ('-', $_GET['object']) : explode 
 if (!class_exists ($class)) die ('Err.');
 if (!is_numeric($id)) die ('Err.');
 
-//print_r ($_POST);
-
 $object = new $class ((int) $id);
 
 $structure = new WP_CRM_Form_Structure ($object);

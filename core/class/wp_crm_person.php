@@ -406,38 +406,13 @@ class WP_CRM_Person extends WP_CRM_Model {
 				}
 			}
 
-		/*
-		HINT: if we have 3 elements for a user, we use the 
-		*/
-		if (get_called_class () == __CLASS__) {
-			$filters = array ();
+		$missing = 0;
+		foreach (self::$U as $key)
+			$missing += $this->data[$key] ? 0 : 1;
 
-			foreach (self::$K as $key)
-				if (isset ($this->data[$key]))
-					$filters[] = "lower(`{$key}`)='" . strtolower($this->data[$key]) . "'";
+		if ($missing == count (self::$U)) throw new WP_CRM_Exception (WP_CRM_Exception::Saving_Failure);
 
-			if (count($filters) > 2) {
-				$sql = $wpdb->prepare ('select id from `' . self::$T . '` where ' . implode (' and ', $filters) . ';', null);
-				$pid = $wpdb->get_var ($sql);
-				if ($pid) {
-					$data = $this->data;
-
-					parent::__construct ((int) $pid);
-
-					/*
-					HINT: we have new information. we should update
-					*/
-					foreach (self::$K as $key)
-						if (!$this->data[$key] && $data[$key]) self::set ($key, $data[$key]);
-					}
-				else
-					parent::save ();
-				}
-			else
-				parent::save ();
-			}
-		else
-			parent::save ();
+		parent::save ();
 		}
 
 	public function __destruct () {

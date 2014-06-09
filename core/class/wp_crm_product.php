@@ -1,35 +1,44 @@
 <?php
+/**
+ * Class describing the WP_CRM_Product object.
+ */
 class WP_CRM_Product extends WP_CRM_Model {
-	const Pad_Number	= 3;
+	const Pad_Number	= 3;				// the number from the SKU is padded to this length
 
 	public static $T = 'products';
 	protected static $K = array (
-		'series',
-		'number',
-		'color',
-		'url',
-		'title',
-		'pid',
-		'stamp',
-		'struct',
-		'hours',
-		'theory',
-		'corno',
-		'ancauth',
-		'ancname',
-		'rnffpa',
-		'ancrep',
-		'competences',
-		'studies',
-		'uid',
-		'rid',
-		'tid',
+		'oid',
 		'cid',
-		'state',
+		'series',					// series & number constructs the SKU
+		'number',
+		'color',					// color to display the SKU
+		'url',						// if the product has a remote description
+		'title',					// the name of the product
+		'pid',						// parent product id (if exists)
+		'stamp',
+		'state',					// the product is active
 		'flags'
 		);
+
+	protected static $M_K = array (				// it actually doesn't matter what meta_keys are passed here. for now.
+		'struct',					// binary field containing the days of the course (lectures only)
+		'hours',					// the number of hours the lecture supposed to take
+		'theory',					// the number of hours the theoretical background was taught
+		'corno',					// COR number
+		'ancauth',					// ANC authorisation number
+		'ancname',					// ANC authorized name
+		'rnffpa',					// RNFFPA code
+		'competences',					// the resulting competences
+		'studies',					// required studies
+		'uid',						// the owner id
+		'rid',						// location id
+		'tid',						// trainer id
+		);
+
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`oid` int(11) NOT NULL DEFAULT 0',		// office id
+		'`cid` int(11) NOT NULL DEFAULT 0',		// company id
 		'`series` varchar(6) NOT NULL DEFAULT \'\'',
  		'`number` int(11) NOT NULL DEFAULT 0',
 		'`color` varchar(6) NOT NULL DEFAULT \'FFFFFF\'',
@@ -37,20 +46,6 @@ class WP_CRM_Product extends WP_CRM_Model {
 		'`title` mediumtext NOT NULL',
 		'`pid` int(11) NOT NULL DEFAULT 0',
 		'`stamp` int(11) NOT NULL DEFAULT 0.00',
-		'`struct` int(11) NOT NULL DEFAULT 0',
-		'`hours` int(11) NOT NULL DEFAULT 0',
-		'`theory` int(11) NOT NULL DEFAULT 0',
-		'`corno` int(11) NOT NULL DEFAULT 0',
-		'`ancauth` text NOT NULL',
-		'`ancname` mediumtext NOT NULL',
-		'`rnffpa` varchar(20) NOT NULL DEFAULT \'\'',
-		'`ancrep` mediumtext NOT NULL',
-		'`competences` mediumtext NOT NULL',
-		'`studies` text NOT NULL',
-		'`uid` int(11) NOT NULL DEFAULT 0',			# user id
-		'`rid` int(11) NOT NULL DEFAULT 0',			# location id
-		'`tid` int(11) NOT NULL DEFAULT 0',			# trainer id
-		'`cid` int(11) NOT NULL DEFAULT 0',			#
 		'`state` int(1) NOT NULL DEFAULT 0',
 		'`flags` int(11) NOT NULL DEFAULT 0',
 		'UNIQUE KEY `series` (`series`,`number`)'

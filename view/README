@@ -1,0 +1,3 @@
+A few details for the filestructure
+./static	= contains pages that are parsed when url's like website.url/page are encountered. if ./static/page.php exists, it will be displayed when accesing website.url/page
+./ajax		= contains AJAX requests from wp-crm-{event} buttons from the interface. if the file ./ajax/{event}.php exists, it will process the request

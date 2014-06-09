@@ -175,6 +175,9 @@ class WP_CRM_Form {
 
 				foreach ($_out as $_row => $_cols) $out[$_rows[$_row]] = $_cols;
 				break;
+			case 'switch':
+				$out = $val == 'on' ? 1 : 0;
+				break;
 			case 'contact':
 				$out = array ();
 				foreach ($_POST as $_key => $_val) {
@@ -362,7 +365,7 @@ class WP_CRM_Form {
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
 					$out .= '<label class="switch pull-right">
-<input name="' . $key . '" class="switch-input" type="checkbox"></input>
+<input name="' . $key . '" class="switch-input" type="checkbox"' . ($field['default'] ? ' checked' : '') . '></input>
 <span class="switch-label" data-off="Off" data-on="On"></span>
 <span class="switch-handle"></span>
 </label>';
@@ -371,16 +374,18 @@ class WP_CRM_Form {
 				case 'select':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
-					$out .= '<div class="controls"><select name="' . $key . '" class="form-control ' . $this->class . '-select"' . (isset($field['multiple']) ? ' multiple' : '') . '>';
+					if (!is_array($field['default'])) $field['default'] = array ($field['default']);
+
+					$out .= '<div class="controls"><select name="' . $key . (isset($field['multiple']) ? '[]' : '') . '" class="form-control ' . $this->class . '-select"' . (isset($field['multiple']) ? ' multiple' : '') . '>';
 					foreach ($field['options'] as $k => $v) {
 						if (isset ($v['items']) && is_array ($v['items']) && !empty ($v['items'])) {
 							$out .= '<optgroup label="' . $v['title'] . '">';
 							foreach ($v['items'] as $_k => $_v)
-								$out .= '<option value="' . $_k . '"' . ($_k == $field['default'] ? ' selected' : '' ) . '>' . $_v . '</option>';
+								$out .= '<option value="' . $_k . '"' . (in_array ($_k, $field['default']) ? ' selected' : '' ) . '>' . $_v . '</option>';
 							$out .= '</optgroup>';
 							}
 						else
-							$out .= '<option value="'.$k.'"'.($k == $field['default'] ? ' selected' : '').'>'.$v.'</option>';
+							$out .= '<option value="' . $k . '"' . (in_array ($k, $field['default']) ? ' selected' : '' ) . '>' . $v . '</option>';
 						}
 					$out .= '</select></div>';
 					$out .= '<div class="' . $this->class . '-separator"></div>';
@@ -650,11 +655,12 @@ class WP_CRM_Form {
 						);
 
 
+					$first = TRUE;
 					foreach ($field['default'] as $cid => $cdata) {
 						if ($cid == 0) continue;
-						$tabs[] = '<li><a href="#contact-' . $cid . '">' . $cdata['title'] . '</a></li>';
+						$tabs[] = '<li' . ($first ? ' class="active"' : '') . '><a href="#contact-' . $cid . '">' . (empty ($cdata['title']) ? '<i class="fa fa-user"></i>' : $cdata['title']) . '</a></li>';
 						
-						$pane = '<div class="tab-pane" id="contact-' . $cid . '">';
+						$pane = '<div class="tab-pane' . ($first ? ' active' : '') . '" id="contact-' . $cid . '">';
 						foreach ($field['default'][0] as $skey => $label) {
 							$pane .= '<label>' . $label . '</label>
 	<input class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" type="text" value="' . $cdata[$skey] . '" name="' . $key . '-' . $skey . '-' . $cid . '" />';
@@ -664,10 +670,11 @@ class WP_CRM_Form {
 		<div class="' . $this->class . '-separator"></div>
 	</div>';
 						$panes[] = $pane;
+						$first = FALSE;
 						}
 
-					$tab = '<li class="active"><a href="#contact-new"><i class="fa fa-plus"></i></a></li>';
-					$pane = '<div class="active tab-pane" id="contact-new">';
+					$tab = '<li' . ($first ? ' class="active"' : '') . '><a href="#contact-new"><i class="fa fa-plus"></i></a></li>';
+					$pane = '<div class="tab-pane' . ($first ? ' active' : '') . '" id="contact-new">';
 					foreach ($field['default'][0] as $skey => $label) {
 						$pane .= '<label>' . $label . '</label>
 <input class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" type="text" value="" name="' . $key . '-' . $skey . '" />';

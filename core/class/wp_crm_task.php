@@ -2,8 +2,12 @@
 class WP_CRM_Task extends WP_CRM_Model {
 	public static $T = 'tasks';
 	protected static $K = array (
-		'uid',
-		'rid',
+		'oid',					// office id
+		'cid',					// company id
+		'pid',					// process id
+		'tid',					// previous task id; if 0, this is the first task
+		'uid',					// the user that generated this task
+		'rid',					// responsible id
 		'title',
 		'description',
 		'importance',
@@ -38,6 +42,10 @@ class WP_CRM_Task extends WP_CRM_Model {
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`oid` int(11) NOT NULL DEFAULT 0',
+		'`cid` int(11) NOT NULL DEFAULT 0',
+		'`pid` int(11) NOT NULL DEFAULT 0',
+		'`tid` int(11) NOT NULL DEFAULT 0',
 		'`uid` int(11) NOT NULL DEFAULT 0',
 		'`rid` int(11) NOT NULL DEFAULT 0',
 		'`title` text NOT NULL',

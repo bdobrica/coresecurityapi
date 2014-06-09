@@ -123,6 +123,7 @@ abstract class WP_CRM_Model {
 		}
 
 	public static function _unserialize ($data) {
+		if (!is_string ($data)) return $data;
 		if (preg_match ('/^a:\d+:{.*?}$/', $data)) {
 			$out = unserialize ($data);
 			return is_array ($out) ? $out : $data;

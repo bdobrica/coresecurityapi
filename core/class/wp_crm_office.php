@@ -6,7 +6,7 @@
  */
 class WP_CRM_Office extends WP_CRM_Model {
 	public static $T = 'offices';
-	public static $K = array (
+	protected static $K = array (
 		'name',
 		'description',
 		'url',

@@ -51,6 +51,56 @@ class WP_CRM_Company extends WP_CRM_Model {
 		'Turism',
 		);
 
+	public static $COUNTIES = array (
+		'Alba',
+		'Arad',
+		'Arges',
+		'Bacau',
+		'Bihor',
+		'Bistrita Nasaud',
+		'Botosani',
+		'Braila',
+		'Brasov',
+		'Buzau',
+		'Calarasi',
+		'Caras Severin',
+		'Cluj',
+		'Constanta',
+		'Covasna',
+		'Dambovita',
+		'Dolj',
+		'Galati',
+		'Giurgiu',
+		'Gorj',
+		'Harghita',
+		'Hunedoara',
+		'Ialomita',
+		'Iasi',
+		'Ilfov',
+		'Maramures',
+		'Mehedinti',
+		'Mures',
+		'Neamt',
+		'Olt',
+		'Prahova',
+		'Salaj',
+		'Satu Mare',
+		'Sector 1 - Bucuresti',
+		'Sector 2 - Bucuresti',
+		'Sector 3 - Bucuresti',
+		'Sector 4 - Bucuresti',
+		'Sector 5 - Bucuresti',
+		'Sector 6 - Bucuresti',
+		'Sibiu',
+		'Suceava',
+		'Teleorman',
+		'Timis',
+		'Tulcea',
+		'Valcea',
+		'Vaslui',
+		'Vrancea'
+		);
+
 	public static $T = 'companies';
 	protected static $K = array (
 		'oid',
@@ -118,12 +168,12 @@ class WP_CRM_Company extends WP_CRM_Model {
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
 			'address' => 'Adresa (Strada, Numar, Oras)',
+			'county:array;counties' => 'Judet',
 			'type:array;types' => 'Tip',
-			'interests:multi;interests' => 'Domenii de interes',
+			'interests:multi;interests_list' => 'Domenii de interes',
 			'size?type=uat' => 'Populatie',
 			'rural:switch?type=uat' => 'UAT in mediul rural?',
 			'developed:switch?type=uat' => 'UAT in zona defavorizata?',
-			'population?type=uat' => 'Populatie',
 			'contact:contact' => 'Persoane de Contact',
 			),
 		'view' => array (
@@ -139,6 +189,7 @@ class WP_CRM_Company extends WP_CRM_Model {
 
 	private $flags;
 	private $employees;
+	private $structure;
 
 	public function __construct ($data = null) {
 		parent::__construct ($data);
@@ -174,9 +225,21 @@ class WP_CRM_Company extends WP_CRM_Model {
 			foreach ($key as $_key => $_value) {
 				switch ((string) $_key) {
 					case 'contact':
-						$wp_crm_structure = new WP_CRM_Company_Structure ($this->ID);
-						$wp_crm_structure->set ($_value);
+						if ($this->ID) {
+							if ($this->structure instanceof WP_CRM_Company_Structure)
+								$this->structure->set ($_value);
+							else {
+								$this->structure = new WP_CRM_Company_Structure ($this->ID);
+								$this->structure->set ($_value);
+								}
+							}
+						else
+							$this->structure = $_value;
+
 						unset ($key['contact']);
+						break;
+					case 'interests':
+						$key['interests'] = serialize(self::_unserialize ($_value));
 						break;
 					}
 				}
@@ -215,8 +278,14 @@ class WP_CRM_Company extends WP_CRM_Model {
 					}
 				return $out;
 				break;
-			case 'interests':
+			case 'interests_list':
 				return self::$INTERESTS;
+				break;
+			case 'counties':
+				return self::$COUNTIES;
+				break;
+			case 'interests':
+				return self::_unserialize ($this->data['interests']);
 				break;
 			}
 		
@@ -273,6 +342,16 @@ class WP_CRM_Company extends WP_CRM_Model {
 				$mask = (int) $this->data['payment'];
 				return ($opts & $mask) == $opts ? TRUE : FALSE;
 				break;
+			}
+		}
+
+	public function save () {
+		parent::save ();
+
+		if (!($this->structure instanceof WP_CRM_Company_Structure) && $this->ID) {
+			$structure = $this->structure;
+			$this->structure = new WP_CRM_Company_Structure ($this->ID);
+			$this->structure->set ($structure);
 			}
 		}
 	};

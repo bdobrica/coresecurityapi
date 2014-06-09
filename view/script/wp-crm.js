@@ -534,7 +534,7 @@ var $wpcrmui = new function () {
 		jQuery('.wp-crm-form-cond', w).each(function(n,i){
 			var c = jQuery(i).attr('rel').split('=');
 			var d = c[1].split(',');
-			jQuery(i).hide();
+			if (d.indexOf(jQuery('[name="' + c[0] + '"]', jQuery(i).parent()).val()) < 0) jQuery(i).hide();
 			jQuery('[name="' + c[0] + '"]', jQuery(i).parent()).on('change', function(e){
 				if (d.indexOf(jQuery(e.target).val()) >= 0) jQuery(i).show(); else jQuery(i).hide();
 				});
