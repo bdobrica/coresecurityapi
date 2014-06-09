@@ -23,8 +23,6 @@ if (!is_numeric($id)) die ('Err.');
 
 $object = new $class ((int) $id);
 	
-if ($_SERVER['REMOTE_ADDR'] == '86.127.44.197') {
-////////////////////////////////////////////////////////////////////////////////////////
 $requirements = new WP_CRM_List ('WP_CRM_Requirement', array (
 					sprintf ('event=\'%s\'', $event),
 					sprintf ('oid=%d', $object->get()),
@@ -33,6 +31,11 @@ $requirements = new WP_CRM_List ('WP_CRM_Requirement', array (
 
 $structure = new WP_CRM_Form_Structure ($requirements, $object);
 if (!$structure->is ('empty')) {
+?>
+	<div class="alert alert-danger">
+		Pentru a te putea inscrie la acest curs va trebui sa completezi corespunzator campurile de mai jos.
+	</div>
+<?php
 	$form = new WP_CRM_Form ($structure);
 	$form->set ('state', $wp_crm_state->get());
 
@@ -52,42 +55,4 @@ else {
 		echo 'EROARE: Te-ai inscris deja la acest curs!';
 		}
 	}
-////////////////////////////////////////////////////////////////////////////////////////
-
-} else {
-////////////////////////////////////////////////////////////////////////////////////////
-try {
-	$object->buy ();
-	echo 'FELICITARI! Te-ai inscris la curs!';
-	}
-catch (WP_CRM_Exception $wp_crm_exception) {
-	echo 'EROARE: Te-ai inscris deja la acest curs!';
-	}
-////////////////////////////////////////////////////////////////////////////////////////
-}
-/*
-$structure = new WP_CRM_Form_Structure ($object);
-if (!empty ($append)) 
-	$structure->append ($append);
-
-$form = new WP_CRM_Form ($structure);
-$form->set ('state', $wp_crm_state->get());
-
-if ($_POST['object']) {
-	$form->action ();
-	}
-
-$form->render (TRUE);
-*/
-
-/**
- * If the user has companies attached to the account, should allow choosing between them.
- */
-
-/**
- * The product has some requirements. If they are not met, they should be filled before
- * allowing the user to buy it.
- */
-
-
 ?>
