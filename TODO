@@ -1,0 +1,165 @@
+Considerente Generale
+Profil [modul 0]
+* Profile
+* Inbox
+* Tasks
+DMS [modul 1]
+- in interfata de vizualizare, vom avea un toolbar care se aplica tuturor item-ilor selectati. itemii se vor selecta cu click simplu.
+* File Browser
+	- interfata asemanatoare windows explorer
+		- folosim buton de add pentru upload fisiere in directorul curent
+		- folosim buton de scan pentru scan-ul fisierului in directorul curent folosind TWAIN
+	- pe foldere se poate da dublu click, si se deschid - de fapt se incarca cu AJAX lista fisierelor si directoarelor pe care le contine
+	- pe fisiere se poate da dublu click si se deschid (daca sunt vizibile in browser) intr-un iframe care apare peste
+	- pe orice fisier/folder se poate da click dreapta si apare un meniu cu optiuni:
+		- muta
+		- copiaza
+		- sterge
+		- imbunatateste:
+			- apare o fereastra cu optiuni pentru un scrip shell care proceseaza toate fisierele din folder:
+				- ajustare contrast/luminozitate
+				- optimizare pentru text
+				- optimizare pentru imagini
+		- meta-data
+			- cuvinte cheie
+			- client
+			- produs
+			- locatie de stocare fizica
+		- versiuni
+			- alege versiunea activa dintr-o lista
+			- lista contine butoane Preview
+		- Access Control List
+* File Filters
+	- interfata initiala contine o lista cu cozi de procesare ale documentelor
+		- folosim butonul de add pentru a genera o noua coada de procesare
+	- fiecare coada de procesare are un meniu cu:
+		- modifica
+		- sterge
+		- filtre
+	- optiunea filtre contine un editor de arbori in care se pot insera filtre
+		- filtrele sunt de tipul:
+			- fisierul contine o expresie fie in text, fie intr-unul dintre campurile meta (putem sa folosim expresiile din windows cu * = orice caracter, ? = un singur caracter)
+			- in cazul in care e adevarat:
+				- trimite mai departe fisierul
+				- sterge-l
+				- muta-l intr-un folder
+				- asigneaza-l unui client
+				- asigneaza-l unui angajat
+				- muta-l intr-o locatie
+
+* Storage Locations
+	- interfata care contine o lista cu locatii de stocare fizice ale documentelor
+	- pentru fiecare locatie, un meniu cu:
+		- modifica
+		- sterge
+		- continut (si sare direct la folderul locatiei)
+
+ERP [modul 2]
+* Office List
+	- listarea birourilor clientului (userului curent) - grupuri de companii ale userului curent care sunt stocate intr-un meta_data al userului (get_user_meta - functie din wordpress) care se numeste _wp_crm_offices si contine fie un numar (ID-ul WP_CRM_Office) sau o lista de numere separate cu virgula (tot ID-uri ale obiectelor WP_CRM_Office)
+		- optiune de a adauga un birou nou
+	- fiecare birou va avea urmatoarele optiuni:
+		- modifica
+		- sterge
+		- structura
+			- care contine o lista cu companii, putand adauga o noua companie si fiecare putand fi modificata, stearsa sau mutata intr-un alt birou
+		- companii
+			- meniu care duce la Company List filtrat dupa Office-ul ales
+		- produse
+			- meniu care duce la Product List filtrat dupa Office-ul ales
+* Company List
+	- listarea companiilor utilizatorului sau ale unui birou sau ale unui client
+		- optiune de a adauga o companie noua
+	- fiecare companie va avea urmatoarele optiuni:
+		- modifica
+		- sterge
+		- structura
+			- care contine un arbore cu personalul
+		- personal (tree-like, o idee e sa folosim Google charts si sa inlocuim ce folosesc astia pentru bootstrap)
+			- meniu care duce la User List filtrat dupa Compania aleasa
+		- produse
+			- meniu care duce la Product List filtrat dupa Compania aleasa
+
+* Users List
+	- listarea utilizatorilul subordonati sau ai unei companii
+		- optiune de a adauga un utilizator nou
+	- fiecare utilizator va avea urmatoarele optiuni:
+		- modifica
+		- sterge
+		- vizualizeaza
+			- (n-am deocamdata idee ce sa afisam aici)
+		- mail
+* Product List
+	- listarea produselor unui birou, unei companii sau ale utilizatorului curent
+		- optiune de a adauga un produs nou
+	- fiecare produs va avea urmatoarele optiuni
+		- modifica
+		- sterge
+		- vizualizeaza
+		- proces productie
+			- fiecare proces de productie e de fapt un arbore de task-uri
+				- fiecare task are asignat un responsabil (din companie)
+				- si o lista cu resurse (cantitate x resursa) care poate fi modificata dinamic
+		- necesar client
+			- lista cu fisiere pe care clientul trebuie sa le incarce pentru a primi produsul
+		- comanda
+			- adauga produsul in cos
+				- cu produsele adaugate in cos, se pot genera facturi
+* Invoice List
+	- listarea facturilor
+		- optiune pentru a adauga o noua factura
+	- fiecare factura va avea urmatoarele optiuni
+		- modifica
+		- stege
+		- vizualizeaza (in PDF, intr-un iframe)
+		- plateste (factura)
+* Resource List
+	- listarea resurselor
+		- optiune pentru a adauga o noua factura
+	- fiecare resursa va avea urmatoarele optiuni
+		- modifica
+		- sterge
+		- vizualizeaza (variatie stoc, estimare)
+		- achizitioneaza
+			- afiseaza o lista cu achizitii unde utilizatorul poate adauga, anula sau modifica o achizitie
+* Purchase List
+	- listarea achizitiilor, la nivel de companie (filtrarea se poate face per user sau per office sau per companie, dar achizitiile apartin unei companii)
+		- optiune pentru a adauga o noua achizitie de o resursa (veche sau noua)
+	- fiecare achizitie va avea urmatoarele optiuni
+		- modifica
+		- anuleaza (sterge)
+		- vizualizeaza (variatia stocului)
+			- achizitiile sunt unic determinate de identitatea documentului fiscal care le-a generat (factura, chitanta, etc) si pentru a fi siguri de asta, cheia e de fapt (referinta documentului + furnizorul de la care a fost achizitionata - codul fiscal sau ID-ul).
+* Accounts List
+	- lista conturilor contabile, la nivel de companie sau cont
+		- optiune pentru a adauga un cont nou (analitic sau sintetic), folosind lista lor din codul fiscal
+	- fiecare cont va avea urmatoarele optiuni
+		- adauga un nou document fiscal:
+			- apare o lista cu documentele fiscale neinchise (a caror suma nu se regaseste integral repartizata pe conturile analitice)
+				- necesita introducerea unui nou obiect, WP_CRM_... n-am nicio idee. e un fel de WP_CRM_Purchase, dar invers
+		- vizualizeaza:
+			- istoricul contului respectiv
+		- subconturi:
+			- lista cu subconturi, care se pot adauga sau sterge (trebuie sa verific cu contabilul)
+	- in toolbarul conturilor sunt rapoarte
+BI - defapt CRM [modul 3]
+* Client List
+	- lista clienti, filtrabila pe companie, birou, utilizator
+		- optiunea de a adauga un nou client
+		- clientii pot fi persoane fizice sau juridice
+	- pentru fiecare client:
+		- modifica
+		- sterge
+		- incasari
+		- restante
+		- istoric (tickete)
+		- istoric (facturi)
+		- istoric (produse)
+		- mail
+		- memo (de fapt, memo se poate adauga la orice obiect)
+	- toolbar-ul Client List va contine template-uri pentru diferite lucruri: contracte, procese verbale, etc
+* History
+	- de fapt, un istoric al ticketelor
+	- istoric clienti, filtrabil dupa client, companie, birou, utilizator
+		- optiune de adauga un nou ticket
+			- ticketul va escalada ierarhia companiei si va aparea in lista de task-uri a fiecarui angajat
