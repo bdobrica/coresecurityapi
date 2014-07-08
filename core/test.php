@@ -10,4 +10,7 @@ spl_autoload_register (function ($class) {
 	$class_file = dirname(__FILE__) . '/class/' . strtolower($class) . '.php';
 	if (file_exists($class_file)) include ($class_file);
 	});
+
+#WP_CRM_App::scan();
+#WP_CRM_Folder::install();
 ?>

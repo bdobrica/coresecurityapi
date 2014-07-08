@@ -38,21 +38,11 @@ if (strpos ($filter, '=') !== FALSE) {
 		}
 	}
 
-if (!class_exists ($class)) die ('Err.1');
-if (!is_numeric($id)) die ('Err.2');
+if (!class_exists ($class)) die ('Err.');
+if (!is_numeric($id)) die ('Err.');
 
-$object = new $class ();
+$object = new $class ((int) $id);
+$object->link ((int) $p_id);
 
-$structure = new WP_CRM_Form_Structure ($object);
-if (!empty ($append)) 
-	$structure->append ($append);
-
-$form = new WP_CRM_Form ($structure);
-$form->set ('state', $wp_crm_state->get());
-
-if ($_POST['object']) {
-	$form->action ();
-	}
-
-$form->render (TRUE);
+echo 'OK';
 ?>

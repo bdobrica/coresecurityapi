@@ -10,6 +10,17 @@ class WP_CRM_View {
 	private $echo;
 
 	public function __construct ($object, $actions = null, $type = null) {
+		/**
+		 * $actions = array (
+		 *	'toolbar' => array (
+		 *		key => 'Description' | array (
+					),
+		 *		),
+		 *	'item' => array (
+				key => 'Description',
+		 *		)
+		 *	);
+		 */
 		$this->out = '';
 		$this->class = 'wp-crm-view';
 		$this->actions = $actions;
@@ -36,6 +47,19 @@ class WP_CRM_View {
 					}
 				else
 				switch (get_class ($object)) {
+					case 'WP_CRM_Tree':
+						$this->out .= '<div class="' . $this->class . '-tree-wrapper">';
+						$this->out .= '<button class="wp-crm-view-nodeadd" rel="WP_CRM_Task-0"><i class="fa fa-plus"></i></button>';
+						$this->out .= '<div class="' . $this->class. '-tree" width="558" height="400"></div>' . "\n";
+						$this->out .= '<div class="' . $this->class . '-tree-menu btn-group open"><ul class="dropdown-menu">
+<li><a class="wp-crm-view-nodeedit">Editeaza</a></li>
+<li><a class="wp-crm-view-nodedelete">Sterge</a></li>
+<li><a class="wp-crm-view-nodelink">Leaga</a></li>
+<li><a class="wp-crm-view-nodeunlink">Dezleaga</a></li>
+</ul></div>';
+						$this->out .= '</div>';
+						$this->out .= '<script type="text/javascript">$wpcrmui.tree(\'.' . $this->class. '-tree\', ' . $object->get () . ');</script>';
+						break;
 					case 'WP_CRM_List':
 						/*
 						* NEW DISPLAY
@@ -90,11 +114,17 @@ class WP_CRM_View {
 						$field_keys = array_keys ($fields);
 						$cols[] = '#';
 						$cols = array_merge ($cols, array_values ($fields));
-						if (!empty($this->actions)) $cols[] = isset($this->actions['add']) ? self::render (array (
+						if (isset($this->actions['toolbar']) && !empty($this->actions['toolbar'])) $this->out .= self::render (array (
 							'id' => $object->get ('class') . '-0',
 							'filter' => $object->get ('filter'),
 							'class' => $this->class,
-							'value' => $this->actions['add']), 'add') : '';
+							'toolbar' => $this->actions['toolbar']), 'toolbar');
+
+						if (!empty($this->actions['toolbar'])) $cols[] = isset($this->actions['toolbar']['add']) ? self::render (array (
+							'id' => $object->get ('class') . '-0',
+							'filter' => $object->get ('filter'),
+							'class' => $this->class,
+							'value' => $this->actions['toolbar']['add']), 'add') : '';
 
 						if (!empty($list)) {
 							$c = 0;
@@ -123,12 +153,12 @@ class WP_CRM_View {
 									$owned = NULL;
 									}
 
-								if (!empty($this->actions))
+								if (!empty($this->actions['item']))
 									$rows[$c][] = self::render (array (
 										'id' => get_class($item) . '-' . $item->get(),
 										'class' => $this->class,
 										'owned' => $owned,
-										'actions' => $this->actions ), 'actions');
+										'actions' => $this->actions['item'] ), 'actions');
 								$c++;
 								}
 							}
@@ -216,6 +246,28 @@ class WP_CRM_View {
 					case 'WP_CRM_Table':
 						$this->table ($object->get ('cols'), $object->get ('rows'));
 						break;
+					case 'WP_CRM_Folder':
+						$this->out .= '<div class="' . $this->class . '-folder-wrapper">' . "\n";
+
+						if (isset($this->actions['toolbar']) && !empty($this->actions['toolbar'])) $this->out .= self::render (array (
+							'id' => 'WP_CRM_Folder-0',
+							'parent' => 'WP_CRM_Folder-' . $object->get ('parent'),
+							'filter' => $object->get ('filter'),
+							'class' => $this->class,
+							'toolbar' => $this->actions['toolbar']), 'toolbar');
+
+						$children = $object->get ('children');
+
+						$this->out .= '<a href="#" rel="WP_CRM_Folder-' . ($object->get('parent') ? $object->get('parent') : $object->get()) . '" class="' . $this->class . '-actions ' . $this->class . '-folder fa fa-folder">' . $object->get ('parent_title') . '</a>' . "\n";
+						if ($object->get ('parent'))
+							$this->out .= '<a href="#" rel="WP_CRM_Folder-' . $object->get() . '" class="' . $this->class . '-actions ' . $this->class . '-folder fa fa-folder">' . $object->get ('title') . '</a>' . "\n";
+						$this->out .= '<hr />' . "\n";
+						foreach ($children->get () as $child) {
+							$this->out .= "\t" . '<a href="#" rel="WP_CRM_Folder-' . $child->get() . '" class="' . $this->class . '-actions ' . $this->class . '-folder fa fa-folder">' . $child->get ('title') . '</a>' . "\n";
+							}
+						$this->out .= '</div>' . "\n";
+						$this->out .= '<div class="' . $this->class . '-separator"></div>' . "\n";
+						break;
 					}
 				break;
 			default:
@@ -301,13 +353,32 @@ class WP_CRM_View {
 			case 'add':
 				return '<button class="btn btn-xs btn-block btn-primary ' . $data['class'] . '-actions ' . $data['class'] . '-add" rel="' . $data['id'] . ';' . urlencode($data['filter']) . '">' . $data['value'] . '</button>';
 				break;
+			case 'toolbar':
+				$out = '';
+				if (!empty ($data)) {
+					$out .= '<div class="' . $data['class'] . '-toolbar-wrapper"><ul>';
+					foreach ($data['toolbar'] as $key => $val) {
+						$out .= '<li>';
+						if (is_array ($val)) {
+							$out .= '<ul>';
+							foreach ($data as $_key => $_val)
+								$out .= '<li><a href="#" class="' . $data['class'] . '-actions ' . $data['class'] . '-' . $key . '-' . $_key . '" rel="' . $data['id'] . ';' . urlencode($data['filter']) . '">' . $_val . '</a></li>';
+							$out .= '</ul>';
+							}
+						else
+							$out .= '<a href="#" class="' . $data['class'] . '-actions ' . $data['class'] . '-' . $key . '" rel="' . $data['id'] . ';' . urlencode($data['filter']) . '">' . $val . '</a>';
+						$out .= '</li>';
+						}
+					$out .= '</ul></div><hr />';
+					}
+				return $out;
+				break;
 			case 'actions':
 				$out = array ();
 				if (!empty($data['actions'])) {
 					$c = 0;
 					if (count ($data['actions']) > 2) {
 						foreach ($data['actions'] as $key => $val) {
-							if ($key == 'add') continue;
 							$out[] = '<li><a class="' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '" href="#">' . $val . '</a></li>' . "\n";
 							$c++;
 							}
@@ -315,7 +386,6 @@ class WP_CRM_View {
 						}
 					else {
 						foreach ($data['actions'] as $key => $val) {
-							if ($key == 'add') continue;
 							$out[] = '<button class="btn btn-xs btn-block btn-' . ($data['owned'] ? 'danger' : 'primary') . ' ' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '">' . $val . '</button></li>' . "\n";
 							$c++;
 							}
@@ -380,7 +450,7 @@ class WP_CRM_View {
 				return '<div class="wp-crm-seats">' . $out . '</div>';
 				break;
 			}
-		return $data;
+		return '<span class="wp-crm-dblclickable">' . $data . '</span>';
 		}
 
 	private static function td ($html, $class = null) {

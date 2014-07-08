@@ -1,17 +1,16 @@
 <?php
 /*
-App Title: Produse
+App Title: Site-uri
 App Description:
 App Size: 1
 App Style:
-App Icon: square 
+App Icon: code-fork 
 */
-$list = new WP_CRM_List ('WP_CRM_Product');
+$list = new WP_CRM_List ('WP_CRM_Site');
 $view = new WP_CRM_View ($list, array (
 		'add' => 'Adauga',
-		'price' => 'Preturi',
+		'view' => 'Vezi',
 		'edit' => 'Modifica',
-		'order' => 'Comanda',
 		'delete' => 'Sterge'
 		));
 unset ($view);

@@ -128,7 +128,8 @@ class WP_CRM {
 
 		if (is_object ($wp_crm_helper)) {
 			try {
-				$wp_crm_helper->save ($data);
+				$wp_crm_helper->set ($data);
+				$wp_crm_helper->save ();
 				}
 			catch (WP_CRM_Exception $wp_crm_exception) {
 				}

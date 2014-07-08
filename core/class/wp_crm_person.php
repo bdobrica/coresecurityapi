@@ -47,9 +47,9 @@ class WP_CRM_Person extends WP_CRM_Model {
 			'address' => 'Adresa',
 			'county' => 'Judet',
 			'phone' => 'Telefon',
-			'uin' => 'CNP',
-			'id_copy:file' => 'Copie BI/CI/Pasaport',
-			'diploma_copy:file' => 'Ultima diploma de studii'
+#			'uin' => 'CNP',
+#			'id_copy:file' => 'Copie BI/CI/Pasaport',
+#			'diploma_copy:file' => 'Ultima diploma de studii'
 			),
 		'view' => array (
 			'first_name' => 'Prenume',

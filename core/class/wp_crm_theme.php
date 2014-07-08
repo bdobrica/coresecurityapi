@@ -98,11 +98,14 @@ class WP_CRM_Theme {
 		wp_enqueue_script ('wp-crm-jquery-chosen', $url . '/assets/js/jquery.chosen.min.js');
 		wp_enqueue_script ('wp-crm-moment', $url . '/assets/js/moment.min.js');
 		wp_enqueue_script ('wp-crm-daterangepicker', $url . '/assets/js/daterangepicker.min.js');
-		wp_enqueue_script ('wp-crm-jquery-easy-pie-chart', $url . '/assets/js/jquery.easy-pie-chart.min.js');
+		//wp_enqueue_script ('wp-crm-jquery-easy-pie-chart', $url . '/assets/js/jquery.easy-pie-chart.min.js');
 		wp_enqueue_script ('wp-crm-jquery-datatables', $url . '/assets/js/jquery.dataTables.min.js');
 		wp_enqueue_script ('wp-crm-datatables-bootstrap', $url . '/assets/js/dataTables.bootstrap.min.js');
 		wp_enqueue_script ('wp-crm-custom', $url . '/assets/js/custom.min.js');
 		wp_enqueue_script ('wp-crm-core', $url . '/assets/js/core.min.js');
+		//wp_enqueue_script ('wp-crm-arbor', $url . '/assets/js/arbor.js');
+
+		wp_enqueue_script ('google-jsapi', 'https://www.google.com/jsapi');
 
 		wp_enqueue_script ('wp-crm', $url . '/script/wp-crm.js', array ('jquery'), '0.5');
 		}

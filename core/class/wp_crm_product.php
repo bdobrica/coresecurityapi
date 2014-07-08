@@ -14,7 +14,8 @@ class WP_CRM_Product extends WP_CRM_Model {
 		'color',					// color to display the SKU
 		'url',						// if the product has a remote description
 		'title',					// the name of the product
-		'pid',						// parent product id (if exists)
+		//'parent',					// parent product id (if exists)
+		'pid',						// process id
 		'stamp',
 		'state',					// the product is active
 		'flags'
@@ -54,7 +55,8 @@ class WP_CRM_Product extends WP_CRM_Model {
 		'new' => array (
 			'code:code' => 'Cod',
 			'title' => 'Denumire',
-			'cid:seller' => 'Companie',
+			'cid:array;sellers_list' => 'Companie',
+			'pid:array;processes_list' => 'Proces',
 			'pricematrix:matrix' => 'Pret',
 			),
 		'view' => array (
@@ -65,7 +67,8 @@ class WP_CRM_Product extends WP_CRM_Model {
 		'edit' => array (
 			'code' => 'Cod',
 			'title' => 'Denumire',
-			'cid:seller' => 'Companie',
+			'cid:array;sellers_list' => 'Companie',
+			'pid:array;processes_list' => 'Proces',
 			'pricematrix:matrix' => 'Pret',
 			),
 		);
@@ -274,6 +277,38 @@ class WP_CRM_Product extends WP_CRM_Model {
 				$wp_crm_price = new WP_CRM_Price ($this);
 				$matrix = $wp_crm_price->get ('matrix');
 				return $matrix;
+				break;
+			case 'sellers_list':
+				global $current_user;
+				$out = array ();
+
+				$current_user = wp_get_current_user ();
+				$wp_crm_offices = get_user_meta ($current_user->ID, '_wp_crm_offices', TRUE);
+				$wp_crm_office_query = is_numeric ($wp_crm_offices) ? sprintf ('oid=%d', $wp_crm_offices) : (!empty($wp_crm_offices) ? sprintf ('oid in (%s)', implode (',', $wp_crm_offices)) : '1');
+
+				$sql = $wpdb->prepare ('select id,name from `' . $wpdb->prefix . WP_CRM_Company::$T . '` where ' . $wp_crm_office_query, null);
+				$rows = $wpdb->get_results ($sql);
+				if ($rows)
+					foreach ($rows as $row)
+						$out[$row->id] = $row->name;
+
+				return $out;
+				break;
+			case 'processes_list':
+				global $current_user;
+				$out = array ();
+
+				$current_user = wp_get_current_user ();
+				$wp_crm_offices = get_user_meta ($current_user->ID, '_wp_crm_offices', TRUE);
+				$wp_crm_office_query = is_numeric ($wp_crm_offices) ? sprintf ('oid=%d', $wp_crm_offices) : (!empty($wp_crm_offices) ? sprintf ('oid in (%s)', implode (',', $wp_crm_offices)) : '1');
+
+				$sql = $wpdb->prepare ('select id,title from `' . $wpdb->prefix . WP_CRM_Process::$T . '` where ' . $wp_crm_office_query, null);
+				$rows = $wpdb->get_results ($sql);
+				if ($rows)
+					foreach ($rows as $row)
+						$out[$row->id] = $row->title;
+
+				return $out;
 				break;
 			}
 		return parent::get ($key, $opts);

@@ -608,6 +608,30 @@ class WP_CRM_Form_Structure {
 					'default' => $object->get ($key)
 					);
 				break;
+			case 'tree':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'tree',
+					'default' => $object->get ($key),
+					'parent' => get_class ($object) . '-' . $object->get()
+					);
+				break;
+			case 'context':
+				$context = end (explode (',', $_GET['context'] ? $_GET['context'] : $_POST['context']));
+				list ($class, $id) = explode ('-', $context);
+				$fields[$key] = array (
+					'type' => 'hidden',
+					'default' => $id
+					);
+				break;
+			case 'inventory':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'inventory',
+					'default' => $object->get ($key),
+					'options' => $object->get ($opts) 
+					);
+				break;
 			default:
 				$fields[$key] = array (
 					'label' => $label,

@@ -192,6 +192,15 @@ class WP_CRM_Form {
 					foreach ($out[0] as $_key => $_val)
 						$out[0][$_key]['type'] = 'WP_CRM_Person';
 				break;
+			case 'inventory':
+				$out = array ();
+				foreach ($_POST as $_key => $_val) {
+					if (strpos ($_key, $key . '_q') !== 0) continue;
+					$id = str_replace ($key . '_q', '', $_key);
+					$out[$_POST[$key . '_' . $id]] = $_val;
+					}
+				$out = serialize ($out);
+				break;
 			default:
 				$out = $val;
 			}
@@ -407,7 +416,7 @@ class WP_CRM_Form {
 				case 'textarea':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
-					$out .= '<textarea class="'.$this->class.'-textarea" name="'.$key.'">'.$field['default'].'</textarea>';
+					$out .= '<textarea class="form-control '.$this->class.'-textarea" rows="10" name="'.$key.'">'.$field['default'].'</textarea>';
 					break;
 				case 'email':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
@@ -694,6 +703,54 @@ class WP_CRM_Form {
 		' . implode ("\n", $panes) . '
 	</div>
 </div>';
+					break;
+				case 'tree':
+					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
+					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
+					if ($field['default'] instanceof WP_CRM_Tree) {
+						$view = new WP_CRM_View ($field['default'], array (
+							'nodeadd' => 'Adauga',
+							'nodeedit' => 'Modifica',
+							'nodedelete' => 'Sterge',
+							'nodelink' => 'Leaga',
+							'nodeunlink' => 'Dezleaga'
+							));
+						$out .= $view->get ();
+						}
+					break;
+				case 'inventory':
+					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
+					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
+
+					$out .= '<div class="' . $this->class. '-inventory"><div class="row">
+						<div class="col-md-2">
+						<input type="text" name="' . $key . 'q" value="" class="' . $this->class . '-inventory-quantity form-control" />
+						</div>
+						<div class="col-md-1">
+						x
+						</div>
+						<div class="col-md-8">
+						<select name="' . $key . '" class="form-control ' . $this->class . '-select"' . (isset($field['multiple']) ? ' multiple' : '') . '>';
+					foreach ($field['options'] as $k => $v) {
+						if (isset ($v['items']) && is_array ($v['items']) && !empty ($v['items'])) {
+							$out .= '<optgroup label="' . $v['title'] . '">';
+							foreach ($v['items'] as $_k => $_v)
+								$out .= '<option value="' . $_k . '">' . $_v . '</option>';
+							$out .= '</optgroup>';
+							}
+						else
+							$out .= '<option value="' . $k . '">' . $v . '</option>';
+						}
+					$out .= '</select></div><div class="col-md-1"><button class="' . $this->class . '-inventory-add form-control"><i class="fa fa-plus"></i></button></div></div>';
+					if (!empty ($field['default'])) {
+						$c = 1;
+						foreach ($field['default'] as $_key => $_val) {
+							$resource = new WP_CRM_Resource ((int) $_key);
+							$out .= '<div class="col-md-2"><input type="text" name="' . $key . '_q' . $c . '" value="' . $_val . '" class="form-control" /></div><div class="col-md-1">x</div><div class="col-md-8"><input type="hidden" value="' . $_key . '" name="' . $key . '_' . $c . '" /><span>' . $resource->get ('title') . '</span></div><div class="col-md-1"><button class="form-control wp-crm-form-inventory-delete"><i class="fa fa-minus"></i></button></div>';
+							$c ++;
+							}
+						}
+					$out .= '</div><div class="' . $this->class . '-separator"></div>';
 					break;
 				default:
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';

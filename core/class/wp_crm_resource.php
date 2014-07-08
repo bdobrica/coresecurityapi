@@ -10,19 +10,29 @@ class WP_CRM_Resource extends WP_CRM_Model {
 	protected static $K = array (
 		'oid',				// the organization group
 		'cid',				// the id of the company that is keeping track of this resources.
-		'tid',				// the task id that uses this resource. all resources are used in some task.
+		#'tid',				// the task id that uses this resource. all resources are used in some task.
 						// tasks make up processes which in turn are attached to products
 						// processes may be attached to companies and offices also!
 		'title',			// the name of the resource
 		'description',			// some description of the resource
+		'stock'				// quantity
 		);
 
 	public static $F = array (
 		'new' => array (
+			'title' => 'Denumire',
+			'description' => 'Descriere',
+			'stock' => 'Cantitate initiala'
 			),
 		'edit' => array (
+			'title' => 'Denumire',
+			'description' => 'Descriere',
+			'stock' => 'Cantitate initiala'
 			),
 		'view' => array (
+			'title' => 'Denumire',
+			'description' => 'Descriere',
+			'stock' => 'Cantitate initiala'
 			)
 		);
 	
@@ -32,6 +42,7 @@ class WP_CRM_Resource extends WP_CRM_Model {
 		'`cid` int(11) NOT NULL DEFAULT 0',
 		'`title` text NOT NULL',
 		'`description` text NOT NULL',
+		'`stock` int(11) NOT NULL DEFAULT 0'
 		);
 	}
 ?>

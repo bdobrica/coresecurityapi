@@ -62,12 +62,27 @@ class WP_CRM_Company_Structure extends WP_CRM_Structure {
 	 */
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
-		'`pid` int(11) NOT NULL DEFAULT 0',
+		'`parent` int(11) NOT NULL DEFAULT 0',
 		'`oid` int(11) NOT NULL DEFAULT 0',
 		'`rid` int(11) NOT NULL DEFAULT 0',
 		'`type` varchar(64) NOT NULL DEFAULT \'\'',
 		'`title` text NOT NULL',
 		'`description` text NOT NULL',
 		);
+
+	public function get ($key = null, $opts = null) {
+		if (is_string ($key))
+			switch ($key) {
+				case 'list':
+					$out = array ();
+					foreach ($this->list as $key => $data) {
+						if (!$key) continue;
+						$out[$key] = $data['title'];
+						}
+					return $out;
+					break;
+				}
+		return parent::get ($key, $opts);
+		}
 	}
 ?>

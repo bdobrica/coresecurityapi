@@ -5,39 +5,60 @@ class WP_CRM_Task extends WP_CRM_Model {
 		'oid',					// office id
 		'cid',					// company id
 		'pid',					// process id
-		'tid',					// previous task id; if 0, this is the first task
+		'parent',				// previous task id; if 0, this is the first task
 		'uid',					// the user that generated this task
 		'rid',					// responsible id
 		'title',
 		'description',
+		'resources',
+		'factor',
 		'importance',
 		'urgency',
+		'duration_min',
+		'duration_opt',
+		'duration_max',
 		'deadline'
 		);
 	public static $F = array (
 		'new' => array (
 			'title' => 'Denumire',
-			'rid' => 'Responsabil',
+			'rid:array;responsibles_list' => 'Responsabil',
+			'pid:context' => 'Proces',
 			'description:textarea' => 'Descriere',
-			'importance' => 'Importanta',
-			'urgency' => 'Urgenta',
-			'deadline:date' => 'Termen Limita'
+			'resources:inventory;resources_list' => 'Resurse',
+			#'importance' => 'Importanta',
+			#'urgency' => 'Urgenta',
+			#'duration_min' => 'Durata minima',
+			'factor' => 'Task multiplicativ?',
+			'duration_opt' => 'Durata optima',
+			#'duration_max' => 'Durata maxima',
+			#'deadline:date' => 'Termen Limita'
 			),
 		'view' => array (
 			'title' => 'Denumire',
 			'rid' => 'Responsabil',
 			'description:textarea' => 'Descriere',
-			'importance' => 'Importanta',
-			'urgency' => 'Urgenta',
-			'deadline:date' => 'Termen Limita'
+			'resources:inventory' => 'Resurse',
+			#'importance' => 'Importanta',
+			#'urgency' => 'Urgenta',
+			#'duration_min' => 'Durata minima',
+			'duration_opt' => 'Durata optima',
+			#'duration_max' => 'Durata maxima',
+			#'deadline:date' => 'Termen Limita'
 			),
 		'edit' => array (
 			'title' => 'Denumire',
-			'rid' => 'Responsabil',
+			'rid:array;responsibles_list' => 'Responsabil',
+			'pid:context' => 'Proces',
 			'description:textarea' => 'Descriere',
-			'importance' => 'Importanta',
-			'urgency' => 'Urgenta',
-			'deadline:date' => 'Termen Limita'
+			'resources:inventory;resources_list' => 'Resurse',
+			#'importance' => 'Importanta',
+			#'urgency' => 'Urgenta',
+			#'duration_min' => 'Durata minima',
+			'factor' => 'Task multiplicativ?',
+			'duration_opt' => 'Durata optima',
+			#'duration_max' => 'Durata maxima',
+			#'deadline:date' => 'Termen Limita'
 			)
 		);
 	protected static $Q = array (
@@ -45,14 +66,73 @@ class WP_CRM_Task extends WP_CRM_Model {
 		'`oid` int(11) NOT NULL DEFAULT 0',
 		'`cid` int(11) NOT NULL DEFAULT 0',
 		'`pid` int(11) NOT NULL DEFAULT 0',
-		'`tid` int(11) NOT NULL DEFAULT 0',
+		'`parent` int(11) NOT NULL DEFAULT 0',
 		'`uid` int(11) NOT NULL DEFAULT 0',
 		'`rid` int(11) NOT NULL DEFAULT 0',
 		'`title` text NOT NULL',
 		'`description` text NOT NULL',
+		'`resources` text NOT NULL',
+		'`factor` float(9,2) NOT NULL DEFAULT 0.00',
 		'`importance` int(2) NOT NULL DEFAULT 0',
 		'`urgency` int(2) NOT NULL DEFAULT 0',
+		'`duration_min` float(5,2) NOT NULL DEFAULT 0.00',
+		'`duration_opt` float(5,2) NOT NULL DEFAULT 0.00',
+		'`duration_max` float(5,2) NOT NULL DEFAULT 0.00',
 		'`deadline` int(11) NOT NULL DEFAULT 0'
 		);
+
+	public function get ($key = null, $opts = null) {
+		global $wpdb;
+
+		if (is_string ($key))
+			switch ($key) {
+				case 'duration':
+					return 0.1666 * ($this->data['duration_min'] + 4*$this->data['duration_opt'] + $this->data['duration_max']);
+					break;
+				case 'leaf':
+					return array (
+						'oid' => __CLASS__ . '-' . $this->ID,
+						'name' => $this->data['title'],
+						'duration_min' => $this->data['duration_min'],
+						'duration_opt' => $this->data['duration_opt'],
+						'duration_max' => $this->data['duration_max']
+						);
+					break;
+				case 'responsibles_list':
+					if ($this->data['cid']) {
+						$structure = new WP_CRM_Company_Structure ($this->data['cid']);
+						return $structure->get ('list');
+						}
+
+					$structure = new WP_CRM_Company_Structure (1);
+					return $structure->get ('list');
+					break;
+				case 'resources_list':
+					$out = array ();
+					$sql = 'select id,title from `' . $wpdb->prefix . WP_CRM_Resource::$T . '`';
+					$rows = $wpdb->get_results ($sql);
+					if (!empty ($rows))
+						foreach ($rows as $row)
+							$out[$row->id] = $row->title;
+					return $out;
+					break;
+				case 'resources':
+					return self::_unserialize ($this->data['resources']);
+					break;
+				default:
+					return parent::get ($key, $opts);
+				}
+		}
+
+	public function unlink () {
+		if ($this->ID && $this->get ('parent')) {
+			$this->set ('parent', 0);
+			}
+		}
+
+	public function link ($to = null) {
+		if (!is_null ($to) && (is_object ($to) || is_numeric ($to)) && $this->ID && !$this->get ('parent'))
+			$this->set ('parent', is_object ($to) ? $to->get () : ((int) $to));
+		}
 	}
 ?>

@@ -10,7 +10,7 @@
  */
 class WP_CRM_User extends WP_CRM_Model {
 	public static $T = 'users';
-	public static $K = array (
+	protected static $K = array (
 		'user_login',
 		'user_pass',
 		'user_nicename',

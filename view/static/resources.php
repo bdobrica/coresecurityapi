@@ -1,17 +1,16 @@
 <?php
 /*
-App Title: Produse
+App Title: Resurse
 App Description:
 App Size: 1
 App Style:
-App Icon: square 
+App Icon: suitcase
 */
-$list = new WP_CRM_List ('WP_CRM_Product');
+$list = new WP_CRM_List ('WP_CRM_Resource');
 $view = new WP_CRM_View ($list, array (
 		'add' => 'Adauga',
-		'price' => 'Preturi',
+		'purchase' => 'Cumpara',
 		'edit' => 'Modifica',
-		'order' => 'Comanda',
 		'delete' => 'Sterge'
 		));
 unset ($view);

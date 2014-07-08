@@ -25,10 +25,10 @@ abstract class WP_CRM_Structure {
 	 */
 	public static $CLS = '';
 	/**
-	 * The attached database table structure. The ID and PID columns are added by default.
+	 * The attached database table structure. The ID and PARENT columns are added by default.
 	 * !Important! Seems like columns TYPE (referenced class name) and RID (referenced id)
 	 * should be added by default to the structure.
-	 * PID links WP_CRM_Structure pieces together into a tree.
+	 * PARENT links WP_CRM_Structure pieces together into a tree.
 	 * @var array
 	 */
 	protected static $K = array ();
@@ -57,7 +57,7 @@ abstract class WP_CRM_Structure {
 			)
 		);
 	/**
-	 * List of column declarations for the table structure. The ID and PID columns are not added by default.
+	 * List of column declarations for the table structure. The ID and PARENT columns are not added by default.
 	 * @var array
 	 */
 	protected static $Q;
@@ -65,13 +65,13 @@ abstract class WP_CRM_Structure {
 	 * The parent object id.
 	 * @var int
 	 */
-	private $OID;
+	protected $OID;
 	/**
 	 * The hierarchy.
 	 * @var array
 	 */
-	private $tree;
-	private $list;
+	protected $tree;
+	protected $list;
 
 	public function __construct ($data = NULL) {
 		global $wpdb;
@@ -114,7 +114,7 @@ abstract class WP_CRM_Structure {
 					$reference = null;
 					}
 				
-				$leaves[$obj->pid][] = $obj;
+				$leaves[$obj->parent][] = $obj;
 				foreach (static::$F['new'] as $key => $value) {
 					if (in_array ($key, static::$K))
 						$this->list[$obj->id][$key] = $obj->$key;
