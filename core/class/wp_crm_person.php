@@ -11,6 +11,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'phone',
 		'company',
 		'position',
+		'via',
 		'uin',
 		'id_series',
 		'id_number',
@@ -78,6 +79,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
 		'`uin` varchar(13) NOT NULL DEFAULT \'\'',
+		'`via` text NOT NULL',
 		'`id_type` enum(\'CI\',\'BI\') DEFAULT \'CI\'',
 		'`id_series` varchar(2) NOT NULL DEFAULT \'\'',
 		'`id_number` int(11) NOT NULL DEFAULT 0',

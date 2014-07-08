@@ -18,6 +18,9 @@ if (!is_user_logged_in()) {
 		case 'forgot':
 			$wp_crm_state->set ('state', WP_CRM_State::Forgot);
 			break;
+		case 'reset':
+			$wp_crm_state->set ('state', WP_CRM_State::Reset);
+			break;
 		default:
 			$wp_crm_state->set ('state', WP_CRM_State::Login);
 		}
@@ -82,20 +85,28 @@ else {
 		</div>
 		<?php }
 	else {
-		if ($static == 'activate') {
-			$sql = $wpdb->prepare ('select ID from `' . $wpdb->prefix . 'users` where user_login=%s;', urldecode($_GET['l']));
-			$user_id = $wpdb->get_var ($sql);
-			if ($user_id) {
-				$user = new WP_User ($user_id);
-				if (strtolower ($_GET['h']) == md5 ($user_id . $user->user_email)) {
-					if ($user->has_cap ('wp_crm_wakeup')) {
-						$user->set_role ('wp_crm_customer');
-						$awaken = TRUE;
+		switch ($static) {
+			case 'activate':
+				$sql = $wpdb->prepare ('select ID from `' . $wpdb->prefix . 'users` where user_login=%s;', urldecode($_GET['l']));
+				$user_id = $wpdb->get_var ($sql);
+				if ($user_id) {
+					$user = new WP_User ($user_id);
+					if (strtolower ($_GET['h']) == md5 ($user_id . $user->user_email)) {
+						if ($user->has_cap ('wp_crm_wakeup')) {
+							$user->set_role ('wp_crm_customer');
+							$awaken = TRUE;
+							}
 						}
 					}
-				}
-			else
-				$awaken = FALSE;
+				else
+					$awaken = FALSE;
+				break;
+			case 'forgot':
+				$forgot = FALSE;
+				break;
+			case 'reset':
+				$reset = FALSE;
+				break;
 			}
 		include (dirname (__FILE__) . '/template/login.tpl');
 		}

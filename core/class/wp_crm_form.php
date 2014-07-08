@@ -407,7 +407,7 @@ class WP_CRM_Form {
 				case 'textarea':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
-					$out .= '<textarea class="'.$this->class.'-textarea" name="'.$key.'">'.$field['default'].'</textarea>';
+					$out .= '<textarea class="'.$this->class.'-textarea form-control" rows="10" name="'.$key.'">'.$field['default'].'</textarea>';
 					break;
 				case 'email':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
@@ -694,6 +694,20 @@ class WP_CRM_Form {
 		' . implode ("\n", $panes) . '
 	</div>
 </div>';
+					break;
+				case 'tree':
+					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
+					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
+					if ($field['default'] instanceof WP_CRM_Tree) {
+						$view = new WP_CRM_View ($field['default'], array (
+							'nodeadd' => 'Adauga',
+							'nodeedit' => 'Modifica',
+							'nodedelete' => 'Sterge',
+							'nodelink' => 'Leaga',
+							'nodeunlink' => 'Dezleaga'
+							));
+						$out .= $view->get ();
+						}
 					break;
 				default:
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';

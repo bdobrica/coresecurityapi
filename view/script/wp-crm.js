@@ -528,9 +528,9 @@ var $wpcrmui = new function () {
 			});
 
 		jQuery('.wp-crm-form-select', w).chosen ({width: '100%'});
-		jQuery('.wp-crm-form-textarea',w).each(function(n,r){
+		/*jQuery('.wp-crm-form-textarea',w).each(function(n,r){
 			$wpcrmui.rte.push(jQuery(r).tinyeditor().rte);
-			});
+			});*/
 		jQuery('.wp-crm-form-cond', w).each(function(n,i){
 			var c = jQuery(i).attr('rel').split('=');
 			var d = c[1].split(',');
@@ -708,6 +708,10 @@ var $wpcrmui = new function () {
 			});
 		jQuery('.wp-crm-view-buy').click(function(e){
 			var u = '/wp-content/themes/wp-crm/ajax/buy.php';
+			wo (e, u);
+			});
+		jQuery('.wp-crm-view-session').click(function(e){
+			var u = '/wp-content/themes/wp-crm/ajax/session.php';
 			wo (e, u);
 			});
 		jQuery('.wp-crm-view-delete').click(function(e){

@@ -6,9 +6,11 @@
  * the company, with WP_CRM_Process to define the WP_CRM_Task tree inside a company process etc.
  */
 class WP_CRM_Tree {
+	private $class;
+	private $filter;
 	private $tree;
 
-	private function _leaf ($id = null, $stem = null, $data = null) {
+	private static function leaf ($id = null, $data = null, $stem = null) {
 		return (object) array (
 			'id' => (int) ($id),
 			'data' => $data,
@@ -16,22 +18,58 @@ class WP_CRM_Tree {
 			);
 		}
 
-	private function _grow ($list) {
-		$leafs = array ();
-		foreach ($list as $item)
-			$leafs[$item->stem][] = $item;
+	private function grow ($data) {
+		$leaves = array ();
+		$list = array ();
+
+		foreach ($data as $id => $raw)
+			$list[] = self::leaf ($id, $raw['data'], $raw['parent']);
 
 		foreach ($list as $item)
-			if (isset ($leafs[$item->id]))
-				$item->leafs = $leafs[$item->id];
+			$leaves[$item->stem][] = $item;
 
-		$this->tree = $leafs[0];
+		foreach ($list as $item)
+			if (isset ($leaves[$item->id]))
+				$item->leaves = $leaves[$item->id];
+
+		$this->tree = $leaves[0];
 		}
 
-	public function __construct ($data = null) {
+	public function __construct ($class, $filter = null) {
+		$this->class = $class;
+		$this->filter = $filter;
+		$this->tree = null;
+		}
+
+	private function load () {
+		global $wpdb;
+		$class = $this->class;
+		$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . $class::$T . '` where ' . (empty($this->filter) ? 1 : implode (' and ', $this->filter)), null);
+		$ids = $wpdb->get_col ($sql);
+
+		$data = array ();
+
+		if (!empty($ids))
+			foreach ($ids as $id)
+				if (!isset($data[$id])) {
+					try {
+						$data[$id] = array ();
+						$data[$id]['data'] = new $this->class ((int) $id);
+						$parent = $data[$id]['data']->get ('parent');
+						if ($parent == $id) $parent = 0;
+						$data[$id]['parent'] = $parent;
+						}
+					catch (WP_CRM_Exception $wp_crm_exception) {
+						}
+					}
+
+		$this->grow ($data);
 		}
 
 	public function get ($key = null, $opts = null) {
+		if (is_null ($this->tree))
+			$this->load ();
+		return json_encode ($this->tree);
 		}
 
 	public function set ($key = null, $value = null) {

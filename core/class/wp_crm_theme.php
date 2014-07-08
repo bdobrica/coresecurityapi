@@ -103,8 +103,9 @@ class WP_CRM_Theme {
 		wp_enqueue_script ('wp-crm-datatables-bootstrap', $url . '/assets/js/dataTables.bootstrap.min.js');
 		wp_enqueue_script ('wp-crm-custom', $url . '/assets/js/custom.min.js');
 		wp_enqueue_script ('wp-crm-core', $url . '/assets/js/core.min.js');
+		wp_enqueue_script ('wp-crm-arbor', $url . '/assets/js/arbor.js');
 
-		wp_enqueue_script ('wp-crm', $url . '/script/wp-crm.js', array ('jquery'), '0.5');
+		wp_enqueue_script ('wp-crm', $url . '/script/wp-crm.js', array ('jquery'), '0.6');
 		}
 
 	public static function head () {

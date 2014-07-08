@@ -222,6 +222,41 @@ Echipa ' . get_bloginfo ('name')
 		return TRUE;
 		}
 
+	public static function forgot ($data = null) {
+		global
+			$wpdb;
+
+		$sql = $wpdb->prepare ('select * from `' . $wpdb->prefix . WP_CRM_User::$T . '` where user_email=%s;', $data['email']);
+		$user = $wpdb->get_row ($sql);
+
+		$hash = md5 ($user->ID . $user->user_email);
+
+		$wp_crm_mail = new WP_CRM_Mail ();
+	
+		$activation_url = get_bloginfo ('url') . '/reset?h=' . $hash . '&l=' . urlencode($user->user_login);
+		
+		$wp_crm_mail->send ($current_user->user_email, array (
+			'subject' => 'Resetare parola cont ' . get_bloginfo ('name'),
+			'content' => 'Iti multumim ca te-ai inregistrat pentru a deveni membru al platformei ' . get_bloginfo ('name') . '!<br />
+Pentru a putea beneficia in totalitate de facilitatile oferite, trebuie sa activezi contul creat prin accesarea link-ului de mai jos:<br /><br />
+<ul type="square">
+<li><a href="' . $activation_url . '">' . $activation_url . '</a></li>
+</ul>
+Numele de utilizator pe care ti l-ai ales este: <strong>' . $current_user->user_login . '</strong> <br/>
+Iti multumim!<br />
+--<br />
+Echipa ' . get_bloginfo ('name')
+			));
+
+		}
+
+	public static function reset ($data = null) {
+		global
+			$wpdb;
+
+		print_r ($data);
+		}
+
 	public static function newsletter ($data = null) {
 		global
 			$wpdb,

@@ -10,7 +10,7 @@
  */
 class WP_CRM_User extends WP_CRM_Model {
 	public static $T = 'users';
-	public static $K = array (
+	protected static $K = array (
 		'user_login',
 		'user_pass',
 		'user_nicename',
@@ -28,8 +28,13 @@ class WP_CRM_User extends WP_CRM_Model {
 			),
 		'view' => array (
 			'user_login' => 'Nume utilizator',
-			'user_nicename' => 'Nume',
-			'user_email' => 'Adresa de email'
+			'user_email' => 'Adresa de email',
+			'first_name' => 'Prenume',
+			'last_name' => 'Nume',
+			'phone' => 'Telefon',
+			'product_codes' => 'Sesiune',
+			'documents' => 'Documente',
+			'via' => 'Recomandat de'
 			),
 		'edit' => array (
 			'user_login' => 'Nume utilizator',
@@ -88,12 +93,20 @@ class WP_CRM_User extends WP_CRM_Model {
 						}
 					return new WP_CRM_List ('WP_CRM_Product', array ('id in (' . $product_ids . ')'));
 					break;
-				case 'first_name':
-				case 'last_name':
+				case 'product_codes':
 					if (is_object ($this->person)) {
-						return $this->person->get ($key);
+						$sql = $wpdb->prepare ('select group_concat(code) from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where bid=%d;', $this->person->get());
+						$product_codes = $wpdb->get_var ($sql);
 						}
+					return $product_codes;
 					break;
+				case 'documents':
+					return 'ID: ' . ($this->get ('id_copy') ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>') . ' Diploma: ' . ($this->get ('diploma_copy') ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>');
+				default:
+					if (in_array ($key, static::$K) && ($this->person instanceof WP_CRM_Person))
+						return parent::get ($key, $opts);
+					else
+						return $this->person->get ($key, $opts);
 				}
 			}
 

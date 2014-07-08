@@ -370,12 +370,13 @@ var $wpcrmui = new function () {
 	this.win = null;
 	this.ttl = null;
 	this.txt = null;
-	this.rte = null;
+	this.rte = [];
 	this.rws = null;
 	this.dir = null;
 	this.srt = null;
 	this.grp = 0;
 	this.flg = 0;
+	this.ldg = null; // loading window
 
 	this.tswap = function (m, n) {
 		if (m == n) return 0;
@@ -453,7 +454,9 @@ var $wpcrmui = new function () {
 				}
 		};
 
-	this.rowcol = function (s, r = 0, c = 0) {
+	this.rowcol = function (s, r, c) {
+		r = parseInt(r);
+		c = parseInt(c);
 		var a = s.lastIndexOf('_');
 		var b = s.lastIndexOf('_', a - 1);
 
@@ -474,6 +477,68 @@ var $wpcrmui = new function () {
 			rr = parseInt (rr) + r;
 			}
 		return p + rr + '_' + cc;
+		}
+
+	this.scan = function (w) {
+		jQuery('.wp-crm-form-file', w).each(function(i,u){
+			u = jQuery(u);
+			var h = jQuery('[type="hidden"]', u);
+			var f = jQuery('<form/>').addClass('wp-crm-form-hidden');
+			var s = jQuery('<input/>', {type: 'file', name: h[0].name});
+			(f.append(s)).insertAfter(u);
+			s.change(function(e){
+				jQuery('.wp-crm-form-file-name', u).html(s.val());
+				});
+			jQuery('.wp-crm-form-file-select', u).click(function(e){
+				e.preventDefault();
+				s.click();
+				});
+			jQuery('.wp-crm-form-file-upload', u).click(function(e){
+				e.preventDefault();
+				jQuery.ajax({
+					url: '/wp-content/themes/wp-crm/ajax/upload.php',
+					type: 'POST',
+					xhr: function(){
+						var mx = jQuery.ajaxSettings.xhr();
+						if (mx.upload) mx.upload.addEventListener('progress', function (f) {
+							if (f.lengthComputable) {
+								var p = Math.ceil (100 * f.loaded / f.total);
+								jQuery ('.wp-crm-form-file-bar', u).width(p + '%');
+								}
+							}, false);
+						return mx;
+						},
+					success: function(r){
+						var d = jQuery.parseJSON(r);
+						if (d.error) alert ('error!');
+						else {
+							var n = jQuery('.wp-crm-form-file-name', u);
+							var l = '<a href="' + d[0].url + '" target="_blank">' + n.html() + ' <i class="fa fa-external-link"></i></a>';
+							n.html(l);
+							h.val(r);
+							jQuery ('.wp-crm-form-file-bar', u).width('100%');
+							}
+						},
+					data: new FormData (f[0]),
+					cache: false,
+					contentType: false,
+					processData: false
+					});
+				});
+			});
+
+		jQuery('.wp-crm-form-select', w).chosen ({width: '100%'});
+		jQuery('.wp-crm-form-textarea',w).each(function(n,r){
+			$wpcrmui.rte.push(jQuery(r).tinyeditor().rte);
+			});
+		jQuery('.wp-crm-form-cond', w).each(function(n,i){
+			var c = jQuery(i).attr('rel').split('=');
+			var d = c[1].split(',');
+			if (d.indexOf(jQuery('[name="' + c[0] + '"]', jQuery(i).parent()).val()) < 0) jQuery(i).hide();
+			jQuery('[name="' + c[0] + '"]', jQuery(i).parent()).on('change', function(e){
+				if (d.indexOf(jQuery(e.target).val()) >= 0) jQuery(i).show(); else jQuery(i).hide();
+				});
+			});
 		}
 
 	this.ready = function () {
@@ -516,33 +581,61 @@ var $wpcrmui = new function () {
 		var wo = function (e, u, v) {
 			e.preventDefault();
 			e.stopPropagation();
+			$wpcrmui.ldg.css({'top': jQuery(window).scrollTop() + 50}).show();
 			$wpcrmui.txt.empty();
-			jQuery.get (u, 'object='+jQuery(e.target).attr('rel'), function(d){
-				$wpcrmui.txt.html(d);
-				$wpcrmui.window(1, function(){
-					$wpcrmui.txt.find('input[type="text"]').keydown(function(f){
-						if (f.keyCode == 13) {
-							return false;
+			jQuery ('.progress-bar', $wpcrmui.ldg).width('100%');
+			jQuery.ajax({
+				url: u,
+				type: 'GET',
+				xhr: function(){
+					var mx = jQuery.ajaxSettings.xhr();
+					if (mx.upload) mx.upload.addEventListener('progress', function (f) {
+						if (f.lengthComputable) {
+							var p = Math.ceil (100 * f.loaded / f.total);
+							jQuery ('.progress-bar', $wpcrmui.ldg).width(p + '%');
 							}
-						});
-					$wpcrmui.txt.find('input[type="submit"]').click(function(f){
-						f.preventDefault();
-						jQuery.each($wpcrmui.rte,function(n,r){r.post();});
-						var p = jQuery(this).closest('form').serialize() + '&object=' + jQuery(e.target).attr('rel') + '&' + jQuery(this).attr('name')+'=1';
-						jQuery.post (u, p, function(d) {
-							alert(d);
-							if (typeof v == 'function') {
-								if (v()) $wpcrmui.window(0);
+						}, false);
+					return mx;
+					},
+				success: function(d){
+					jQuery ('.progress-bar', $wpcrmui.ldg).width('100%');
+					$wpcrmui.ldg.hide();
+					if (d.indexOf ('OK') == 0) {
+						if (d.length > 4)
+							var o = JSON && JSON.parse (d.substr(2)) || jQuery.parseJSON(d.substr(2));
+						// need a better action:
+						window.location.reload ();
+						}
+					$wpcrmui.txt.html(d);
+					$wpcrmui.window(1, function(){
+						$wpcrmui.txt.find('input[type="text"]').keydown(function(f){
+							if (f.keyCode == 13) {
+								return false;
 								}
-							else
-								$wpcrmui.window(0);
+							});
+						$wpcrmui.txt.find('input[type="submit"]').click(function(f){
+							f.preventDefault();
+							jQuery.each($wpcrmui.rte,function(n,r){r.post();});
+							var p = jQuery(this).closest('form').serialize() + '&object=' + jQuery(e.target).attr('rel') + '&' + jQuery(this).attr('name')+'=1';
+							jQuery.post (u, p, function(d) {
+								if (window.console && window.console.log) window.console.log(d);
+								if (typeof v == 'function') {
+									if (v()) $wpcrmui.window(0);
+									}
+								else
+									$wpcrmui.window(0);
+								});
+							});
+						$wpcrmui.txt.find('.wp-crm-form-button-close').click(function(f){
+							f.preventDefault();
+							$wpcrmui.window(0);
 							});
 						});
-					$wpcrmui.txt.find('.wp-crm-form-button-close').click(function(f){
-						f.preventDefault();
-						$wpcrmui.window(0);
-						});
-					});
+					},
+				data: 'object='+jQuery(e.target).attr('rel'),
+				cache: false,
+				contentType: false,
+				processData: false
 				});
 			};
 		var go = function (e, u, v) {
@@ -613,6 +706,10 @@ var $wpcrmui = new function () {
 			var u = '/wp-content/themes/wp-crm/ajax/price.php';
 			wo (e, u);
 			});
+		jQuery('.wp-crm-view-buy').click(function(e){
+			var u = '/wp-content/themes/wp-crm/ajax/buy.php';
+			wo (e, u);
+			});
 		jQuery('.wp-crm-view-delete').click(function(e){
 			var u = '/wp-content/themes/wp-crm/ajax/delete.php';
 			var v = function () {
@@ -661,7 +758,7 @@ var $wpcrmui = new function () {
 			var d = 0;
 
 			w.bind('mousewheel', function(e){
-				alert(e.wheelDelta);
+				if (window.console && window.console.log) window.cosole.log(e.wheelDelta);
 				});
 
 			w.find('.app-slide-up').click(function(e){
@@ -686,16 +783,22 @@ var $wpcrmui = new function () {
 				});
 			});
 
-		jQuery('body').append('<div class="wp-crm-view-shadow"></div><div class="alert wp-crm-view-window"><div class="wp-crm-view-window-header"><button class="close fui-cross wp-crm-view-window-close"></button></div><div class="wp-crm-view-window-content"></div></div>');
+		jQuery('body').append('<div class="wp-crm-view-shadow"></div>');
+		jQuery('body').append('<div class="wp-crm-view-loading"><span class="wp-crm-view-loading-title">Loading ...</span><div class="progress"><div class="progress-bar progress-bar-success"></div></div></div>');
+
+		/* actions */
+		this.scan ();
 		jQuery('.wp-crm-view-window-close').click(function(e){
 			e.preventDefault();
 			$wpcrmui.window(0);
 			});
 
 		this.sha = jQuery('.wp-crm-view-shadow');
-		this.win = jQuery('.wp-crm-view-window');
-		this.ttl = jQuery('.wp-crm-view-window-header');
-		this.txt = jQuery('.wp-crm-view-window-content');
+		this.ldg = jQuery('.wp-crm-view-loading');
+		this.win = jQuery('.modal'); // jQuery('.wp-crm-view-window');
+		this.ttl = jQuery('.modal-title'); //jQuery('.wp-crm-view-window-header');
+		this.txt = jQuery('.modal-body'); //jQuery('.wp-crm-view-window-content');
+		this.ldg.hide ();
 		};
 
 	this.progress = function (e){
@@ -708,7 +811,8 @@ var $wpcrmui = new function () {
 		if (o) {
 //			jQuery('html, body').animate({'scrollTop': 0});
 			this.sha.css({'opacity': 0, 'display': 'block', 'height': jQuery(document).height()}).animate({'opacity': .8}, function(){
-				$wpcrmui.win.css({'top': jQuery('html, body').scrollTop() + 50, 'display': 'block'}).animate({'height': 300}, 400, 'swing', function(){
+				//$wpcrmui.win.css({'top': jQuery('html, body').scrollTop() + 50, 'display': 'block'}).animate({'height': 300}, 400, 'swing', function(){
+				$wpcrmui.win.modal('show');
 					$wpcrmui.win.css({'height':'auto'});
 
 					/* flat-ui element */
@@ -722,6 +826,24 @@ var $wpcrmui = new function () {
 					$wpcrmui.txt.find('.wp-crm-form-person').person({title:'Persoana',url:'/wp-content/themes/wp-crm/ajax/widget/person.php'});
 					$wpcrmui.txt.find('.wp-crm-form-product').product({title:'Produse',url:'/wp-content/themes/wp-crm/ajax/widget/product.php'});
 
+					$wpcrmui.txt.find('.wp-crm-form-tab-add').click(function(e){
+						var p = jQuery(e.target).parent();
+						var r = jQuery(e.target).parent().parent().prev().find('.active');
+						var n = jQuery('.tab-pane', jQuery(e.target).parent().parent()).length;
+						var q = p.clone().removeClass('active').insertBefore(p);
+						q[0].id = 'newtab' + n;
+						r.clone().removeClass('active').html('<a href="#newtab' + n + '">' + jQuery('input[type="text"]', p).first().val() + '</a>').insertBefore(r).find('a').on('click', function(f){f.preventDefault();jQuery(this).tab('show')});
+						jQuery('input[type="text"]', p).val('');
+						jQuery('input[type="text"]', q).each(function(m,i){
+							i.name += '-n' + n;
+							});
+						jQuery('input[type="button"]', q).val('-').removeClass('btn-primary').removeClass('wp-crm-form-tab-add').addClass('btn-danger').click(function(f){
+							jQuery('.active', jQuery(f.target).parent().parent().prev()).remove();
+							jQuery('li a', jQuery(f.target).parent().parent().prev()).first().tab('show');
+							jQuery(f.target).parent().remove();
+							});
+						});
+
 					$wpcrmui.txt.find('.wp-crm-form-date').datepicker({dateFormat: 'dd-mm-yy', dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'], firstDay: 1, monthNames:['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie']});
 					$wpcrmui.txt.find('.wp-crm-form-matrix-add-row').click(function(e){
 						e.preventDefault();
@@ -730,37 +852,37 @@ var $wpcrmui = new function () {
 						r.find('input').each(function(i,j){
 							j.name = $wpcrmui.rowcol (j.name, 1);
 							});
-						var b = jQuery('<button class="btn btn-sm btn-danger fui-cross"></button>').click(function(ee){ ee.preventDefault(); jQuery(ee.target).parent().parent().parent().remove(); });
-						r.children('ul').append(jQuery('<li>').append(b));
+						var b = jQuery('<button class="btn btn-sm btn-danger fa fa-times"></button>').click(function(ee){ ee.preventDefault(); jQuery(ee.target).parent().parent().parent().remove(); });
+						r.children('fieldset').append(jQuery('<div>').append(b));
 						r.find('.wp-crm-form-date').attr("id", "").removeClass('hasDatepicker').removeData('datepicker').unbind().datepicker({dateFormat: 'dd-mm-yy', dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'], firstDay: 1, monthNames:['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie']});
 						});
 					$wpcrmui.txt.find('.wp-crm-form-matrix-add-col').click(function(e){
 						e.preventDefault();
 						var k = 0;
-						jQuery(e.target).parent().parent().find('li').each(function(i,u){
+						jQuery(e.target).parent().parent().find('div').each(function(i,u){
 							if (jQuery(u)[0] === jQuery(e.target).parent()[0]) k = i - 1;
 							});
-						jQuery(e.target).parent().parent().parent().parent().find('ul').each(function(i,u){
+						jQuery(e.target).parent().parent().parent().parent().find('fieldset').each(function(i,u){
 							if (jQuery(u).parent().hasClass('wp-crm-form-matrix-row-delete')) {
-								var b = jQuery('<button class="btn btn-sm btn-danger fui-cross"></button>').click(function(ee){
+								var b = jQuery('<button class="btn btn-sm btn-danger fa fa-times"></button>').click(function(ee){
 									ee.preventDefault ();
 
 									var kk = 0;
-									jQuery(ee.target).parent().parent().find('li').each(function(ii,uu){
+									jQuery(ee.target).parent().parent().find('div').each(function(ii,uu){
 										if (jQuery(uu)[0] === jQuery(ee.target).parent()[0]) kk = ii;
 										});
 
-									jQuery(ee.target).parent().parent().parent().parent().find('ul').each(function(ii,uu){
-										jQuery('li', jQuery(uu)).each(function(jj,ll){
+									jQuery(ee.target).parent().parent().parent().parent().find('fieldset').each(function(ii,uu){
+										jQuery('div', jQuery(uu)).each(function(jj,ll){
 											if (jj == kk) jQuery(ll).remove();
 											});
 										});
 									
 									});
-								jQuery(u).append(jQuery('<li>').append(b));
+								jQuery(u).append(jQuery('<div>').append(b));
 								return;
 								}
-							jQuery('li', jQuery(u)).each(function(j,l){
+							jQuery('div', jQuery(u)).each(function(j,l){
 								if (j == k) {
 									jQuery(l).clone().insertAfter(jQuery(l)).find('input').each(function(m,n){
 										n.name = $wpcrmui.rowcol (n.name, 0, 1);
@@ -809,60 +931,20 @@ var $wpcrmui = new function () {
 							});
 						});
 
-					$wpcrmui.txt.find('.wp-crm-form-file').each(function(i,u){
-						u = jQuery(u);
-						var h = jQuery('[type="hidden"]', u);
-						var f = jQuery('<form/>').addClass('wp-crm-form-hidden');
-						var s = jQuery('<input/>', {type: 'file', name: h[0].name});
-						$wpcrmui.txt.append (f.append(s));
-						jQuery('.wp-crm-form-file-select', u).click(function(e){
-							e.preventDefault();
-							s.click();
-							});
-						jQuery('.wp-crm-form-file-upload', u).click(function(e){
-							e.preventDefault();
-							jQuery.ajax({
-								url: '/wp-content/themes/wp-crm/ajax/upload.php',
-								type: 'POST',
-								xhr: function(){
-									var mx = jQuery.ajaxSettings.xhr();
-									if (mx.upload) mx.upload.addEventListener('progress', $wpcrmui.progress, false);
-									return mx;
-									},
-								success: function(r){
-									var d = jQuery.parseJSON(r);
-									if (d.error) alert ('error!');
-									else {
-										jQuery('.wp-crm-form-file-view', $wpcrmui.txt).empty().append(jQuery('<img />', {src: d[0].url}));
-										jQuery('.wp-crm-form-file input[type="hidden"]', $wpcrmui.txt).val(d[0].url);
-										}
-									},
-								data: new FormData (f[0]),
-								cache: false,
-								contentType: false,
-								processData: false
-								});
-							});
-						});
+					//$wpcrmui.txt.find('.tab-pane').each(function(n,p){if (n>0) jQuery(p).removeClass('active');});
 
-					$wpcrmui.rte = [];
-					$wpcrmui.txt.find('.wp-crm-form-textarea').each(function(n,r){
-						$wpcrmui.rte.push(jQuery(r).tinyeditor().rte);
-						});
-					$wpcrmui.txt.find('.tab-pane').each(function(n,p){if (n>0) jQuery(p).removeClass('active');});
+					$wpcrmui.scan ($wpcrmui.txt);
 
 					if (typeof(f) == 'function') f();
 					});
-				});
+				//});
 			}
 		else {
-			this.win.animate({'height': 0}, 400, 'swing', function(){
-				$wpcrmui.win.css({'display': 'none'});
 				$wpcrmui.sha.animate({'opacity': 0}, 400, 'swing', function(){
 					$wpcrmui.sha.css({'display': 'none'});
+					$wpcrmui.win.modal('hide');
 					if (typeof(f) == 'function') f();
 					});
-				});
 			}
 		};
 	};

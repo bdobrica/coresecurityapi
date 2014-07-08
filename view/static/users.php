@@ -10,6 +10,8 @@ $list = new WP_CRM_List ('WP_CRM_User');
 $view = new WP_CRM_View ($list, array (
 		'add' => 'Adauga',
 		'edit' => 'Modifica',
+		'session' => 'Sesiune',
+		'memo' => 'Memo',
 		'delete' => 'Sterge'
 		));
 unset ($view);

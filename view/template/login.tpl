@@ -16,10 +16,19 @@
 				<?php } ?>
 					<div class="clearfix"></div>
 			<?php } ?>
+
+			<?php if (isset ($reset)) { ?>
+				<?php if ($reset) { ?>
+					XX
+				<?php } else { ?>
+					XY
+				<?php } ?>
+					<div class="clearfix"></div>
+			<?php } ?>
 					
 					<?php $form->render (TRUE); ?>
 
-					<a class="pull-left" href="/reset">Ai uitat parola?</a>
+					<a class="pull-left" href="/forgot">Ai uitat parola?</a>
 					<a class="pull-right" href="/signup">Inregistreaza-te!</a>
 					
 					<div class="clearfix"></div>				

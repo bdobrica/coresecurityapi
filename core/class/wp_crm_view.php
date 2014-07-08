@@ -36,6 +36,19 @@ class WP_CRM_View {
 					}
 				else
 				switch (get_class ($object)) {
+					case 'WP_CRM_Tree':
+						$this->out .= '<div class="' . $this->class . '-tree-wrapper">';
+						$this->out .= '<button class="wp-crm-view-nodeadd" rel="WP_CRM_Task-0"><i class="fa fa-plus"></i></button>';
+						$this->out .= '<canvas class="' . $this->class. '-tree"></canvas>' . "\n";
+						$this->out .= '<div class="' . $this->class . '-tree-menu btn-group open"><ul class="dropdown-menu">
+<li><a class="wp-crm-view-nodeedit">Editeaza</a></li>
+<li><a class="wp-crm-view-nodedelete">Sterge</a></li>
+<li><a class="wp-crm-view-nodelink">Leaga</a></li>
+<li><a class="wp-crm-view-nodeunlink">Dezleaga</a></li>
+</ul></div>';
+						$this->out .= '</div>';
+						$this->out .= '<script type="text/javascript">$wpcrmui.tree(\'.' . $this->class. '-tree\', ' . $object->get () . ');</script>';
+						break;
 					case 'WP_CRM_List':
 						/*
 						* NEW DISPLAY
@@ -84,8 +97,11 @@ class WP_CRM_View {
 							$fields = $class::$F['safe'];
 
 						if (empty ($fields)) {
-							echo '<p><small>Warning: Class &laquo;' . $class . '&raquo; uses obsolete $F[\'public\']. Upgrade to $F[\'view\'].</small></p>';
-							$fields = $class::$F['public'];
+							$this->out .= '<p>Informatiile pe care incercati sa le accesati sunt confidentiale si presupun verificarea identitatii dumneavoastra. Acest lucru este posibil apasand pe link-ul de confirmare pe care l-ati primit prin email in momentul inregistrarii. In cazul in care nu ati primit un astfel de link, va rugam sa contactati un administrator!</p>';
+							break;
+							//echo '<p>Informatiile pe care sunt prezentate in continuare
+							//echo '<p><small>Warning: Class &laquo;' . $class . '&raquo; uses obsolete $F[\'public\']. Upgrade to $F[\'view\'].</small></p>';
+							//$fields = $class::$F['public'];
 							}
 						$field_keys = array_keys ($fields);
 						$cols[] = '#';

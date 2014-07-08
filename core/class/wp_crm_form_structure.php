@@ -185,6 +185,78 @@ class WP_CRM_Form_Structure {
 						)
 					);
 				break;
+			case WP_CRM_State::Forgot:
+			case 'forgot':
+				$this->fields = array (
+					array (
+						'class' => 'forgot-form',
+						'fields' => array (
+							'email' => array (
+								'placeholder' => 'Adresa de email',
+								'label' => 'Adresa de email',
+								'filters' => array (
+									'empty' => 'Adresa de email este obligatorie.',
+									)
+								),
+							)
+						),
+					array (
+						'class' => 'forgot-buttons',
+						'fields' => array (
+							'next' => array (
+								'type' => 'submit',
+								'label' => 'Recupereaza Parola &raquo;',
+								'class' => 'btn btn-primary',
+								'method' => 'post',
+								'action' => '',
+								'next' => WP_CRM_State::Login,
+								'callback' => 'WP_CRM::forgot'
+								)
+							)
+						)
+					);
+				break;
+			case WP_CRM_State::Reset:
+			case 'reset':
+				$this->fields = array (
+					array (
+						'class' => 'reset-form',
+						'fields' => array (
+							'password' => array (
+								'placeholder' => 'Noua Parola',
+								'label' => 'Parola',
+								'type' => 'password',
+								'filters' => array (
+									'empty' => 'Parola este obligatorie.',
+									)
+								),
+							'confirm_password' => array (
+								'placeholder' => 'Confirma Parola',
+								'label' => 'Confirma Parola',
+								'type' => 'password',
+								'filters' => array (
+									'empty' => 'Parola este obligatorie.',
+									'cofirm' => 'Parola introdusa nu a fost confirmata.',
+									)
+								)
+							)
+						),
+					array (
+						'class' => 'reset-buttons',
+						'fields' => array (
+							'next' => array (
+								'type' => 'submit',
+								'label' => 'Recupereaza Parola &raquo;',
+								'class' => 'btn btn-primary',
+								'method' => 'post',
+								'action' => '',
+								'next' => WP_CRM_State::Login,
+								'callback' => 'WP_CRM::reset'
+								)
+							)
+						)
+					);
+				break;
 			case WP_CRM_State::Participants:
 			case 'participants':
 				$this->fields = array ();
@@ -606,6 +678,14 @@ class WP_CRM_Form_Structure {
 					'label' => $label,
 					'type' => 'switch',
 					'default' => $object->get ($key)
+					);
+				break;
+			case 'tree':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'tree',
+					'default' => $object->get ($key),
+					'parent' => get_class ($object) . '-' . $object->get()
 					);
 				break;
 			default:

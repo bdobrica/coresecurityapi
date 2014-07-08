@@ -5,11 +5,12 @@ class WP_CRM_Task extends WP_CRM_Model {
 		'oid',					// office id
 		'cid',					// company id
 		'pid',					// process id
-		'tid',					// previous task id; if 0, this is the first task
+		'parent',				// previous task id; if 0, this is the first task
 		'uid',					// the user that generated this task
 		'rid',					// responsible id
 		'title',
 		'description',
+		'factor',
 		'importance',
 		'urgency',
 		'deadline'
@@ -45,11 +46,12 @@ class WP_CRM_Task extends WP_CRM_Model {
 		'`oid` int(11) NOT NULL DEFAULT 0',
 		'`cid` int(11) NOT NULL DEFAULT 0',
 		'`pid` int(11) NOT NULL DEFAULT 0',
-		'`tid` int(11) NOT NULL DEFAULT 0',
+		'`parent` int(11) NOT NULL DEFAULT 0',
 		'`uid` int(11) NOT NULL DEFAULT 0',
 		'`rid` int(11) NOT NULL DEFAULT 0',
 		'`title` text NOT NULL',
 		'`description` text NOT NULL',
+		'`factor` float(9,2) NOT NULL DEFAULT 0.00',
 		'`importance` int(2) NOT NULL DEFAULT 0',
 		'`urgency` int(2) NOT NULL DEFAULT 0',
 		'`deadline` int(11) NOT NULL DEFAULT 0'

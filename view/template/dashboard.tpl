@@ -30,9 +30,49 @@
 		Mai jos ai lista cursurilor la care te-ai inscris:
 	</div>
 
+
 	<?php
+		$books = 0;
+		foreach ($list->get () as $product) {
+			if ($product->get ('code') == 'MDP001') $books = 1;
+			if ($product->get ('code') == 'MDP002') $books = 2;
+			if ($product->get ('code') == 'MDP003') $books = 1;
+			}
+
 		$view = new WP_CRM_View ($list);
 		unset ($view);
+
+		if ($books) { ?>
+
+	<h2>Materiale pentru studiu</h2>
+	<div class="row">
+		<div class="col-md-3">
+			<a href="/wp-content/themes/wp-crm/assets/books/<?php echo $books == 1 ? 'Suport_de_Curs_Manager_de_Proiect.pdf' : 'Suport_de_Curs_Manager_de_Proiect-v1.2.pdf'; ?>" target="_blank">
+				<img src="/wp-content/themes/wp-crm/assets/books/covers/Suport_de_Curs_Manager_de_Proiect.png" />
+				<label>Suport de Curs Manager de Proiect (iunie-iulie 2014)</label>
+			</a>
+		</div>
+		<div class="col-md-3">
+			<a href="/wp-content/themes/wp-crm/assets/books/Effective_Project_Management_Seventh_Edition.pdf" target="_blank">
+				<img src="/wp-content/themes/wp-crm/assets/books/covers/Effective_Project_Management_Seventh_Edition.gif" />
+				<label>Effective Project Management, 7<sup>th</sup> Edition</label>
+			</a>
+		</div>
+		<div class="col-md-3">
+			<a href="/wp-content/themes/wp-crm/assets/books/Project_Management_For_Dummies_Fourth_Edition.pdf" target="_blank">
+				<img src="/wp-content/themes/wp-crm/assets/books/covers/Project_Management_For_Dummies_Fourth_Edition.gif" />
+				<label>Project Management for Dummies, 4<sup>th</sup> Edition</label>
+			</a>
+		</div>
+		<div class="col-md-3">
+			<a href="/wp-content/themes/wp-crm/assets/books/97_Things_Every_Project_Manager_Should_Know.pdf" target="_blank">
+				<img src="/wp-content/themes/wp-crm/assets/books/covers/97_Things_Every_Project_Manager_Should_Know.gif" style="height: 225px;" />
+				<label>97 Things Every Project Manager Should Know</label>
+			</a>
+		</div>
+	</div>
+		
+	<?php		}
 		}
 
 	?>
