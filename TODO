@@ -143,7 +143,7 @@ ERP [modul 2]
 			- lista cu subconturi, care se pot adauga sau sterge (trebuie sa verific cu contabilul)
 	- in toolbarul conturilor sunt rapoarte
 BI - defapt CRM [modul 3]
-* Client List
+(working) Client List
 	- lista clienti, filtrabila pe companie, birou, utilizator
 		- optiunea de a adauga un nou client
 		- clientii pot fi persoane fizice sau juridice
@@ -158,7 +158,7 @@ BI - defapt CRM [modul 3]
 		- mail
 		- memo (de fapt, memo se poate adauga la orice obiect)
 	- toolbar-ul Client List va contine template-uri pentru diferite lucruri: contracte, procese verbale, etc
-* History
+(working) History
 	- de fapt, un istoric al ticketelor
 	- istoric clienti, filtrabil dupa client, companie, birou, utilizator
 		- optiune de adauga un nou ticket
