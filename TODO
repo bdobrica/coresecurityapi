@@ -143,7 +143,7 @@ ERP [modul 2]
 			- lista cu subconturi, care se pot adauga sau sterge (trebuie sa verific cu contabilul)
 	- in toolbarul conturilor sunt rapoarte
 BI - defapt CRM [modul 3]
-(working) Client List
+(working)  Client List
 	- lista clienti, filtrabila pe companie, birou, utilizator
 		- optiunea de a adauga un nou client
 		- clientii pot fi persoane fizice sau juridice
