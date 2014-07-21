@@ -81,3 +81,10 @@
 .wp-crm-view-loading { position: absolute; left: 50%; width: 320px; height: 100px; background: #fff; border: 2px solid #eee; border-radius: 6px; box-shadow: 3px 3px 3px #eee;  margin-left: -160px; z-index: 9999; }
 .wp-crm-view-loading-title { text-align: center; padding: 5px; font-weight: bold; display: block; }
 .wp-crm-view-loading .progress { margin: 20px 9px 30px; width: 300px; }
+
+/****************** ALEX ADDONS *****************/
+.wp-crm-view-data {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}

@@ -39,7 +39,28 @@
 	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="<?php echo $URL; ?>/assets/ico/apple-touch-icon-57-precomposed.png">
 	<link rel="shortcut icon" href="<?php echo $URL; ?>/assets/ico/favicon.png">
 	<!-- end: Favicon and Touch Icons -->
+	
+	
 	<?php wp_head(); ?>
+    <!-- start: fileManager scripts -->
+
+    <script src="<?php echo $URL; ?>/script/fileManager/gsFileManager.js" type="text/javascript"></script>
+    <script src="<?php echo $URL; ?>/script/fileManager/jquery.form.js" type="text/javascript"></script>
+    <script src="<?php echo $URL; ?>/script/fileManager/jquery.Jcrop.js" type="text/javascript"></script>
+    <script src="<?php echo $URL; ?>/script/lib/ckeditor/ckeditor.js" type="text/javascript"></script>
+   
+    <link href="<?php echo $URL; ?>/script/fileManager/gsFileManager.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="<?php echo $URL; ?>/script/fileManager/jquery.Jcrop.css" rel="stylesheet" type="text/css" media="screen" />
+
+    <script type="text/javascript">
+        
+        $(document).ready( function() {
+            
+            $('#fileManager').gsFileManager({ script: '<?php echo $URL; ?>/script/fileManager/connectors/GsFileManager.php' });
+            
+        });
+    </script>
+    <!-- end: fileManager scripts -->
 </head>
 
 <body>

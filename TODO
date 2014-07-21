@@ -5,7 +5,7 @@ Profil [modul 0]
 * Tasks
 DMS [modul 1]
 - in interfata de vizualizare, vom avea un toolbar care se aplica tuturor item-ilor selectati. itemii se vor selecta cu click simplu.
-* File Browser
+(Mai trebuie sa punem TWAIN) * File Browser
 	- interfata asemanatoare windows explorer
 		- folosim buton de add pentru upload fisiere in directorul curent
 		- folosim buton de scan pentru scan-ul fisierului in directorul curent folosind TWAIN
@@ -55,7 +55,7 @@ DMS [modul 1]
 		- continut (si sare direct la folderul locatiei)
 
 ERP [modul 2]
-* Office List
+(Lucrez la el)* Office List
 	- listarea birourilor clientului (userului curent) - grupuri de companii ale userului curent care sunt stocate intr-un meta_data al userului (get_user_meta - functie din wordpress) care se numeste _wp_crm_offices si contine fie un numar (ID-ul WP_CRM_Office) sau o lista de numere separate cu virgula (tot ID-uri ale obiectelor WP_CRM_Office)
 		- optiune de a adauga un birou nou
 	- fiecare birou va avea urmatoarele optiuni:
@@ -67,7 +67,7 @@ ERP [modul 2]
 			- meniu care duce la Company List filtrat dupa Office-ul ales
 		- produse
 			- meniu care duce la Product List filtrat dupa Office-ul ales
-* Company List
+(Lucrez la el)* Company List
 	- listarea companiilor utilizatorului sau ale unui birou sau ale unui client
 		- optiune de a adauga o companie noua
 	- fiecare companie va avea urmatoarele optiuni:
@@ -80,7 +80,7 @@ ERP [modul 2]
 		- produse
 			- meniu care duce la Product List filtrat dupa Compania aleasa
 
-* Users List
+(Lucrez la el)* Users List
 	- listarea utilizatorilul subordonati sau ai unei companii
 		- optiune de a adauga un utilizator nou
 	- fiecare utilizator va avea urmatoarele optiuni:
@@ -89,7 +89,7 @@ ERP [modul 2]
 		- vizualizeaza
 			- (n-am deocamdata idee ce sa afisam aici)
 		- mail
-* Product List
+(Lucrez la el)* Product List
 	- listarea produselor unui birou, unei companii sau ale utilizatorului curent
 		- optiune de a adauga un produs nou
 	- fiecare produs va avea urmatoarele optiuni
