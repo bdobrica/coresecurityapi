@@ -7,6 +7,7 @@
 class WP_CRM_Office extends WP_CRM_Model {
 	public static $T = 'offices';
 	protected static $K = array (
+	    'uid',
 		'name',
 		'description',
 		'url',
@@ -35,6 +36,7 @@ class WP_CRM_Office extends WP_CRM_Model {
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`uid` int(11) NOT NULL DEFAULT  \'\'',
 		'`name` varchar(64) NOT NULL DEFAULT \'\' UNIQUE',
 		'`description` text NOT NULL',
 		'`url` text NOT NULL',
@@ -111,16 +113,16 @@ class WP_CRM_Office extends WP_CRM_Model {
 				$value = $value->ID;
 				}
 			if (is_numeric ($value)) {
-				$offices = get_user_meta ($value, '_wp_crm_offices', TRUE);
+				$offices = get_user_meta ($value, $wpdb->prefix . WP_CRM_OFFICE::$T, TRUE);
 				if (is_array ($offices)) {
 					if (!in_array ($this->ID, $offices)) {
 						$offices[] = $this->ID;
-						update_user_meta ($value, '_wp_crm_offices', $offices);
+						update_user_meta ($value, $wpdb->prefix . WP_CRM_OFFICE::$T, $offices);
 						}
 					}
 				else {
 					if ($this->ID != $offices) {
-						update_user_meta ($value, '_wp_crm_offices', $this->ID);
+						update_user_meta ($value, $wpdb->prefix . WP_CRM_OFFICE::$T, $this->ID);
 						}
 					}
 				}

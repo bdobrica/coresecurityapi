@@ -52,14 +52,6 @@
     <link href="<?php echo $URL; ?>/script/fileManager/gsFileManager.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="<?php echo $URL; ?>/script/fileManager/jquery.Jcrop.css" rel="stylesheet" type="text/css" media="screen" />
 
-    <script type="text/javascript">
-        
-        $(document).ready( function() {
-            
-            $('#fileManager').gsFileManager({ script: '<?php echo $URL; ?>/script/fileManager/connectors/GsFileManager.php' });
-            
-        });
-    </script>
     <!-- end: fileManager scripts -->
 </head>
 

@@ -9,6 +9,7 @@ class WP_CRM_Product extends WP_CRM_Model {
 	protected static $K = array (
 		'oid',
 		'cid',
+        'uid',                      // the user that generated this task
 		'series',					// series & number constructs the SKU
 		'number',
 		'color',					// color to display the SKU
@@ -39,6 +40,7 @@ class WP_CRM_Product extends WP_CRM_Model {
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
 		'`oid` int(11) NOT NULL DEFAULT 0',		// office id
 		'`cid` int(11) NOT NULL DEFAULT 0',		// company id
+        '`uid` int(11) NOT NULL DEFAULT 0',     // the user that generated this task
 		'`series` varchar(6) NOT NULL DEFAULT \'\'',
  		'`number` int(11) NOT NULL DEFAULT 0',
 		'`color` varchar(6) NOT NULL DEFAULT \'FFFFFF\'',

@@ -1,6 +1,6 @@
 <?php
 /*
-App Title: Companie
+App Title: Companiile mele
 App Description:
 App Size: 1
 App Style:
