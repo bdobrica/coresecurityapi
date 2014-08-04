@@ -8,6 +8,7 @@ class WP_CRM_Office extends WP_CRM_Model {
 	public static $T = 'offices';
 	protected static $K = array (
 	    'uid',
+	    'cid',
 		'name',
 		'description',
 		'url',
@@ -17,6 +18,7 @@ class WP_CRM_Office extends WP_CRM_Model {
 		'new' => array (
 			'name' => 'Denumire',
 			'description:textarea' => 'Descriere',
+            'cid:company' => 'Companie',
 			'url' => 'Link',
 			#'companies' => 'Companii Membre'
 			),
@@ -24,19 +26,22 @@ class WP_CRM_Office extends WP_CRM_Model {
 			'name' => 'Denumire',
 			'type' => 'Tip',
 			'description' => 'Descriere',
+            'cid:company' => 'Companie',
 			'url' => 'Link',
 			#'companies' => 'Companii Membre'
 			),
 		'edit' => array (
 			'name' => 'Denumire',
 			'description:textarea' => 'Descriere',
+            'cid:company' => 'Companie',
 			'url' => 'Link',
 			#'companies' => 'Companii Membre'
 			)
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
-		'`uid` int(11) NOT NULL DEFAULT  \'\'',
+        '`uid` int(11) NOT NULL DEFAULT  \'\'',
+        '`cid` int(11) NOT NULL DEFAULT  \'\'',
 		'`name` varchar(64) NOT NULL DEFAULT \'\' UNIQUE',
 		'`description` text NOT NULL',
 		'`url` text NOT NULL',
