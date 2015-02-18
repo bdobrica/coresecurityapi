@@ -23,19 +23,22 @@ class WP_CRM_User extends WP_CRM_Model {
 		'new' => array (
 			'user_login' => 'Nume utilizator',
 			'user_nicename' => 'Nume',
-			'user_pass' => 'Parola',
-			'user_email' => 'Adresa de email'
+			'password:password' => 'Parola',
+			'user_email' => 'Adresa de email',
+			'role:array;role_list' => 'Nivel de Acces'
 			),
 		'view' => array (
 			'user_login' => 'Nume utilizator',
 			'user_nicename' => 'Nume',
-			'user_email' => 'Adresa de email'
+			'user_email' => 'Adresa de email',
+			'role:array;role_list' => 'Nivel de Acces'
 			),
 		'edit' => array (
 			'user_login' => 'Nume utilizator',
 			'user_nicename' => 'Nume',
-			'user_pass' => 'Parola',
-			'user_email' => 'Adresa de email'
+			'password:password' => 'Parola',
+			'user_email' => 'Adresa de email',
+			'role:array;role_list' => 'Nivel de Acces'
 			)
 		);
 	protected static $Q = null;
@@ -48,7 +51,7 @@ class WP_CRM_User extends WP_CRM_Model {
 			$current_user,
 			$wpdb;
 
-		if (is_null ($data)) {
+		if ($data === FALSE) {
 			$current_user = wp_get_current_user ();
 			$data = (int) $current_user->ID;
 			if (!$data)
@@ -65,6 +68,7 @@ class WP_CRM_User extends WP_CRM_Model {
 			else
 				throw new WP_CRM_Exception (WP_CRM_Exception::Invalid_ID);
 			}
+
 		parent::__construct ($data);
 
 		try {
@@ -76,10 +80,16 @@ class WP_CRM_User extends WP_CRM_Model {
 		}
 
 	public function get ($key = null, $opts = null) {
-		global $wpdb;
+		global
+			$wpdb,
+			$wp_roles;
 
 		if (is_string ($key)) {
 			switch ($key) {
+				case 'password':
+				case 'confirm_password':
+					return '';
+					break;
 				case 'products':
 					$product_ids = '0';
 					if (is_object ($this->person)) {
@@ -94,10 +104,73 @@ class WP_CRM_User extends WP_CRM_Model {
 						return $this->person->get ($key);
 						}
 					break;
+				case 'role':
+					$sql = $wpdb->prepare ('select meta_value from `' . $wpdb->usermeta . '` where meta_key=%s and user_id=%d;', array (
+							$wpdb->prefix . 'capabilities',
+							$this->ID
+							));
+					$roles = $wpdb->get_var ($sql);
+					$roles = unserialize ($roles);
+					if (is_array ($roles)) return current (array_keys ($roles));
+					return FALSE;
+					break;
+				case 'role_list':
+					$roles = $wp_roles->roles;
+					$out = array ();
+					if (!empty ($roles))
+					foreach ($roles as $key => $capabilities) {
+						if (strpos ($key, 'wp_crm_') === 0)
+							$out[$key] = $capabilities['name'];
+						else
+						if (strpos ($key, 'admin') === 0)
+							$out[$key] = $capabilities['name'];
+						}
+					return $out;
+					break;
 				}
 			}
 
 		return parent::get ($key, $opts);
+		}
+
+	public function set ($key = null, $value = null) {
+		global
+			$wpdb,
+			$wp_roles;
+
+		if (is_array ($key)) {
+			if (isset ($key['user_pass'])) unset ($key['user_pass']);
+
+			if (isset ($key['password'])) {
+				if (!empty($key['password']) && !empty($key['confirm_password']) && ($key['password'] == $key['confirm_password']))
+					$key['user_pass'] = wp_hash_password ($key['password']);
+				
+				unset ($key['password']);
+				unset ($key['confirm_password']);
+				}
+
+			if (isset ($key['role']) && isset ($wp_roles->roles[$key['role']])) {
+				$user = new WP_User ($this->ID);
+				$user->set_role ($key['role']);
+				unset ($key['role']);
+				}
+			}
+		else {
+			switch ($key) {
+				case 'password':
+					$key = 'user_pass';
+					$value = wp_hash_password ($value);
+					break;
+				case 'role':
+					if (!isset($wp_roles->roles[$value])) return FALSE;
+					$user = new WP_User ($this->ID);
+					$user->set_role ($value);
+					return TRUE;
+					break;
+				}
+			}
+
+		return parent::set ($key, $value);
 		}
 
 	public function save () {

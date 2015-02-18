@@ -9,7 +9,7 @@ class WP_CRM_Product extends WP_CRM_Model {
 	protected static $K = array (
 		'oid',
 		'cid',
-        'uid',                      // the user that generated this task
+		'uid',                      // the user that generated this task
 		'series',					// series & number constructs the SKU
 		'number',
 		'color',					// color to display the SKU
@@ -40,7 +40,7 @@ class WP_CRM_Product extends WP_CRM_Model {
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
 		'`oid` int(11) NOT NULL DEFAULT 0',		// office id
 		'`cid` int(11) NOT NULL DEFAULT 0',		// company id
-        '`uid` int(11) NOT NULL DEFAULT 0',     // the user that generated this task
+		'`uid` int(11) NOT NULL DEFAULT 0',     // the user that generated this task
 		'`series` varchar(6) NOT NULL DEFAULT \'\'',
  		'`number` int(11) NOT NULL DEFAULT 0',
 		'`color` varchar(6) NOT NULL DEFAULT \'FFFFFF\'',
@@ -58,6 +58,7 @@ class WP_CRM_Product extends WP_CRM_Model {
 			'title' => 'Denumire',
 			'cid:seller' => 'Companie',
 			'pricematrix:matrix' => 'Pret',
+			'tasks:treestructure' => 'Activitati'
 			),
 		'view' => array (
 			'code' => 'Cod',
@@ -69,6 +70,7 @@ class WP_CRM_Product extends WP_CRM_Model {
 			'title' => 'Denumire',
 			'cid:seller' => 'Companie',
 			'pricematrix:matrix' => 'Pret',
+			'tasks:treestructure' => 'Activitati'
 			),
 		);
 	
@@ -276,6 +278,9 @@ class WP_CRM_Product extends WP_CRM_Model {
 				$wp_crm_price = new WP_CRM_Price ($this);
 				$matrix = $wp_crm_price->get ('matrix');
 				return $matrix;
+				break;
+			case 'tasks':
+				return array ();
 				break;
 			}
 		return parent::get ($key, $opts);

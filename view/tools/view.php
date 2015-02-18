@@ -5,7 +5,7 @@ include (dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/wp-blog-header.
 if (isset ($_GET['grp'])) {
 	$group = new WP_CRM_Group ($_GET['grp']);
 	$pdf = new PDF ();
-	$out = $group->view (FALSE, $pdf);
+	$out = $group->gview (FALSE, $pdf);
 	$out['pdf']->out ('invoices.pdf');
 	}
 else

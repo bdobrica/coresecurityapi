@@ -53,13 +53,15 @@ class WP_CRM_Basket extends WP_CRM_Model {
 		if (is_null ($data)) {
 			$this->products = array ();
 
-			$sql = $wpdb->prepare ('select code,quantity from `' . $wpdb->prefix . self::$T . '` where iid=0 and bid=%d;', $wp_crm_buyer->get ());
+			if ($wp_crm_buyer instanceof WP_CRM_Buyer) {
+				$sql = $wpdb->prepare ('select code,quantity from `' . $wpdb->prefix . self::$T . '` where iid=0 and bid=%d;', $wp_crm_buyer->get ());
 
-			$rows = $wpdb->get_results ($sql);
-			if (!empty($rows))
-			foreach ($rows as $row)
-				if ($row->quantity)
-					$this->products [$row->code] = (int) $row->quantity;
+				$rows = $wpdb->get_results ($sql);
+				if (!empty($rows))
+				foreach ($rows as $row)
+					if ($row->quantity)
+						$this->products [$row->code] = (int) $row->quantity;
+				}
 			}
 		else
 		if (is_numeric ($data)) {
@@ -103,13 +105,26 @@ class WP_CRM_Basket extends WP_CRM_Model {
 			case 'products':
 				return $this->products;
 				break;
+			case 'meta_products':
+				return $this->meta_products;
+				break;
 			}
 		return parent::get ($key, $opts);
 		}
 
 	public function set ($key = null, $value = null) {
+		global
+			$wpdb,
+			$wp_crm_buyer;
+
 		switch ((string) $key) {
+			/**
+			 * The following code processes the 'products' key.
+			 */
 			case 'products':
+				$old_products = $this->products;
+				$old_meta_products = $this->meta_products;
+
 				if (is_array ($value)) {
 					if (isset ($value['old']) && isset ($value['new'])) {
 						$this->products = array ();
@@ -134,13 +149,25 @@ class WP_CRM_Basket extends WP_CRM_Model {
 						$this->products = $value;
 					}
 				else
-				if ($value instanceof WP_CRM_Basket) $this->products = $value->get ('products');
+				if ($value instanceof WP_CRM_Basket) {
+					$this->products = $value->get ('products');
+					$this->meta_products = $value->get ('meta_products');
+					}	
+				/**
+				 * Now, $this->products and this->meta_products have data about the content of the basket.
+				 */
 				return TRUE;
 				break;
 			}
 
 		if (is_array ($key) && is_null ($value)) {
+			/**
+			 * The following code processes the 'products' key.
+			 */
 			if (isset ($key['products'])) {
+				$old_products = $this->products;
+				$old_meta_products = $this->meta_products;
+
 				if (is_array ($key['products'])) {
 					if (isset ($key['products']['old']) && isset ($key['products']['new'])) {
 						$this->products = array ();
@@ -165,9 +192,15 @@ class WP_CRM_Basket extends WP_CRM_Model {
 						$this->products = $value;
 					}
 				else
-				if ($key['products'] instanceof WP_CRM_Basket) $this->products = $value->get ('products');
+				if ($key['products'] instanceof WP_CRM_Basket) {
+					$this->products = $value->get ('products');
+					$this->meta_products = $value->get ('meta_products');
+					}
 				$key['products'] = null;
 				unset ($key['products']);
+				/**
+				 * Now, $this->products and this->meta_products have data about the content of the basket.
+				 */
 				}
 			}
 
@@ -256,8 +289,9 @@ class WP_CRM_Basket extends WP_CRM_Model {
 					$this->ID = null;
 					}
 			}
-		else
+		else {
 			parent::save ();
+			}
 		}
 
 	public function delete () {

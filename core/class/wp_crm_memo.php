@@ -36,7 +36,7 @@ class WP_CRM_Memo extends WP_CRM_Model {
 
 	protected $objects;
 
-	public function __construct ($data) {
+	public function __construct ($data = null) {
 		if (is_object ($data)) $data = array ($data);
 		if (is_array ($data) && is_object ($data[0])) {
 			$this->objects = array ();

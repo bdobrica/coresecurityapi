@@ -1,7 +1,11 @@
 <?php
+/*
+ * Should be a TBS wrapper class so it will be able to use all sort of templates: html, xml, open/microsoft office docs, pdfs
+ */
 class WP_CRM_Template extends WP_CRM_Model {
 	const Site	= 0x100;
 	const Mail	= 0x200;
+	const Document	= 0x400;
 
 	public static $T = 'templates';
 	protected static $K = array (
@@ -12,14 +16,15 @@ class WP_CRM_Template extends WP_CRM_Model {
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
-		'`cid` int(11) NOT NULL DEFAULT 0',
-		'`mid` int(11) NOT NULL DEFAULT 0',
-		'`type` int(11) NOT NULL DEFAULT 0',
-		'`comment` text NOT NULL',
-		'`subject` text NOT NULL',
-		'`content` text NOT NULL',
-		'`stamp` int(11) NOT NULL DEFAULT 0',
-		'FULLTEXT KEY `subject` (`subject`)'
+		'`oid` int(11) NOT NULL DEFAULT 0',			/** office id */
+		'`cid` int(11) NOT NULL DEFAULT 0',			/** company id */
+		'`mid` int(11) NOT NULL DEFAULT 0',			/** mailer id */
+		'`type` int(11) NOT NULL DEFAULT 0',			/** type (see constants) */
+		'`comment` text NOT NULL',				/** a description of the template */
+		'`subject` text NOT NULL',				/** the subject */ 
+		'`content` text NOT NULL',				/** the content */
+		'`stamp` int(11) NOT NULL DEFAULT 0',			/** when it was created */
+		'FULLTEXT KEY `subject` (`subject`)'			/** full text key on subject */
 		);
 	public static $F = array (
 		'view' => array (

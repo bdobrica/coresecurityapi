@@ -1,5 +1,59 @@
 <?php
 class WP_CRM_Order extends WP_CRM_Model {
+	public static $T = 'orders';
+	public static $K = array (
+		'uid',
+		'oid',
+		'cid',
+		'pid',
+		'title',
+		'description',
+		'quantity',
+		'value',
+		'vat',
+		'begin',
+		'deadline'
+		);
+
+	protected static $Q = array (
+		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`uid` int(11) NOT NULL DEFAULT 0',
+		'`oid` int(11) NOT NULL DEFAULT 0',
+		'`cid` int(11) NOT NULL DEFAULT 0',
+		'`pid` int(11) NOT NULL DEFAULT 0',
+		'`title` text NOT NULL',
+		'`description` text NOT NULL',
+		'`quantity` float(11,2) NOT NULL DEFAULT 0.00',
+		'`value` float(11,2) NOT NULL DEFAULT 0.00',
+		'`vat` float(4,2) NOT NULL DEFAULT 0.00',
+		'`begin` int(11) NOT NULL DEFAULT 0',
+		'`deadline` int(11) NOT NULL DEFAULT 0'
+		);
+
+	public static $F = array (
+		'new' => array (
+			'title' => 'Comanda',
+			'quantity' => 'Cantitate',
+			'value' => 'Valoare',
+			'vat' => 'TVA',
+			'begin:date' => 'Data de inceput'
+			),
+		'edit' => array (
+			'title' => 'Comanda',
+			'quantity' => 'Cantitate',
+			'value' => 'Valoare',
+			'vat' => 'TVA',
+			'begin:date' => 'Data de inceput'
+			),
+		'view' => array (
+			'title' => 'Comanda',
+			'quantity' => 'Cantitate',
+			'value' => 'Valoare',
+			'vat' => 'TVA',
+			'begin:date' => 'Data de inceput'
+			)
+		);
+	/*
 	const Cash	=  1;
 	const Card	=  2;
 	const Bank	=  4;
@@ -76,6 +130,6 @@ class WP_CRM_Order extends WP_CRM_Model {
 			default:
 				return parent::get ($key, $opts);
 			}
-		}
+		}*/
 	}
 ?>

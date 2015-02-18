@@ -15,6 +15,16 @@
  */
 abstract class WP_CRM_Model {
 	/**
+	 * Version string a.b.c
+	 * a # major release: paradigm changed
+	 * b # minor release: added removed methods/properties/altered tables
+	 * c # review: fixed bugs in already implemented methods/properties
+	 */
+	public static $version = '1.0.0';
+
+	protected static $Crypto_ZP = 3195487;
+	protected static $Crypto_GN = 297421;
+	/**
 	 * The attached database table, no prefix
 	 * @var string
 	 */
@@ -38,6 +48,12 @@ abstract class WP_CRM_Model {
 	 * @var array
 	 */
 	protected static $U = array ();
+	/**
+	 * Additional table to handle 1:many links between this object and other objects
+	 * similar to groups.
+	 * @var array (list of WP_CRM_Model descendants to be linked to)
+	 */
+	protected static $L = array ();
 	/**
 	 * Pair of (actions, form elements).
 	 * Form elements are defined as name[:type] => label, where
@@ -67,7 +83,10 @@ abstract class WP_CRM_Model {
 	 * @var array
 	 */
 	protected static $Q;
-
+	/**
+	 * List of keys to group by this objects. Groups are uid based. Different uid's have different groups.
+	 */
+	protected static $G;
 	/**
 	 * The object's database ID
 	 * @var int
@@ -166,6 +185,8 @@ abstract class WP_CRM_Model {
 	public function get ($key = null, $opts = null) {
 		if (is_null($key)) return $this->ID;
 		$slug = static::slug ($key);
+		if ($slug == 'self')
+			return get_class ($this) . '-' . $this->ID;
 		if ($slug == 'keys')
 			return static::$K;
 		if (isset($this->data[$slug]))
@@ -176,6 +197,29 @@ abstract class WP_CRM_Model {
 		return $value !== FALSE ? $value : $this->ID;
 
 		return $this->ID;
+		}
+
+	public function changes () {
+		$changes = array ();
+
+		$keys = static::$F['edit'];
+		if (empty ($keys)) $keys = static::$F['new'];
+		if (empty ($keys)) return json_encode ($changes);
+
+		foreach ($keys as $key_type => $key_label) {
+			if (strpos ($key_type, ':') !== FALSE) {
+				list ($key, $type) = explode (':', $key_type);
+				}
+			else {
+				$key = $key_type;
+				$type = '';
+				}
+			$type = $type == 'buyer' ? $this->get ('buyer') : $type;
+			$type = $type == 'safebuyer' ? ('safe' . $this->get ('buyer')) : $type;
+			$changes[$key] = WP_CRM_View::render ($this->get ($key), $type, 32);
+			}
+
+		return json_encode ($changes);
 		}
 
 	private function _meta_set ($key = null, $value = null, $single = TRUE) {
@@ -314,6 +358,13 @@ abstract class WP_CRM_Model {
 		}
 
 	public function json ($data = FALSE) {
+		if (is_string ($data) && in_array ($data, array_keys (static::$F)) && !empty(static::$F[$data])) {
+			$out = array ();
+			foreach (static::$F[$data] as $key => $label)
+				$out[$key] = $this->data[$key];
+			return json_encode ((object) $out);
+			}
+
 		$out = array (
 			'type' => 'object',
 			'class' => get_class ($this),
@@ -375,6 +426,27 @@ abstract class WP_CRM_Model {
 			$wpdb->query ($sql);
 			if (!($this->ID = $wpdb->insert_id)) throw new WP_CRM_Exception (WP_CRM_Exception::Saving_Failure, __CLASS__ . ' :: Saving Failure SQL: ' . "\n" . $sql . "\n");
 			}
+		}
+
+	protected function _link_set ($class, $object, $link) {
+		return FALSE;
+		}
+
+	protected function _link_get ($class, $object) {
+		return FALSE;
+		}
+
+	public function link ($object = null, $link = null) {
+		if (!is_object ($object)) return FALSE;
+		$class = get_class ($object);
+
+		if (is_null ($link)) {
+			return $this->_link_get ($class, $object);
+			}
+		else
+			return $this->_link_set ($class, $object, $link);
+
+		return FALSE;
 		}
 
 	public static function parse ($key = null, $from = null) {
@@ -450,6 +522,7 @@ abstract class WP_CRM_Model {
 	public static function install ($uninstall = FALSE) {
 		global $wpdb;
 
+		if (empty (static::$T)) return;
 		if (empty (static::$Q)) return;
 
 		$sql = $uninstall ?
@@ -477,12 +550,49 @@ abstract class WP_CRM_Model {
 				) engine MyISAM default charset=utf8;';
 		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '_meta\';') != ($wpdb->prefix . static::$T . '_meta'))
 			$wpdb->query ($sql);
+
+		/**
+		 * Create the link table.
+		 */
+		if (empty (static::$L)) return;
+		$sql = $uninstall ?
+			'drop table `' . $wpdb->prefix . static::$T . '_link`;' :
+			'create table `' . $wpdb->prefix . static::$T . '_link` (
+				`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+				`lid` int(11) NOT NULL DEFAULT 0,
+				`object` varchar(64) NOT NULL DEFAULT \'\',
+				`oid` int(11) NOT NULL DEFAULT 0,
+				KEY `lid` (`oid`),
+				KEY `object` (`object`)
+				) engine MyISAM default charset=utf8;';
+		if ($wpdb->get_var ('show tables like \`' . $wpdb->prefix . static::$T . '_link\';') != ($wpdb->prefix . static::$T . '_link'))
+			$wpdb->query ($sql);
+		}
+
+	public static function upgrade () {
+		global $wpdb;
+		
+		if (empty (static::$T)) return;
+		if (empty (static::$Q)) return;
+
+		$sql = 'show create table `' . $wpdb->prefix . static::$T . '`;';
+
+		list (, $structure) = $wpdb->get_row ($sql, ARRAY_N);
+		$structure = explode ("\n", $structure);
+
+		/*
+		 * TODO: when the table structure changes, update the table
+		 */
 		}
 
 	public function delete () {
 		global $wpdb;
 		if (!$this->ID) throw new WP_CRM_Exception (WP_CRM_Exception::Forgettable_Object);
 		$wpdb->query ($wpdb->prepare ('delete from `' . $wpdb->prefix . static::$T . '` where id=%d;', (int) $this->ID));
+		}
+
+	public function crypto () {
+		return function_exists ('bcpowmod') ? bcpowmod ($this->ID, static::$Crypto_GN, static::$Crypto_ZP) : $this->ID;
 		}
 
 	public function __clone () {

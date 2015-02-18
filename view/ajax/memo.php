@@ -19,7 +19,25 @@ $ids = explode (',', $ids);
 if (empty($ids)) die ('Err.');
 
 $list = new WP_CRM_List ('WP_CRM_Memo', array ('oid in (' . implode (',', $ids) .')', 'class=\'' . $class . '\''));
-$view = new WP_CRM_View ($list, array ('view' => 'Detalii'));
+$view = new WP_CRM_View ($list, array (
+		array (
+			'type' => 'toolbar',
+			'items' => array (
+				'add' => array (
+					'label' => 'Adauga',
+					),
+				)
+			),
+		array (
+			'type' => 'column',
+			'label' => 'Actiuni',
+			'items' => array (
+				'view' => array (
+					'label' => 'Detalii',
+					),
+				)
+			)
+	));
 unset ($view);
 
 $objects = array ();

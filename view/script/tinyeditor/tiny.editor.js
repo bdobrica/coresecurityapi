@@ -26,20 +26,22 @@ TINY.editor = function() {
 	c['unlink'] = [23, 'Remove Hyperlink', 'a', 'unlink'];
 	c['unformat'] = [24, 'Remove Formatting', 'a', 'removeformat'];
 	c['print'] = [25, 'Print', 'a', 'print'];
+	c['fullscreen'] = [2, 'Full Screen', 'f', 'fullscreen'];
 	function edit(n, obj) {
 		this.n = n; window[n] = this; this.t = T$(obj.id); this.obj = obj; this.xhtml = obj.xhtml;
 		var p = document.createElement('div'), w = document.createElement('div'), h = document.createElement('div'),
 		l = obj.controls.length, i = 0;
 		this.i = document.createElement('iframe');
 		this.i.width = obj.width || '500'; this.i.height = obj.height || '250'; this.ie = T$$$();
+		this.fs = [0, this.i.width, this.i.height, null, 0];
 		h.className = obj.rowclass || 'tinyeditor-header'; p.className = obj.cssclass || 'tinyeditor'; p.style.width = this.i.width + 'px'; p.appendChild(h);
 		for(i; i < l; i++) {
 			var id = obj.controls[i];
-			if(id =  = 'n') {
+			if(id == 'n') {
 				h = document.createElement('div'); h.className = obj.rowclass || 'tinyeditor-header'; p.appendChild(h);
-			} else if(id =  = '|') {
+			} else if(id == '|') {
 				var d = document.createElement('div'); d.className = obj.dividerclass || 'tinyeditor-divider'; h.appendChild(d);
-			} else if(id =  = 'font') {
+			} else if(id == 'font') {
 				var sel = document.createElement('select'), fonts = obj.fonts || ['Verdana', 'Arial', 'Georgia'], fl = fonts.length, x = 0;
 				sel.className = 'tinyeditor-font'; sel.onchange = new Function(this.n + '.ddaction(this, "fontname")');
 				sel.options[0] = new Option('Font', '');
@@ -48,7 +50,7 @@ TINY.editor = function() {
 					sel.options[x + 1] = new Option(font, font);
 				}
 				h.appendChild(sel)
-			} else if(id =  = 'size') {
+			} else if(id == 'size') {
 				var sel = document.createElement('select'), sizes = obj.sizes || [1, 2, 3, 4, 5, 6, 7], sl = sizes.length, x = 0;
 				sel.className = 'tinyeditor-size'; sel.onchange = new Function(this.n + '.ddaction(this, "fontsize")');
 				for(x; x < sl; x++) {
@@ -56,7 +58,7 @@ TINY.editor = function() {
 					sel.options[x] = new Option(size, size);
 				}
 				h.appendChild(sel)
-			} else if(id =  = 'style') {
+			} else if(id == 'style') {
 				var sel = document.createElement('select'),
 				styles = obj.styles || [['Style', ''], ['Paragraph', '<p>'], ['Header 1', '<h1>'], ['Header 2', '<h2>'], ['Header 3', '<h3>'], ['Header 4', '<h4>'], ['Header 5', '<h5>'], ['Header 6', '<h6>']],
 				sl = styles.length, x = 0;
@@ -72,8 +74,8 @@ TINY.editor = function() {
 				div.unselectable = 'on';
 				div.style.backgroundPosition = '0px ' + pos + 'px';
 				div.title = x[1];
-				ex = func =  = 'a'?'.action("' + x[3] + '", 0, ' + (x[4] || 0) + ')' : '.insert("' + x[4] + '", "' + x[5] + '", "' + x[3] + '")';
-				div.onmousedown = new Function(this.n + (id =  = 'print'?'.print()' : ex));
+				ex = func == 'a'?'.action("' + x[3] + '", 0, ' + (x[4] || 0) + ')' : (func == 'f'?'.fullscreen()':'.insert("' + x[4] + '", "' + x[5] + '", "' + x[3] + '")');
+				div.onmousedown = new Function(this.n + (id == 'print'?'.print()' : ex));
 				div.onmouseover = new Function(this.n + '.hover(this, ' + pos + ', 1)');
 				div.onmouseout = new Function(this.n + '.hover(this, ' + pos + ', 0)');
 				h.appendChild(div);
@@ -81,6 +83,7 @@ TINY.editor = function() {
 			}
 		}
 		this.t.parentNode.insertBefore(p, this.t); this.t.style.width = this.i.width + 'px';
+		this.p = p;
 		w.appendChild(this.t); w.appendChild(this.i); p.appendChild(w); this.t.style.display = 'none';
 		if(obj.footer) {
 			var f = document.createElement('div'); f.className = obj.footerclass || 'tinyeditor-footer';
@@ -100,19 +103,63 @@ TINY.editor = function() {
 		}
 		this.e = this.i.contentWindow.document; this.e.open();
 		var m = '<html><head>', bodyid = obj.bodyid?" id=\"" + obj.bodyid + "\"" : "";
-		if(obj.cssfile) {m + = '<link rel="stylesheet" href="' + obj.cssfile + '" />'}
-		if(obj.css) {m + = '<style type="text/css">' + obj.css + '</style>'}
-		m + = '</head><body' + bodyid + ' contenteditable="true">' + (obj.content || this.t.value);
-		m + = '</body></html>';
+		if(obj.cssfile) {m += '<link rel="stylesheet" href="' + obj.cssfile + '" />'}
+		if(obj.css) {m += '<style type="text/css">' + obj.css + '</style>'}
+		m += '</head><body' + bodyid + ' contenteditable="true">' + (obj.content || this.t.value);
+		m += '</body></html>';
 		this.e.write(m);
 		this.e.close(); this.e.designMode = 'On'; this.d = 1;
 		if(this.xhtml) {
 			try{this.e.execCommand("styleWithCSS", 0, 0)}
 			catch(e) {try{this.e.execCommand("useCSS", 0, 1)}catch(e) {}}
+		if (f) {
+			this.fs[4] = f;
+			}
 		}
 	};
 	edit.prototype.print = function() {
 		this.i.contentWindow.print();
+	};
+	edit.prototype.fullscreen = function() {
+	if (this.fs[0]) {
+		this.post ();
+		this.fs[3].parentNode.insertBefore(this.p, this.fs[3]);
+		this.e = this.i.contentWindow.document; this.e.open();
+		var m = '<html><head>', bodyid = this.obj.bodyid?" id=\"" + this.obj.bodyid + "\"" : "";
+		if(this.obj.cssfile) {m += '<link rel="stylesheet" href="' + this.obj.cssfile + '" />'}
+		if(this.obj.css) {m += '<style type="text/css">' + this.obj.css + '</style>'}
+		m += '</head><body' + bodyid + ' contenteditable="true">' + (this.obj.content || this.t.value);
+		m += '</body></html>';
+		this.e.write(m); this.e.close(); this.e.designMode = 'On';
+		if (this.d) { this.d = 0; this.toggle (); }
+		this.p.style.position = 'static';
+		this.p.style.zIndex = 'auto';
+		this.p.style.backgroundColor = 'auto';
+		this.i.width = (this.p.style.width = this.fs[1]) + 'px';
+		this.i.height = this.fs[2];
+		this.fs[0] = 0;
+		}
+	else {
+		this.fs[3] = this.p.nextSibling;
+		this.post ();
+		document.getElementsByClassName('modal fade in')[0].appendChild(this.p);
+		this.e = this.i.contentWindow.document; this.e.open();
+		var m = '<html><head>', bodyid = this.obj.bodyid?" id=\"" + this.obj.bodyid + "\"" : "";
+		if(this.obj.cssfile) {m += '<link rel="stylesheet" href="' + this.obj.cssfile + '" />'}
+		if(this.obj.css) {m += '<style type="text/css">' + this.obj.css + '</style>'}
+		m += '</head><body' + bodyid + ' contenteditable="true">' + (this.obj.content || this.t.value);
+		m += '</body></html>';
+		this.e.write(m); this.e.close(); this.e.designMode = 'On';
+		if (this.d) { this.d = 0; this.toggle (); }
+		this.p.style.position = 'fixed';
+		this.p.style.zIndex = '1000';
+		this.p.style.backgroundColor = 'white';
+		this.p.style.left = '0px';
+		this.p.style.top = '0px';
+		this.i.width = this.p.style.width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+		this.i.height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - (this.fs[4] ? this.fs[4].clientHeight : 0)*(this.p.getElementsByClassName('tinyeditor-header').length + this.p.getElementsByClassName('tinyeditor-footer').length);
+		this.fs[0] = 1;
+		}
 	};
 	edit.prototype.hover = function(div, pos, dir) {
 		this.getSelection();
@@ -149,7 +196,7 @@ TINY.editor = function() {
 	};
 	edit.prototype.insert = function(pro, msg, cmd) {
 		var val = prompt(pro, msg);
-		if(val! = null && val! = '') {this.e.execCommand(cmd, 0, val)}
+		if(val != null && val != '') {this.e.execCommand(cmd, 0, val)}
 	};
 	edit.prototype.setfont = function() {
 		this.restoreSelection();
@@ -220,6 +267,14 @@ TINY.editor = function() {
 		if(this.d) {
 			this.toggle(1);
 		}
+	};
+	edit.prototype.load = function() {
+		var v = this.t.value;
+		if(this.xhtml && !this.ie) {
+			v = v.replace(/<strong>(.*)<\/strong>/gi, '<span style="font-weight:bold;">$1</span>');
+			v = v.replace(/<em>(.*)<\/em>/gi, '<span style="font-weight:italic;">$1</span>');
+		}
+		this.e.body.innerHTML = v;
 	};
 	return { edit : edit }
 }();

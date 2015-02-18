@@ -94,8 +94,10 @@ class WP_CRM_Card extends WP_CRM_Model {
 			else
 				$objects = null;
 			}
+
 		if (is_null ($objects)) return null;
 		if (empty ($objects)) return null;
+
 		$out = array ();
 		foreach ($objects as $object) {
 			switch ((string) get_class ($object)) {
@@ -108,6 +110,8 @@ class WP_CRM_Card extends WP_CRM_Model {
 						foreach ($list->get() as $client)
 							$out[] = new WP_CRM_Card ($client);
 					break;
+				default:
+					$out[] = new WP_CRM_Card ($object);
 				}
 			}
 		return $out;

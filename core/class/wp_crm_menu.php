@@ -47,8 +47,10 @@ class WP_CRM_Menu extends WP_CRM_Model {
 			}
 
 		if (!empty($apps))
-		foreach ($apps as $app)
-			$this->apps[] = new WP_CRM_App ((int) $app);
+		foreach ($apps as $app) {
+			$wp_crm_app = new WP_CRM_App ((int) $app);
+			$this->apps[$wp_crm_app->get ('slug')] = $wp_crm_app;
+			}
 		}
 
 	public function get ($key = null, $opts = null) {

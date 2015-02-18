@@ -18,8 +18,9 @@
 class WP_CRM_App extends WP_CRM_Model {
 	public static $T = 'apps';
 	protected static $K = array (
-		'pid',
+		'ord',
 		'slug',
+		'parent',
 		'icon',
 		'title',
 		'description',
@@ -40,8 +41,9 @@ class WP_CRM_App extends WP_CRM_Model {
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
-		'`pid` int(11) NOT NULL DEFAULT 0',
+		'`ord` int(11) NOT NULL DEFAULT 0',
 		'`slug` varchar(64) NOT NULL DEFAULT \'\' UNIQUE',
+		'`parent` varchar(64) NOT NULL DEFAULT \'\'',
 		'`icon` varchar(64) NOT NULL DEFAULT \'\'',
 		'`title` text NOT NULL',
 		'`description` text NOT NULL',
@@ -58,6 +60,8 @@ class WP_CRM_App extends WP_CRM_Model {
 					if (!preg_match ('/\.php$/', $n)) continue;
 					if ($f = fopen ( TEMPLATEPATH . '/static/' . $n, 'r')) {
 						$app = array (	'slug' => '',
+								'parent' => '',
+								'order' => '',
 								'title' => '',
 								'size' => '',
 								'style' => '',
@@ -69,6 +73,8 @@ class WP_CRM_App extends WP_CRM_Model {
 								case 1:
 									if (strpos ($l, '*/') === 0) {
 										$flag = 2;
+										if (isset($app['order']))
+											$app['ord'] = $app['order'];
 										if ($app['slug'] && $app['size']) {
 											$wp_crm_app = new WP_CRM_App ($app);
 											try {
@@ -116,6 +122,14 @@ class WP_CRM_App extends WP_CRM_Model {
 		return empty ($out) ?
 			'<a class="app-link app-size-' . $this->data['size'] . '" href="/' . $this->data['slug'] . '" ><span class="app-title">' . $this->data['title'] . '</span></a>' :
 			$out;
+		}
+
+	private static function _compare ($a, $b) {
+		return $a->ord < $b->ord ? -1 : ($a->ord == $b->ord ? 0 : 1);
+		}
+
+	public static function sort (&$array) {
+		usort ($array, array (self, '_compare'));
 		}
 	}
 ?>

@@ -10,9 +10,50 @@ class WP_CRM_View {
 	private $echo;
 
 	public function __construct ($object, $actions = null, $type = null) {
+		/**
+		 * $actions = array (
+		 *	array (
+		 *		'type' => 'toolbar|column',
+		 *		'label' => 'Column Label',
+		 *		'items' => array (
+		 *			'key' => array (
+		 *				'label' => 'Label',
+		 *				'context' => 'WP_CRM_Model-N',
+		 *				),
+		 *			'key' => array (
+		 *				'label' => 'Label',
+		 *				'context' => 'WP_CRM_Model-N',
+		 *				'items' => array (
+		 *					'key' => array (
+		 *						'label' => 'Label',
+		 *						'context' => 'WP_CRM_Model-M',
+		 *						...
+		 *						),
+		 *					...
+		 *					),
+		 *				),
+		 *			...
+		 *			),
+		 *		),
+		 *	...
+		 *	);
+		 */
 		$this->out = '';
 		$this->class = 'wp-crm-view';
-		$this->actions = $actions;
+		$this->actions = array ('toolbars' => array (), 'columns' => array ());
+
+		if (!empty ($actions))
+			foreach ($actions as $action_group)
+				switch ($action_group['type']) {
+					case 'toolbar':
+						$this->actions['toolbars'][] = $action_group;
+						break;
+					case 'switch':
+					case 'column':
+						$this->actions['columns'][] = $action_group;
+						break;
+					}
+
 		$this->echo = TRUE;
 
 		$type = is_null ($type) ? self::WP_CRM_VIEW_CONTENT : $type;
@@ -36,43 +77,20 @@ class WP_CRM_View {
 					}
 				else
 				switch (get_class ($object)) {
+					case 'WP_CRM_Tree':
+						$this->out .= '<div class="' . $this->class . '-tree-wrapper">';
+						$this->out .= '<button class="wp-crm-view-nodeadd" rel="WP_CRM_Task-0"><i class="fa fa-plus"></i></button>';
+						$this->out .= '<div class="' . $this->class. '-tree" width="558" height="400"></div>' . "\n";
+						$this->out .= '<div class="' . $this->class . '-tree-menu btn-group open"><ul class="dropdown-menu">
+<li><a class="wp-crm-view-nodeedit">Editeaza</a></li>
+<li><a class="wp-crm-view-nodedelete">Sterge</a></li>
+<li><a class="wp-crm-view-nodelink">Leaga</a></li>
+<li><a class="wp-crm-view-nodeunlink">Dezleaga</a></li>
+</ul></div>';
+						$this->out .= '</div>';
+						$this->out .= '<script type="text/javascript">$wpcrmui.tree(\'.' . $this->class. '-tree\', ' . $object->get () . ');</script>';
+						break;
 					case 'WP_CRM_List':
-						/*
-						* NEW DISPLAY
-						*/
-						if (FALSE && current_user_can ('add_users') && (get_current_user_id() == 1)) {
-							$table = $object->table ();
-							$view = new WP_CRM_View ($table);
-							$this->out = $view->get ();
-							
-
-
-							/*
-							$groups = array ();
-
-							$excerpts = array ();
-							foreach ($list as $item) $excerpts[] = self::excerpt ($item, $this->class);
-							
-
-							$this->out = '<div class="' . $this->class . '-list-wrapper">' . "\n" .
-									'<div class="' . $this->class . '-list-container">' . "\n";
-							$this->out .= '<div class="' . $this->class . '-list-groups">' . "\n" .
-									'<ul class="nav nav-list">' . "\n" . '<li>' . implode ("</li>\n<li>", $groups) . '</li>' . "\n" . '</ul>' . "\n" .
-									'</div>' . "\n";
-							$this->out .= '<div class="' . $this->class . '-list-excerpts">' . "\n" .
-									'<ul class="nav nav-list">' . "\n" . '<li>' . implode ("</li>\n<li>", $excerpts) . '</li>' . "\n" . '</ul>' . "\n" .
-									'</div>' . "\n";
-							$this->out .= '<div class="' . $this->class . '-list-content"></div>' . "\n";
-							$this->out .= '<div class="' . $this->class . '-list-action"></div>' . "\n";
-							$this->out .= '</div>' . "\n" .
-									'<div class="' . $this->class . '-separator"></div>' . "\n" .
-									'</div>' . "\n";
-							*/
-							break;
-							}
-						/*
-						* OLD DISPLAY
-						*/
 						$list = $object->get ();
 						$class = $object->get ('class');
 						$cols = array ();
@@ -82,53 +100,52 @@ class WP_CRM_View {
 							$fields = $class::$F['view'];
 						else
 							$fields = $class::$F['safe'];
-
-						if (empty ($fields)) {
-							echo '<p><small>Warning: Class &laquo;' . $class . '&raquo; uses obsolete $F[\'public\']. Upgrade to $F[\'view\'].</small></p>';
-							$fields = $class::$F['public'];
+						/**
+						 * Display a toolbar, if we have.
+						 */
+						if (!empty ($this->actions['toolbars'])) {
+							$this->out .= self::render (array (
+								'id' => $object->get ('class') . '-0',
+								'filter' => $object->get ('filter'),
+								'class' => $this->class,
+								'toolbars' => $this->actions['toolbars']), 'toolbars');
 							}
+						/**
+						 * No fields, nothing to display. No more errors.
+						 */
+						if (empty ($fields)) break;
+
 						$field_keys = array_keys ($fields);
 						$cols[] = '#';
 						$cols = array_merge ($cols, array_values ($fields));
-						if (!empty($this->actions)) $cols[] = isset($this->actions['add']) ? self::render (array (
-							'id' => $object->get ('class') . '-0',
-							'filter' => $object->get ('filter'),
-							'class' => $this->class,
-							'value' => $this->actions['add']), 'add') : '';
+
+						if (!empty ($this->actions['columns']))
+							foreach ($this->actions['columns'] as $actions_column) {
+								$cols[] = $actions_column['label'];
+								}
 
 						if (!empty($list)) {
 							$c = 0;
 							foreach ($list as $id => $item) {
 								$rows[$c] = array (($c+1).'. <input type="hidden" name="object" class="' . $this->class . '-object-id" value="' . $object->get('class') . '-' . $item->get() . '" />');
-								$debug = 0;
 								foreach ($field_keys as $key_type) {
-									if (strpos ($key_type, ':') !== FALSE) {
-										list ($key, $type) = explode (':', $key_type);
-										}
-									else {
-										$key = $key_type;
-										$type = '';
-										}
+									$key = $key_type;
+									if (!empty($key_type) && (strpos ($key_type, '?') !== FALSE)) list ($key_type, $cond) = explode ('?', $key_type);
+									list ($key, $type) = explode (':', $key_type);
+									if (!empty($type) && (strpos ($type, ';') !== FALSE)) list ($type, $opts) = explode (';', $type);
+
 									$type = $type == 'buyer' ? $item->get ('buyer') : $type;
 									$type = $type == 'safebuyer' ? ('safe' . $item->get ('buyer')) : $type;
-									#echo $key . ' ' . $type . "\n";
-									$debug ++;
-									$rows[$c][] = self::render ($item->get ($key), $type, 32);
+									$rows[$c][] = '<span class="' . $this->class . '-keyname-' . $key . '">' . self::render ($item->get ($key), $type, $opts ? $item->get ($opts) : null, 32) . '</span>';
 									}
 
-								try {
-									$owned = method_exists ($item, 'is') ? $item->is ('owned') : NULl;
-									}
-								catch (WP_CRM_Exception $wp_crm_exception) {
-									$owned = NULL;
-									}
-
-								if (!empty($this->actions))
+								foreach ($this->actions['columns'] as $actions_column) {
 									$rows[$c][] = self::render (array (
-										'id' => get_class($item) . '-' . $item->get(),
+										'id' => $item->get ('self'),
+										'object' => $item,
 										'class' => $this->class,
-										'owned' => $owned,
-										'actions' => $this->actions ), 'actions');
+										'actions' => $actions_column ), 'actions');
+									}
 								$c++;
 								}
 							}
@@ -152,7 +169,63 @@ class WP_CRM_View {
 							}
 						else {
 							$this->out = '<ul class="nav main-menu">';
-							$list = array ();
+							$items = array ();
+							foreach (($object->get()) as $slug => $app) {
+								$items[] = (object) array (
+									'slug' => $slug,
+									'ord' => $app->get ('ord'),
+									'parent' => $app->get ('parent'),
+									'app' => $app
+									);
+								}
+
+							$children = array ();
+							foreach ($items as $item)
+								$children[$item->parent ? $item->parent : 'root'][] = $item;
+
+							foreach (array_keys ($children) as $parent)
+								WP_CRM_App::sort ($children[$parent]);
+
+							foreach ($items as $item)
+								if (isset ($children[$item->slug]))
+									$item->children = $children[$item->slug];
+
+							$tree = $children['root'];
+							$this->out .= self::dropdown ($tree);
+
+							/*
+							foreach ($tree as $item) {
+								$this->out .= '<li>';
+								if (!empty ($item->children)) {
+									$this->out .= '<a href="/' . $item->app->get ('slug') . '" class="dropmenu">' .
+											'<i class="fa fa-' . $item->app->get ('icon') . '"></i>' .
+											'<span class="hidden-sm text"> ' . $item->app->get ('title') . '</span>' .
+											'<span class="chevron closed"></span>' .
+											'</a>';
+									$this->out .= '<ul>';
+									foreach ($item->children as $_item) {
+										$this->out .= '<li>';
+										$this->out .= '<a href="/' . $_item->app->get ('slug') . '">' .
+												'<i class="fa fa-' . $c_item->app->get ('icon') . '"></i>' .
+												'<span class="hidden-sm text"> ' . $c_item->app->get ('title') . '</span>' .
+												'</a>';
+										$this->out .= '</li>';
+										}
+									$this->out .= '</ul>';
+									}
+								else {
+									$this->out .= '<a href="/' . $item->app->get ('slug') . '">' .
+											'<i class="fa fa-' . $item->app->get ('icon') . '"></i>' .
+											'<span class="hidden-sm text"> ' . $item->app->get ('title') . '</span>' .
+											'</a>';
+									}
+								$this->out .= '</li>';
+								}
+							*/
+
+							/*
+
+
 							foreach (($object->get()) as $app) {
 								if ($app->get ('pid')) {
 									if (!isset ($list[$app->get ('pid')])) $list[$app->get ('pid')] = array ();
@@ -176,7 +249,7 @@ class WP_CRM_View {
 								else
 									$this->out .= '<a ' . $first . ' </a> ';
 								$this->out .= '</li>';
-								}
+								}*/
 							$this->out .= '</ul>';
 							}
 						break;
@@ -195,7 +268,7 @@ class WP_CRM_View {
 							}
 						else {
 							$this->out = '<div class="' . $this->class . '-object-pages">' . "\n";
-							$out = $object->view ();
+							$out = $object->gview ();
 							foreach ($out as $objectid => $objectview) {
 								$this->out .= '<div class="' . $this->class . '-object-page" rel="'.$objectid.'">' . "\n";
 								$this->out .= $objectview;
@@ -215,6 +288,35 @@ class WP_CRM_View {
 						break;
 					case 'WP_CRM_Table':
 						$this->table ($object->get ('cols'), $object->get ('rows'));
+						break;
+					case 'WP_CRM_Folder':
+						$this->out .= '<div class="' . $this->class . '-file-manager"></div>' . "\n";
+						/*
+						$this->out .= '<div class="' . $this->class . '-folder-wrapper">' . "\n";
+
+						if (isset($this->actions['toolbar']) && !empty($this->actions['toolbar'])) $this->out .= self::render (array (
+							'id' => 'WP_CRM_Folder-0',
+							'parent' => 'WP_CRM_Folder-' . $object->get ('parent'),
+							'filter' => $object->get ('filter'),
+							'class' => $this->class,
+							'toolbar' => $this->actions['toolbar']), 'toolbar');
+
+						$children = $object->get ('children');
+
+						$this->out .= '<a href="#" rel="WP_CRM_Folder-' . ($object->get('parent') ? $object->get('parent') : $object->get()) . '" class="' . $this->class . '-actions ' . $this->class . '-folder fa fa-folder">' . $object->get ('parent_title') . '</a>' . "\n";
+						if ($object->get ('parent'))
+							$this->out .= '<a href="#" rel="WP_CRM_Folder-' . $object->get() . '" class="' . $this->class . '-actions ' . $this->class . '-folder fa fa-folder">' . $object->get ('title') . '</a>' . "\n";
+						$this->out .= '<hr />' . "\n";
+						if (!$children->is ('empty'))
+						foreach ($children->get () as $child) {
+							$this->out .= "\t" . '<a href="#" rel="WP_CRM_Folder-' . $child->get() . '" class="' . $this->class . '-actions ' . $this->class . '-folder fa fa-folder">' . $child->get ('title') . '</a>' . "\n";
+							}
+						$this->out .= '</div>' . "\n";
+						$this->out .= '<div class="' . $this->class . '-separator"></div>' . "\n";
+						*/
+						break;
+					case 'WP_CRM_Course':
+						$this->out = $object->render ($this->class);
 						break;
 					}
 				break;
@@ -238,24 +340,29 @@ class WP_CRM_View {
 		return $out . ' ...';
 		}
 
-	private static function render ($data, $type = null, $length = null) {
+	public static function render ($data, $type = null, $opts = null, $length = null) {
+		$out = '';
 		switch ((string) $type) {
 			case 'string':
-				return self::cut ($data, $length);
+				$out = self::cut ($data, $length);
 				break;
 			case 'html':
-				return '';
+				$out = '';
 				break;
 			case 'bool':
-				return $data ? '<span class="wp-crm-view-yes">Da</span>' : '<span class="wp-crm-view-no">Nu</span>';
+				$out = $data ? '<span class="wp-crm-view-yes">Da</span>' : '<span class="wp-crm-view-no">Nu</span>';
 				break;
 			case 'float':
-				if ($data == 0) return '0';
-				return number_format ($data, 2);
+				if ($data == 0)
+					$out = '0';
+				else
+					$out = number_format ($data, 2);
 				break;
 			case 'date':
-				if (!$data) return 'N/A';
-				return date ('d-m-Y', $data);
+				if (!$data)
+					$out = 'N/A';
+				else
+					$out = date ('d-m-Y', $data);
 				break;
 			case 'person':
 			case 'safeperson':
@@ -263,10 +370,10 @@ class WP_CRM_View {
 					$wp_crm_person = new WP_CRM_Person ($data);
 					}
 				catch (WP_CRM_Exception $wp_crm_exception) {
-					return '';
+					break;
 					}
 				$data = $type == 'safeperson' ? preg_replace ('/[a-z]/', '*', ucwords( strtolower( $wp_crm_person->get ('name')))) : $wp_crm_person->get ('name');
-				return self::cut ($data, $length);
+				$out = self::cut ($data, $length);
 				break;
 			case 'company':
 			case 'safecompany':
@@ -274,85 +381,129 @@ class WP_CRM_View {
 					$wp_crm_company = new WP_CRM_Company ($data);
 					}
 				catch (WP_CRM_Exception $wp_crm_error) {
-					return '';
+					break;
 					}
 				$data = $type == 'safecompany' ? preg_replace ('/[a-z]/', '*', ucwords( strtolower( $wp_crm_company->get ('name')))) : $wp_crm_company->get ('name');
-				return self::cut ($data, $length);
+				$out = self::cut ($data, $length);
 				break;
 			case 'entity':
-				if ($data == 'person') return '[P]';
-				if ($data == 'company') return '[C]';
+				if ($data == 'person') $out = '[P]';
+				if ($data == 'company') $out = '[C]';
 				break;
 			case 'array':
-				return implode (' ', $data);
+				$out = $opts[$data];
 				break;
 			case 'products':
 				$out = array ();
 				if (!empty($data) && is_array($data))
 					foreach ($data as $key => $val) $out[] = $val . 'x' . $key;
-				return implode (', ', $out);
+				$out = implode (', ', $out);
 				break;
 			case 'safeproducts':
 				if (empty($data) || !is_array($data)) return '??';
 				$out = 0;
 				foreach ($data as $key => $val) $out += $val;
-				return $out;
 				break;
 			case 'add':
-				return '<button class="btn btn-xs btn-block btn-primary ' . $data['class'] . '-actions ' . $data['class'] . '-add" rel="' . $data['id'] . ';' . urlencode($data['filter']) . '">' . $data['value'] . '</button>';
+				$out = '<button class="btn btn-xs btn-block btn-primary ' . $data['class'] . '-actions ' . $data['class'] . '-add" rel="' . $data['id'] . ';' . urlencode($data['filter']) . '">' . $data['value'] . '</button>';
 				break;
-			case 'actions':
-				$out = array ();
-				if (!empty($data['actions'])) {
-					$c = 0;
-					if (count ($data['actions']) > 2) {
-						foreach ($data['actions'] as $key => $val) {
-							if ($key == 'add') continue;
-							$out[] = '<li><a class="' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '" href="#">' . $val . '</a></li>' . "\n";
-							$c++;
+			case 'toolbars':
+				/**
+				 * Usually, toolbar actions apply in general and / or selected items
+				 */
+				$out = '';
+				if (!empty ($data)) {
+					if (!empty ($data['toolbars'])) {
+						$out .= '<div class="' . $data['class'] . '-buttons inbox">' . "\n" . '<div class="buttons">' . "\n";
+
+						foreach ($data['toolbars'] as $toolbar) {
+							if (!empty ($toolbar['items'])) {
+								$action = '';
+								foreach ($toolbar['items'] as $key => $button) {
+									if (!empty ($button['items'])) {
+										$out .= '<span class="btn-group">' . "\n";
+										$out .= '<button class="btn dropdown-toggle" data-toggle="dropdown">' . $button['label'] . '<span class="caret"></span></button>' . "\n";
+										$out .= '<ul class="dropdown-menu">';
+
+										$action = '';
+										foreach ($button['items'] as $_key => $_button)
+											$out .= '<li><a href="#" class="' . $data['class'] . '-actions ' . $data['class'] . '-' . ($action ? : $_key) . '" rel="' . $data['id'] . ';' . urlencode($data['filter']) . ( $action ? (';' . $_key) : '' ) . '">' . $_button['label'] . '</a></li>';
+										$out .= '</ul>';
+										$out .= '</span>' . "\n";
+										}
+									else
+										$out .= '<button class="' . $data['class'] . '-actions ' . $data['class'] . '-' . ($action ? : $key) . ' btn" rel="' . $data['id'] . ';' . urlencode($data['filter']) . ( $action ? (';' . $key) : '' ) . '">' . $button['label'] . '</button>' . "\n";
+									}
+								}
 							}
-						return '<div class="btn-group"><button class="btn btn-primary btn-xs">Actiuni</button><button class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button><span class="dropdown-arrow dropdown-arrow-inverse"></span><ul class="dropdown-menu dropdown-inverse pull-right ' . $data['class'] . '-actions-wrap">' . "\n" . implode (' ', $out) . "\n" . '</ul></div>';
-						}
-					else {
-						foreach ($data['actions'] as $key => $val) {
-							if ($key == 'add') continue;
-							$out[] = '<button class="btn btn-xs btn-block btn-' . ($data['owned'] ? 'danger' : 'primary') . ' ' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '">' . $val . '</button></li>' . "\n";
-							$c++;
-							}
-						return implode (' ', $out);
+						$out .= '</div>' . "\n" . '</div>' . "\n";
 						}
 					}
-				return '';
+				break;
+			case 'actions':
+				/**
+				 * Actions apply on specific items.
+				 */
+				$out = '';
+
+				switch ($data['actions']['type']) {
+					case 'switch':
+						if (empty ($data['actions']['items'])) break;
+						foreach ($data['actions']['items'] as $key => $switch) {
+							$out .= '<label class="switch pull-right">' . "\n";
+							$out .= '<input name="' . $key . '" class="switch-input ' . $data['class'] . '-actions ' . $data['class'] . '-' . $key . '" rel="' . $data['id'] . ':' . $switch['object']->get('self') . '" type="checkbox" ' . ($data['object']->link ($switch['object']) ? 'checked' : '') . ' ' . ($switch['unique'] ? ('data-unique="' . $data['object']->get ($switch['unique']) . '"') : '') . '/>' . "\n";
+							$out .= '<span class="switch-label" data-off="Off" data-on="On"></span>' . "\n";
+							$out .= '<span class="switch-handle"></span>' . "\n";
+							$out .= '</label>' . "\n";
+							}
+						break;
+					default:
+						if (empty ($data['actions']['items'])) break;
+						if (count ($data['actions']['items']) == 1) {
+							foreach ($data['actions']['items'] as $key => $button)
+								$out .= '<button class="btn btn-xs btn-block ' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '">' . $button['label'] . '</button>' . "\n";
+							break;
+							}
+						$group = '';
+						foreach ($data['actions']['items'] as $key => $button) {
+							$group .= '<li><a class="' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '" href="#">' . $button['label'] . '</a></li>' . "\n";
+							}
+
+						$out .= '<div class="btn-group">' . "\n";
+						$out .= '<button class="btn btn-primary btn-xs">' . $data['actions']['label'] . '</button>';
+						$out .= '<button class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
+						$out .= '<span class="dropdown-arrow dropdown-arrow-inverse"></span>' . "\n";
+						$out .= '<ul class="dropdown-menu dropdown-inverse pull-right ' . $data['class'] . '-actions-wrap">' . "\n" . $group . "\n" . '</ul>' . "\n";
+						$out .= '</div>';
+					}
 				break;
 			case 'referer':
 				$url = parse_url ($data);
-				return '<a href="' . $data . '" target="_blank" title="' . $data . '">' . (isset ($url['host']) ? $url['host'] : '') . '</a>';
+				$out = '<a href="' . $data . '" target="_blank" title="' . $data . '">' . (isset ($url['host']) ? $url['host'] : '') . '</a>';
 				break;
 			case 'series':
 				$series = WP_CRM_Model::parse ('series', $data);
 				$number = WP_CRM_Model::parse ('number', $data);
-				return '<span class="object-series' . (strpos ($series, 'P') === 0 ? ' object-meta-series' : '') . '">' . $series . '</span><span class="object-number">' . $number . '</span>';
+				$out = '<span class="object-series' . (strpos ($series, 'P') === 0 ? ' object-meta-series' : '') . '">' . $series . '</span><span class="object-number">' . $number . '</span>';
 				break;
 			case 'invoice':
 				try {
 					$invoice = new WP_CRM_Invoice ((int) $data);
-					return $invoice->get ('series');
+					$out = $invoice->get ('series');
 					}
 				catch (WP_CRM_Exception $wp_crm_exception) {
-					return '';
 					}
 				break;
 			case 'product':
 				try {
 					$product = new WP_CRM_Product ((int) $data);
-					return $product->get ('code');
+					$out = $product->get ('code');
 					}
 				catch (WP_CRM_Exception $wp_crm_exception) {
-					return '';
 					}
 				break;
 			case 'vars':
-				return nl2br (print_r (unserialize ($data), TRUE));
+				$out = nl2br (print_r (unserialize ($data), TRUE));
 				break;
 			case '%':
 				if ($data[0] == '+') {
@@ -363,7 +514,7 @@ class WP_CRM_View {
 				$green = floor (2.55 * ((float) $data));
 				$green = $green > 255 ? 255 : ($green < 0 ? 0 : $green);
 				$red = 255 - $green;
-				return '<div class="wp-crm-percent' . $class . '"><div class="wp-crm-percent-bar" style="width: ' . $data . '; background-color: rgb(' . $red . ',' . $green . ',0);"></div><div class="wp-crm-percent-data">' . $data . '</div></div>';
+				$out = '<div class="wp-crm-percent' . $class . '"><div class="wp-crm-percent-bar" style="width: ' . $data . '; background-color: rgb(' . $red . ',' . $green . ',0);"></div><div class="wp-crm-percent-data">' . $data . '</div></div>';
 				break;
 			case 'seat':
 				$wp_crm_metro = new WP_CRM_Metro ();
@@ -377,10 +528,13 @@ class WP_CRM_View {
 					if ($c < (int) $data['checked']) $color = '#00cc00';
 					$out .= '<div class="wp-crm-seat" style="background-color: ' . $color . ';"></div>';
 					}
-				return '<div class="wp-crm-seats">' . $out . '</div>';
+				$out = '<div class="wp-crm-seats">' . $out . '</div>';
+				break;
+			default:
+				$out = '<span class="wp-crm-dblclickable">' . $data . '</span>';
 				break;
 			}
-		return $data;
+		return $out;
 		}
 
 	private static function td ($html, $class = null) {
@@ -404,7 +558,7 @@ class WP_CRM_View {
 		}
 
 	private static function tw ($html, $class = null) {
-		return '<table class="table table-striped table-bordered ' . (is_null($class) ? '' : ( ' ' . $class )) . '">' . "\n" . $html . '</table>' . "\n";
+		return '<table class="table table-striped table-condensed ' . (is_null($class) ? '' : ( ' ' . $class )) . '">' . "\n" . $html . '</table>' . "\n";
 		}
 
 	private function table ($cols, $rows, $opts = null) {
@@ -422,7 +576,8 @@ class WP_CRM_View {
 				if (!empty ($row)) {
 					$out_row = '';
 					foreach ($row as $pos => $col)
-						$out_row .= WP_CRM_View::td ($col, $this->class . '-table-row ' . $this->class . ($c%2 ? '-table-even' : '-table-odd') . ($pos+1 == count($row) ? (' ' . $this->class . '-last') : '') . ($c+1 == count($rows) ? (' ' . $this->class . '-table-last') : '') . ($c == 0 ? (' ' . $this->class . '-table-first') : ''));
+						//$out_row .= WP_CRM_View::td ($col, $this->class . '-table-row ' . $this->class . ($c%2 ? '-table-even' : '-table-odd') . ($pos+1 == count($row) ? (' ' . $this->class . '-last') : '') . ($c+1 == count($rows) ? (' ' . $this->class . '-table-last') : '') . ($c == 0 ? (' ' . $this->class . '-table-first') : ''));
+						$out_row .= WP_CRM_View::td ($col, $this->class . '-table-row');
 					$out_body .= WP_CRM_View::tr ($out_row);
 					
 					$c++;
@@ -457,11 +612,40 @@ class WP_CRM_View {
 		if (!empty ($object::$F['excerpt']))
 			foreach ($object::$F['excerpt'] as $field => $label) {
 				$slug = $field;
-				if (strpos ($field, ':') !== FALSE) list ($slug, $type) = explode (':', $field);
-				$out .= '<div class="' . $class . '-' . $type . ' ' . $class . '-excerpt-field">' . ($label ? ('<label>' . $label . '</label>') : '') . '<span>' . self::render ($object->get ($slug), $type) . '</span></div>' . "\n";
+
+				if (!empty($field) && (strpos ($field, '?') !== FALSE)) list ($field, $cond) = explode ('?', $field);
+				list ($key, $type) = explode (':', $field);
+				if (!empty($type) && (strpos ($type, ';') !== FALSE)) list ($type, $opts) = explode (';', $type);
+
+				$out .= '<div class="' . $class . '-' . $type . ' ' . $class . '-excerpt-field">' . ($label ? ('<label>' . $label . '</label>') : '') . '<span>' . self::render ($object->get ($slug), $type, $opts ? $object->get($opts) : null) . '</span></div>' . "\n";
 				}
 		$out .= '<div class="' . $class . '-inline-actions ' . $class . '-excerpt-field"><button rel="' . get_class ($object) . '-' . $object->get () . '">&raquo;</button></div>';
 		$out .= '</div>' . "\n";
+		return $out;
+		}
+
+	private static function dropdown ($tree) {
+		$out = '';
+		foreach ($tree as $item) {
+			$out .= '<li>';
+			if (!empty ($item->children)) {
+				$out .= '<a href="/' . $item->app->get ('slug') . '" class="dropmenu">' .
+						'<i class="fa fa-' . $item->app->get ('icon') . '"></i>' .
+						'<span class="hidden-sm text"> ' . $item->app->get ('title') . '</span>' .
+						'<span class="chevron closed"></span>' .
+						'</a>';
+				$out .= '<ul>';
+				$out .= self::dropdown ($item->children);
+				$out .= '</ul>';
+				}
+			else {
+				$out .= '<a href="/' . $item->app->get ('slug') . '">' .
+						'<i class="fa fa-' . $item->app->get ('icon') . '"></i>' .
+						'<span class="hidden-sm text"> ' . $item->app->get ('title') . '</span>' .
+						'</a>';
+				}
+			$out .= '</li>';
+			}
 		return $out;
 		}
 

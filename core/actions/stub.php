@@ -6,4 +6,7 @@ Action Events: *
 Action Objects: *
 Action Filter:
 */
+
+function stub ($data) {
+	}
 ?>

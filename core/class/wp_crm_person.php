@@ -3,6 +3,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 	public static $T = 'persons';
 	protected static $K = array (
 		'name',
+		'avatar',
 		'first_name',
 		'last_name',
 		'email',
@@ -22,6 +23,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'card',
 		'password',
 		'notes',
+		'interests',
 		'stamp',
 		'language',
 		'flags'
@@ -34,6 +36,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'new' => array (
 			'first_name' => 'Prenume',
 			'last_name' => 'Nume',
+			'avater:file' => 'Avatar',
 			'email' => 'E-Mail',
 			'address' => 'Adresa',
 			'phone' => 'Telefon',
@@ -41,6 +44,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'edit' => array (
 			'first_name' => 'Prenume',
 			'last_name' => 'Nume',
+			'avater:file' => 'Avatar',
 			'email' => 'E-Mail',
 			'address' => 'Adresa',
 			'phone' => 'Telefon',
@@ -78,6 +82,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'`id_place` varchar(64) NOT NULL DEFAULT \'\'',
 		'`id_father` varchar(64) NOT NULL DEFAULT \'\'',
 		'`id_mother` varchar(64) NOT NULL DEFAULT \'\'',
+		'`avatar` text NOT NULL',
 		'`name` varchar(128) NOT NULL DEFAULT \'\'',
 		'`first_name` varchar(64) NOT NULL DEFAULT \'\'',
 		'`last_name` varchar(64) NOT NULL DEFAULT \'\'',
@@ -91,6 +96,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'`card` int(10) NOT NULL DEFAULT 0',
 		'`password` varchar(40) NOT NULL DEFAULT \'\'',
 		'`notes` text NOT NULL',
+		'`interests` text NOT NULL',
 		'`stamp` int(11) NOT NULL DEFAULT 0',
 		'`flags` int(11) NOT NULL DEFAULT 0',
 		'UNIQUE(`email`)',

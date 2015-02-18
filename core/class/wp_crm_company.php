@@ -33,7 +33,7 @@ class WP_CRM_Company extends WP_CRM_Model {
 					'title' => 'Societate pe Actiuni'
 					),
 		);
-	private static $INTERESTS = array (
+	public static $INTERESTS = array (
 		'Agricultura',
 		'Cercetare',
 		'Cooperare Transfrontaliera',
@@ -168,23 +168,29 @@ class WP_CRM_Company extends WP_CRM_Model {
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
 			'address' => 'Adresa (Strada, Numar, Oras)',
-			'county:array;counties' => 'Judet',
+			'county:array;county_list' => 'Judet',
 			'type:array;types' => 'Tip',
-			'interests:multi;interests_list' => 'Domenii de interes',
+			'interests:multi;interest_list' => 'Domenii de interes',
 			'size?type=uat' => 'Populatie',
 			'rural:switch?type=uat' => 'UAT in mediul rural?',
 			'developed:switch?type=uat' => 'UAT in zona defavorizata?',
-			'contact:contact' => 'Persoane de Contact',
+			'contact:liststructure' => 'Persoane de Contact',	/** Should change the type *liststructure* to something more relevant. Check also WP_CRM_Form_Structure */
 			),
 		'view' => array (
 			'name' => 'Companie',
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
 			'address' => 'Adresa',
-			'type:array;types' => 'Tip',
+			'type:array;type_list' => 'Tip',
 //			'account' => 'Cont',
 //			'bank' => 'Banca'
 			),
+		);
+
+	protected static $G = array (
+		'type',
+		'interest',
+		'county'
 		);
 
 	private $flags;
@@ -225,6 +231,9 @@ class WP_CRM_Company extends WP_CRM_Model {
 			foreach ($key as $_key => $_value) {
 				switch ((string) $_key) {
 					case 'contact':
+						$wp_crm_contact = new WP_CRM_Company_Structure ($this);
+						$wp_crm_contact->set ($_value);
+						/*
 						if ($this->ID) {
 							if ($this->structure instanceof WP_CRM_Company_Structure)
 								$this->structure->set ($_value);
@@ -235,7 +244,7 @@ class WP_CRM_Company extends WP_CRM_Model {
 							}
 						else
 							$this->structure = $_value;
-
+						*/
 						unset ($key['contact']);
 						break;
 					case 'interests':
@@ -251,42 +260,60 @@ class WP_CRM_Company extends WP_CRM_Model {
 	public function get ($key = null, $opts = null) {
 		global $wpdb;
 
-		switch ((string) $key) {
-			case 'logo path':
-				return dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/' . ltrim (preg_replace('/^http[s]?:\/\/[^\/]+/', '', $this->get ('logo')), '/');
-				break;
-			case 'title':
+		if (is_string ($key)) {
+			switch ((string) $key) {
+				case 'logo path':
+					return dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/' . ltrim (preg_replace('/^http[s]?:\/\/[^\/]+/', '', $this->get ('logo')), '/');
+					break;
+				case 'title':
 		/*
 		TODO: create language file
 		*/
-				return 'In atentia: ';
-				break;
-			case 'contact':
-				$wp_crm_contact = new WP_CRM_Company_Structure ((int) $this->ID);
-				return $wp_crm_contact->get ();
-				break;
-			case 'types':
-				$out = array ();
-				foreach (self::$TYPES as $key => $values) {
-					if (isset ($values['types']) && is_array ($values['types']))
-						$out[$key] = array (
-							'title' => $values['title'],
-							'items' => $values['types']
-							);
-					else
-						$out[$key] = $values['title'];
-					}
-				return $out;
-				break;
-			case 'interests_list':
-				return self::$INTERESTS;
-				break;
-			case 'counties':
-				return self::$COUNTIES;
-				break;
-			case 'interests':
-				return self::_unserialize ($this->data['interests']);
-				break;
+					return 'In atentia: ';
+					break;
+				case 'contact':
+					$wp_crm_contact = new WP_CRM_Company_Structure ($this);
+					return $wp_crm_contact->get ();
+					break;
+				case 'type_list':
+					$out = array ();
+					foreach (self::$TYPES as $key => $values) {
+						if (isset ($values['types']) && is_array ($values['types'])) {
+							$out[$key] = $values['title'];
+							$out = array_merge ($out, $values['types']);
+							}
+						else
+							$out[$key] = $values['title'];
+						}
+					return $out;
+					break;
+				case 'types':
+					$out = array ();
+					foreach (self::$TYPES as $key => $values) {
+						if (isset ($values['types']) && is_array ($values['types']))
+							$out[$key] = array (
+								'title' => $values['title'],
+								'items' => $values['types']
+								);
+						else
+							$out[$key] = $values['title'];
+						}
+					return $out;
+					break;
+				case 'interest_list':
+					return self::$INTERESTS;
+					break;
+				case 'county_list':
+				case 'counties':
+					return self::$COUNTIES;
+					break;
+				case 'interests':
+					return self::_unserialize ($this->data['interests']);
+					break;
+				case 'group by':
+					return static::$G;
+					break;
+				}
 			}
 		
 		return parent::get ($key, $opts);

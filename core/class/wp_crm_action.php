@@ -1,7 +1,7 @@
 <?php
 /**
  * Actions are linked to Events. Every time an event is fired, it's attached actions are checked and run.
- * This class is linked to the /actions folder whick contains action templates. Need to run ::scan() static
+ * This class is linked to the /actions folder which contains action templates. Need to run ::scan() static
  * method to update the action list.
  */
 class WP_CRM_Action extends WP_CRM_Model {

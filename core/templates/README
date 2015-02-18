@@ -1,1 +1,8 @@
 Template storage. While in previous version, templates where limited to plain HTML and PDF formats, the new templates can be either ODF documents (ODT, ODS, etc), PDF and PNG images.
+
+Decided to use TinyButStrong template engine with OpenTBS to generate Open/Microsoft Office Files.
+
+template ------	+
+		+ - class : contains tbs files (as this are 3rd party libraries should not be included in the main class structure
+		+ - default : contains default templates (if tied to a class, the name should be class_name_view.ext)
+		+ - custom : a folder containing template variations for each default template, grouped in user folders

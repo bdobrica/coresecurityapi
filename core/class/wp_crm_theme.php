@@ -21,8 +21,8 @@ class WP_CRM_Theme {
 		$url_pieces = explode ('/', trim ($url, '/'));
 
 		$search = array ();
-		foreach ($wp_crm_menu->get () as $app)
-			$search[$app->get ('slug')] = $app->get ('title');
+		foreach ($wp_crm_menu->get () as $slug => $app)
+			$search[$slug] = $app->get ('title');
 
 		$parsed = array ();
 		foreach ($url_pieces as $url_order => $url_piece) {
@@ -42,10 +42,12 @@ class WP_CRM_Theme {
 		$url = get_bloginfo ('stylesheet_directory');
 		
 		wp_enqueue_style ('tiny-editor', $url . '/script/tinyeditor/tinyeditor.css', array (), '0.1');
+		wp_enqueue_style ('flowplayer-skin', $url . '/script/flowplayer/skin/minimalist.css', array (), '5.5');
 
 		wp_enqueue_script ('jquery');
-		wp_enqueue_script ('jquery-filedrop', $url . '/script/jquery.filedrop.js', array ('jquery'), '0.1.0');
-		wp_enqueue_script ('tiny-editor', $url . '/script/tinyeditor/tiny.editor.packed.js', array (), '0.1');
+		wp_enqueue_script ('filedrop-min', $url . '/script/filedrop-min.js', array (), '0.1');
+		//wp_enqueue_script ('jquery-filedrop', $url . '/script/jquery.filedrop.js', array ('jquery'), '0.1.0');
+		wp_enqueue_script ('tiny-editor', $url . '/script/tinyeditor/tiny.editor.js', array (), '0.1');
 
 		/*
 		wp_enqueue_style ('tiny-editor', $url . '/script/tinyeditor/tinyeditor.css', array (), '0.1');
@@ -96,19 +98,60 @@ class WP_CRM_Theme {
 		wp_enqueue_script ('wp-crm-jquery-autosize', $url . '/assets/js/jquery.autosize.min.js');
 		wp_enqueue_script ('wp-crm-jquery-placeholdeer', $url . '/assets/js/jquery.placeholder.min.js');
 		wp_enqueue_script ('wp-crm-jquery-chosen', $url . '/assets/js/jquery.chosen.min.js');
+		wp_enqueue_script ('wp-crm-jquery-nestable', $url . '/assets/js/jquery.nestable.min.js');
 		wp_enqueue_script ('wp-crm-moment', $url . '/assets/js/moment.min.js');
+		wp_enqueue_script ('wp-crm-datepicker', $url . '/assets/js/bootstrap-datepicker.min.js');
+		wp_enqueue_script ('wp-crm-timepicker', $url . '/assets/js/bootstrap-timepicker.min.js');
 		wp_enqueue_script ('wp-crm-daterangepicker', $url . '/assets/js/daterangepicker.min.js');
-		wp_enqueue_script ('wp-crm-jquery-easy-pie-chart', $url . '/assets/js/jquery.easy-pie-chart.min.js');
+		//wp_enqueue_script ('wp-crm-jquery-easy-pie-chart', $url . '/assets/js/jquery.easy-pie-chart.min.js');
 		wp_enqueue_script ('wp-crm-jquery-datatables', $url . '/assets/js/jquery.dataTables.min.js');
 		wp_enqueue_script ('wp-crm-datatables-bootstrap', $url . '/assets/js/dataTables.bootstrap.min.js');
 		wp_enqueue_script ('wp-crm-custom', $url . '/assets/js/custom.min.js');
 		wp_enqueue_script ('wp-crm-core', $url . '/assets/js/core.min.js');
+		//wp_enqueue_script ('wp-crm-arbor', $url . '/assets/js/arbor.js');
+		wp_enqueue_script ('wp-crm-jquery-elfinder', $url . '/assets/js/jquery.elfinder.min.js');
+		wp_enqueue_script ('wp-crm-jquery-elfinder-custom', $url . '/assets/js/jquery.elfinder.custom.js');
+
+		wp_enqueue_script ('google-jsapi', 'https://www.google.com/jsapi');
+
+		wp_enqueue_script ('flowplayer', $url . '/script/flowplayer/flowplayer.min.js', array ('jquery'), '5.5');
 
 		wp_enqueue_script ('wp-crm', $url . '/script/wp-crm.js', array ('jquery'), '0.5');
+		//wp_enqueue_script ('wp-crm-footer', $url . '/script/wp-crm-footer.js', array ('wp-crm'), '0.1', TRUE);
+	
+/*		wp_enqueue_script ('wp-crm-salsa20', $url . '/assets/xmpp/script/salsa20.js');	
+		wp_enqueue_script ('wp-crm-cryptojs-core', $url . '/assets/xmpp/script/cryptojs/core.js');	
+		wp_enqueue_script ('wp-crm-cryptojs-enc-base64', $url . '/assets/xmpp/script/cryptojs/enc-base64.js');	
+		wp_enqueue_script ('wp-crm-cryptojs-md5', $url . '/assets/xmpp/script/cryptojs/md5.js');	
+		wp_enqueue_script ('wp-crm-cryptojs-evpkdf', $url . '/assets/xmpp/script/cryptojs/evpkdf.js');	
+		wp_enqueue_script ('wp-crm-cryptojs-chipher-core', $url . '/assets/xmpp/script/cryptojs/chipher-core.js');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
+		wp_enqueue_script ('wp-crm-converse', $url . '/assets/xmpp/converse.js');*/
+		}
+
+	public static function post () {
+		load_theme_textdomain (__CLASS__, get_template_directory() . '/languages');
 		}
 
 	public static function head () {
 		}
+
+	public static function __ ($text) { return __ ($text, __CLASS__); }
+	public static function _e ($text) { _e ($text, __CLASS__); }
 
 	public function __destruct () {
 		}

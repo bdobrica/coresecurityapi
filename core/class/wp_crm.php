@@ -106,7 +106,20 @@ class WP_CRM {
 				}
 			unset ($wp_crm_product);
 			}
+
+		return array ();
 		}
+
+	/**
+	 * Callback used to create new/update old objects. In order to create a new object,
+	 * first creates the object with new Object ([optional-id]), uses the method set
+	 * with an array argument (key, value) pairs, than tries to use the method save.
+	 * The order of methods applied:
+	 * __construct([id]) -> set (array(key => value)) -> save
+	 * If a wp_crm_helper object is present, saves that.
+	 * __construct([id]) -> ... wp_crm_helper->save (array(key => value))
+	 * Returns an associative array that contains the saved object.
+	 */
 
 	public static function save ($data = null) {
 		global
@@ -142,6 +155,8 @@ class WP_CRM {
 				//print_r ($wp_crm_exception);
 				}
 			}
+
+		return array ('object' => $object);
 		}
 
 	public static function login ($data = null) {
@@ -155,7 +170,15 @@ class WP_CRM {
 			'user_password' => $data['password']
 			), false);
 
-		if (!is_wp_error($user)) $current_user = $user;
+		if (!is_wp_error($user)) {
+			$current_user = $user;
+			return array ();
+			}
+
+		return array ('message' => array (
+			'type' => 'error',
+			'content' => 'Numele de utilizator sau parola nu sunt corecte!'
+			));
 		}
 
 	public static function signup ($data = null) {
@@ -186,7 +209,8 @@ class WP_CRM {
 				'first_name' => $data['first_name'],
 				'last_name' => $data['last_name'],
 				'phone' => $data['phone'],
-				'email' => $data['email']
+				'email' => $data['email'],
+				'interests' => serialize($data['interests'])
 				));
 			$wp_crm_person->save ();
 			}
@@ -211,15 +235,50 @@ Iti multumim!<br />
 --<br />
 Echipa ' . get_bloginfo ('name')
 			));
+
+		return array ();
 		}
 
 	public static function activate ($data = null) {
-		if (!is_numeric ($data)) return FALSE;
+		if (!is_numeric ($data)) return array (); # FALSE
 		$user = new WP_User ((int) $data);
-		if (!$user->has_cap ('wp_crm_wakeup')) return TRUE;
+		if (!$user->has_cap ('wp_crm_wakeup')) return array (); # TRUE
 		$user->set_role ('wp_crm_customer');
 		
-		return TRUE;
+		return array (); # TRUE
+		}
+
+	public static function forgot ($data = null) {
+		if (!$data['email']) return array ('message' => 'Adresa de email nu este valida!');
+		$data['email'] = strtolower (trim ($data['email']));
+		if (!filter_var ($data['email'], FILTER_VALIDATE_EMAIL)) return array ('message' => array ('type' => 'error', 'content' => 'Adresa de email nu este valida!'));
+		if (!($user_id = email_exists ($data['email']))) return array ('message' => array ('type' => 'error', 'content' => 'Adresa de email nu este valida!'));
+
+		$src = str_split ('ABCDEFGHIJKLMNOPQRSTUWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=');
+		$len = 8;
+		$pass = '';
+		for ($c = 0; $c<$len; $c++) $pass .= $src[rand(0, sizeof ($src) - 1)];
+
+		$user = new WP_User ((int) $user_id);
+
+		$wp_set_password ($user_id, $pass);
+
+		$wp_crm_mail = new WP_CRM_Mail ();
+
+		$wp_crm_mail->send ($data['email'], array (
+			'subject' => 'Recuperare parola platforma ' . get_bloginfo ('name'),
+			'content' => 'Salut ' . $user->display_name . ',<br />
+Noile date de acces pentru contul tau de pe platforma ' . get_bloginfo ('name') . ' sunt:<br />
+<ul>
+	<li>Nume de utilizator: ' . $user->user_login . '</li>
+	<li>Parola: ' . $pass . '</li>
+</ul><br />
+Iti multumim,
+--<br />
+Echipa ' . get_bloginfo ('name')
+			));
+
+		return array ('message' => 'A fost trimis un email cu noile date de acces pe adresa ' . $data['email'] . '.');
 		}
 
 	public static function newsletter ($data = null) {

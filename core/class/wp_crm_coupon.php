@@ -3,7 +3,7 @@ class WP_CRM_Coupon extends WP_CRM_Model {
 	const Coupon_Max_Length = 12;
 
 	public static $T = 'coupons';
-	private static $L = 'coupon_data';
+	private static $C = 'coupon_data';
 	protected static $K = array (
 		'cid',
 		'code',
@@ -42,7 +42,7 @@ class WP_CRM_Coupon extends WP_CRM_Model {
 		parent::__construct ($data);
 
 		if ($this->ID) {
-			$sql = $wpdb->prepare ('select * from `'. $wpdb->prefix . static::$L . '` where cid=%d;', $this->ID);
+			$sql = $wpdb->prepare ('select * from `'. $wpdb->prefix . static::$C . '` where cid=%d;', $this->ID);
 			$rows = $wpdb->get_results ($sql);
 			if (!empty($rows))
 				foreach ($rows as $row)
@@ -134,8 +134,8 @@ class WP_CRM_Coupon extends WP_CRM_Model {
 
 		
 		$sql = $uninstall ?
-			('DROP TABLE `' . $wpdb->prefix . static::$L . '`;') :
-			('CREATE TABLE `' . $wpdb->prefix . static::$L . '` (
+			('DROP TABLE `' . $wpdb->prefix . static::$C . '`;') :
+			('CREATE TABLE `' . $wpdb->prefix . static::$C . '` (
 				`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 				`cid` int(11) NOT NULL DEFAULT 0,
 				`pid` int(11) NOT NULL DEFAULT 0,
@@ -147,7 +147,7 @@ class WP_CRM_Coupon extends WP_CRM_Model {
 				`value` float(9,2) NOT NULL DEFAULT 0.00
 				) engine=MyISAM default charset=utf8;');
 
-		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$L . '\';') != ($wpdb->prefix . static::$L)) {
+		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$C . '\';') != ($wpdb->prefix . static::$C)) {
 			$wpdb->query ($sql);
 			}
 

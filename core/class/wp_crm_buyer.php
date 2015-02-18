@@ -5,7 +5,7 @@
  */
 class WP_CRM_Buyer extends WP_CRM_Model {
 	const Cookie_TTL	= 31536000;
-	const TLD		= 'biletedesucces.ro';
+	const TLD		= 'einvest.ro';
 
 	public static $T = 'buyers';
 	protected static $K = array (
@@ -44,6 +44,23 @@ class WP_CRM_Buyer extends WP_CRM_Model {
 			if (isset ($_COOKIE[__CLASS__]) && is_numeric($_COOKIE[__CLASS__])) {
 				$data = (int) $_COOKIE[__CLASS__];
 				parent::__construct ($data);
+				}
+			}
+		else
+		if (is_object ($data)) {
+			if ($data instanceof WP_CRM_Person) {
+				$this->entity = $data;
+				$this->set ('type', 'person');
+				$this->set ('eid', $this->entity->get ());
+				$this->set ('stamp', time());
+				$this->ID = 0;
+				}
+			if ($data instanceof WP_CRM_Company) {
+				$this->entity = $data;
+				$this->set ('type', 'company');
+				$this->set ('eid', $this->entity->get ());
+				$this->set ('stamp', time());
+				$this->ID = 0;
 				}
 			}
 

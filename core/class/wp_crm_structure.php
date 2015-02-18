@@ -5,6 +5,19 @@
 
 /**
  * Abstract class for defining object dynamic structures.
+ * Dynamic structures are tree like, attached to a root object (for which it describes
+ * the internal state) and a series of named levels (by slug, name) which can contain
+ * references to other objects. A reference is passed by class and object id.
+ * The structure:
+ * ROOT += WP_CRM_Model (#)
+ * 	+- Level 1 (level-1) ---+
+ *	|			+-- WP_CRM_Model (#)
+ *	|			+-- WP_CRM_Model (#)
+ *	|			+-- Level 1.1 (level-1-1) ------+
+ *	|							+--- WP_CRM_Model (#)
+ *	+- Level 2 (level-2) ---+
+ *	|			+-- WP_CRM_Model (#)
+ *	...			...
  *
  * @category Abstract
  * @package WP_CRM
@@ -15,6 +28,20 @@
  */
 abstract class WP_CRM_Structure {
 	/**
+	 * Version string a.b.c
+	 * a # major release: paradigm changed
+	 * b # minor release: added removed methods/properties/altered tables
+	 * c # review: fixed bugs in already implemented methods/properties
+	 */
+	public static $version = '1.0.0';
+	/**
+	 * Constants for defining the tree structure.
+	 * ROOT = the root object
+	 * STEM = 
+	 */
+	const ROOT	= 1;
+	const STEM	= 2;
+	/**
 	 * The attached database table. No prefix.
 	 * @var string
 	 */
@@ -23,15 +50,12 @@ abstract class WP_CRM_Structure {
 	 * The parent object class.
 	 * @var string
 	 */
-	public static $CLS = '';
+	public static $ROOT = '';
 	/**
-	 * The attached database table structure. The ID and PID columns are added by default.
-	 * !Important! Seems like columns TYPE (referenced class name) and RID (referenced id)
-	 * should be added by default to the structure.
-	 * PID links WP_CRM_Structure pieces together into a tree.
-	 * @var array
+	 * The child object class.
+	 * @var string
 	 */
-	protected static $K = array ();
+	public static $CHILD = '';
 	/**
 	 * Pair of (actions, form elements).
 	 * Form elements are defined as name[:type] => label, where
@@ -42,216 +66,213 @@ abstract class WP_CRM_Structure {
 	 * @see WP_CRM_Form::_render()
 	 * @var array
 	 */
-	public static $F = array (
-		'new' => array (
-			),
+	public static $CHILD_F = array (
 		'edit' => array (
-			),
-		'view' => array (
-			),
-		'safe' => array (
-			),
-		'excerpt' => array (
-			),
-		'group' => array (
 			)
 		);
-	/**
-	 * List of column declarations for the table structure. The ID and PID columns are not added by default.
+	/*
+	 * The table structure.
 	 * @var array
 	 */
-	protected static $Q;
-	/**
-	 * The parent object id.
-	 * @var int
-	 */
-	private $OID;
-	/**
-	 * The hierarchy.
-	 * @var array
-	 */
-	private $tree;
-	private $list;
+	public static $Q = array (
+		'`id` int NOT null PRIMARY KEY AUTO_INCREMENT',		/** The structure reference id */
+		'`title` text NOT null',				/** The stem name */
+		'`description` text NOT null',				/** The stem description */
+		'`root` int NOT null DEFAULT 0',			/** The root object id. Root objects have root = 0. */
+		'`parent` int NOT null DEFAULT 0',			/** The parent of this leaf */
+		'`type` int NOT null DEFAULT 0',			/** The type (ROOT, STEM) of this leaf */
+		'`object` varchar(64) NOT null DEFAULT \'\'',		/** The object contained in this leaf. Can be empty. */
+		'`oid` int NOT null DEFAULT 0',				/** The id of the object contained in this leaf. */
+		'INDEX (`type`)',
+		'INDEX (`root`)',
+		'UNIQUE (`root`,`object`,`oid`)'
+		);
 
-	public function __construct ($data = NULL) {
+
+	protected $root;						/** The root id. */
+	protected $list;
+	protected $tree;
+	protected $data;
+
+	public function __construct ($data = null) {
 		global $wpdb;
 
-		$this->tree = array ();
-		$this->list = array (
-			0 => static::$F['new']
-			);
+		if (is_object ($data) && (get_class ($data) == static::$ROOT)) {
+			$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . static::$T . '` where root=0 and object=%s and oid=%d', array (
+				static::$ROOT,
+				$data->get ()
+				));
 
-		if (is_object ($data)) {
-			if (get_class ($data) !== static::$CLS) throw new WP_CRM_Exception (WP_CRM_Exception::Unknown_Object);
-			$this->OID = (int) $data->get ();
-			}
-		else
-		if (is_numeric ($data)) {
-			$this->OID = (int) $data;
-			}
-		else
-			throw new WP_CRM_Exception (WP_CRM_Exception::Unknown_Object);
-
-		$leaves = array ();
-
-		if ($this->OID) {
-			$sql = $wpdb->prepare ('select * from `' . $wpdb->prefix . static::$T . '` where oid=%d;', $this->OID);
-			$objs = $wpdb->get_results ($sql);
-			}
-		else
-			$objs = NULL;
-		/**
-		 * Building the tree from SQL results. Works only with OBJECT query output
-		 * as it is passed by reference, not by value.
-		 */
-		if ($objs) {
-			foreach ($objs as $obj) {
-				$class = $obj->type;
-				try {
-					$reference = $class ? new $class ($obj->rid) : null;
-					}
-				catch (WP_CRM_Exception $wp_crm_exception) {
-					$reference = null;
-					}
-				
-				$leaves[$obj->pid][] = $obj;
-				foreach (static::$F['new'] as $key => $value) {
-					if (in_array ($key, static::$K))
-						$this->list[$obj->id][$key] = $obj->$key;
-					else
-						$this->list[$obj->id][$key] = is_null ($reference) ? null : $reference->get ($key);
-					}
+			$this->root = $wpdb->get_var ($sql);
+			if (!$this->root) {
+				$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '` (`object`,`oid`) values (%s,%d);', array (
+					static::$ROOT,
+					$data->get ()
+					));
+				$wpdb->query ($sql);
+				$this->root = $wpdb->insert_id; 
 				}
-			foreach ($objs as $obj)
-				if (isset ($leaves[$obj->id]))
-					$obj->leaves = $leaves[$row->id];
-			}
-		$this->tree = isset ($leaves[0]) ? $leaves[0] : NULL;
-		}
+			if (!$this->root) throw new WP_CRM_Exception (WP_CRM_Exception::Database_Error);
 
-	public function set ($key = null, $opts = null) {
-		global $wpdb;
-		if (is_array ($key)) {
-			if (!empty ($key)) {
-				$ids = array ();
-				foreach ($key as $_key => $_value) {
-					if ($_key == 0) {
-						/**
-						 * Here the new objects are added inside the structure
-						 */
-						foreach ($_value as $_values) {
-							$inserts = array ();
-							$values = array ();
-							$escape = array ();
-							$class = $_values['type'];
-							foreach (static::$K as $slug) {
-								if (isset ($_values[$slug])) {
-									$inserts[] = $slug;
-									$values[] = $_values[$slug];
-									$escape[] = '%s';
-									unset ($_values[$slug]);
-									}
-								}
+			$sql = $wpdb->prepare ('select * from `' . $wpdb->prefix . static::$T . '` where root=%d;', $this->root);
+			$stems = $wpdb->get_results ($sql);
 
-							try {
-								$reference = new $class ($_values);
-								$reference->save ();
-								
-								$inserts[] = 'oid';
-								$values[] = $this->OID;
-								$escape[] = '%d';
-								
-								$inserts[] = 'rid';
-								$values[] = $reference->get ();
-								$escape[] = '%d';
+			$this->list = array ();
+			$this->tree = null;
+			$this->data = array ();
 
-								$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '` (' . implode ($inserts, ',') . ') values (' . implode ($escape, ',') . ');', $values);
-								$wpdb->query ($sql);
-								if ($wpdb->insert_id)
-									$ids[] = $wpdb->insert_id;
-								}
-							catch (WP_CRM_Exception $wp_crm_exception) {
-								}
+			if ($stems) {
+				$items = array ();
+				foreach ($stems as $stem) {
+					if ($stem->object && $stem->oid) {
+						try {
+							$object = new $stem->object ($stem->oid);
+							$this->list[$stem->id] = $object;
+							$this->data[$stem->id] = array (
+								'title' => $stem->title,
+								'description' => $stem->description
+								);
+							$items[] = (object) array (
+								'id' => $stem->id,
+								'parent' => $stem->parent,
+								'name' => $stem->title,
+								'description' => $stem->description,
+								'object' => $object,
+								'children' => null
+								);
+							}
+						catch (WP_CRM_Exception $wp_crm_exception) {
+							$items[] = (object) array (
+								'id' => $stem->id,
+								'parent' => $stem->parent,
+								'name' => $stem->title,
+								'description' => $stem->description,
+								'object' => null,
+								'children' => null
+								);
 							}
 						}
 					else {
-						/**
-						 * Here the old objects are updated inside the structure
-						 */
-						$ids[] = $_key;
+						$items[] = (object) array (
+							'id' => $stem->id,
+							'parent' => $stem->parent,
+							'name' => $stem->title,
+							'description' => $stem->description,
+							'object' => null,
+							'children' => null
+							);
+						}
+					}
 
-						$updates = array ();
-						$values = array ();
-						foreach (static::$K as $slug) {
-							if (isset ($_value[$slug])) {
-								$updates[] = $slug . '=%s';
-								$values[] = $_value[$slug];
-								unset ($_value[$slug]);
-								}
-							}
-						if (!empty ($updates)) {
-							$values[] = $_key;
-							$values[] = $this->OID;
+				$children = array ();
+				foreach ($items as $item)
+					$children[$item->parent][] = $item;
 
-							$sql = $wpdb->prepare ('update ' . $wpdb->prefix . static::$T . ' set ' . implode ($updates, ',') . ' where id=%d and oid=%d;', $values);
+				foreach ($items as $item)
+					if (isset ($children[$item->id]))
+						$item->children = $children[$item->id];
+				
+				$this->tree = $children[0];
+				}
+			}
+		}
+	
+	public function get ($key = null, $opts = null) {
+		$out = array ();
+		$out[] = array_merge (array ('title' => 'Titlu'), static::$CHILD_F['edit']);
+
+		if (!empty ($this->list)) {
+			foreach ($this->list as $id => $item) {
+				$row = array ('title' => $this->data[$id]['title']);
+
+				foreach (static::$CHILD_F['edit'] as $key => $label)
+					$row[$key] = $item->get ($key);
+				
+				$out[$id] = $row;
+				}
+			}
+
+		return $out;
+		}
+
+	public function set ($key = null, $value = null) {
+		global $wpdb;
+
+		if (!is_array ($key)) {
+			return FALSE;
+			}
+		if (!empty ($key)) {
+			foreach ($key as $id => $data) {
+				if (!empty ($data)) {
+					if (isset ($this->list[$id]) && is_object ($this->list[$id])) {
+						$this->list[$id]->set ($data);
+						if (!empty ($data['title'])) {
+							$sql = $wpdb->prepare ('update `' . $wpdb->prefix . static::$T . '` set title=%s where id=%d;', array (
+									$data['title'],
+									(int) $id
+									));
 							$wpdb->query ($sql);
 							}
-						
-						$class = $this->list[$_key]['type'];
-						if (class_exists ($class)) {
-							$reference = new $class ($this->list[$_key]['rid']);
-							$reference->set ($_value);
+						}
+					else {
+						$object = null;
+						try {
+							$object = new static::$CHILD ($data);
+							$object->save ();
+							}
+						catch (WP_CRM_Exception $wp_crm_exception) {
+							}
+
+						if (!is_null ($object)) {
+							$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '` (title,description,root,parent,type,object,oid) values (%s,%s,%d,%d,%d,%s,%d);', array (
+									$data['title'],
+									'',
+									$this->root,
+									0,
+									self::STEM,
+									static::$CHILD,
+									$object->get ()
+									));
+							$wpdb->query ($sql);
+							$this->list[$wpdb->insert_id] = $object;
+
+							$key[$wpdb->insert_id] = $data;
+							unset ($key[$id]);
 							}
 						}
 					}
-				$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . static::$T . ' where oid=%d;', $this->OID);
-				$old = $wpdb->get_col ($sql);
-				if (!empty ($old)) $del = array_diff ($old, $ids);
-				if (!empty ($del)) {
-					$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . static::$T . ' where id in (' . implode (',', $del) . ') and oid=%d;', $this->OID);
-					$wpdb->query ($sql);
-					}
+				}
+			if (sizeof ($key) && sizeof ($this->list)) {
+				$removed = array_diff (array_keys ($this->list), array_keys ($key));
+				print_r ($removed);
+				if (!empty ($removed))
+					foreach ($removed as $remove) {
+						$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . static::$T . '` where id=%d;', array (
+								(int) $remove
+								));
+						$wpdb->query ($sql);
+						}
 				}
 			}
-		else {
-			$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . static::$T . ' where oid=%d;', $this->OID);
-			$wpdb->query ($sql);
+		}
+
+	public function add ($data = null) {
+		if (is_object ($data) && get_class ($data) == $CHILD) {
 			}
 		}
 
-	public function get ($key = null, $opts = null) {
-		if (is_null ($key))
-			return $this->list;
-		switch ((string) $key) {
-			case 'size':
-				return count ($this->list) -1;
-				break;
-			}
-		return FALSE;
-		}
-
-	public function is ($key = null) {
-		switch ((string) $key) {
-			case 'empty':
-				return count ($this->list) > 1 ? FALSE : TRUE;
-				break;
-			}
-		return FALSE;
-		}
-
-	public static function install ($uninstall = FALSE) {
+	public static function install ($unistall = FALSE) {
 		global $wpdb;
 
+		if (empty (static::$T)) return;
 		if (empty (static::$Q)) return;
 
 		$sql = $uninstall ?
 			'drop table `' . $wpdb->prefix . static::$T . '`;' :
 			'create table `' . $wpdb->prefix . static::$T . '` (' . implode (',', static::$Q) . ') engine=MyISAM default charset=utf8;';
 
-		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '\';') != ($wpdb->prefix . static::$T)) {
-			#echo $sql;
+		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '\';') != ($wpdb->prefix . static::$T))
 			$wpdb->query ($sql);
-			}
 		}
 	}
 ?>

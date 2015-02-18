@@ -1,0 +1,87 @@
+<html>
+  <head>
+	<style type="text/css">
+	.context-menu { position: absolute; z-index: 1000; display: block; border: 1px solid #ccc; background: #eee; left: 0; top: 0; margin: 0; padding: 0; }
+	.context-menu-item { display: block; list-style-type: none; margin: 0; padding: 0; width: 200px; cursor: pointer; }
+	.context-menu-item:hover { background-color: #c00; }
+	</style>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["orgchart"]});
+	r = [
+          [{v:'Mike', f:'<span rel="Mike">Mike<span style="color:red; font-style:italic">President</span></span>'}, '', 'The President'],
+          [{v:'Jim', f:'<span rel="Jim">Jim<div style="color:red; font-style:italic">Vice President<div></span>'}, 'Mike', 'VP'],
+          [{v:'Alice', f:'<span rel="Alice">Alice</span>'}, 'Mike', ''],
+          [{v:'Bob', f:'<span rel="Bob">Bob</span>'}, 'Jim', 'Bob Sponge'],
+          [{v:'Carol',f:'<span rel="Carol">Carol</span>'}, 'Bob', '']
+        ];
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Name');
+        data.addColumn('string', 'Manager');
+        data.addColumn('string', 'ToolTip');
+
+        data.addRows(r);
+
+        var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+        chart.draw(data, {allowHtml:true});
+	$('.google-visualization-orgchart-node').on('contextmenu', function(e){
+		e.preventDefault();
+		var t = $(e.target);
+		var m = [
+			{'key':'edit', 'label':'Edit', 'callback':'edit'},
+			{'key':'add', 'label':'Add', 'callback':'add'},
+			{'key':'delete', 'label':'Delete', 'callback':'delete'}
+			];
+		var c = $('<ul>', {'class':'context-menu'});
+		c[0].style.left = e.pageX;
+		c[0].style.top = e.pageY - 15;
+		c.insertAfter($('#chart_div'));
+		$('html').click(function(f){
+			c.remove();
+			});
+		for (var x = 0; x < m.length; x++) {
+			var i = $('<li>', {'class':'context-menu-item','html':m[x].label,'rel':m[x].callback});
+			i.click(function(f){
+				f.stopPropagation();
+				c.remove();
+				var id = $(e.target).closest('.google-visualization-orgchart-node>span').attr('rel') || $('span',e.target).attr('rel');
+				var call = $(f.target).attr('rel');
+
+				alert(call);
+
+				if (call == 'add') {
+					r[r.length] = [{v:'Rupert', f:'<span rel="Rupert">Rupert</span>'}, id, ''];
+					}
+
+
+				if (call == 'delete') {
+					var z = false;
+					var pid = null;
+					for (var y = 0; y < r.length; y++) {
+						if (r[y][0].v === id) { z = true; pid = r[y][1]; }
+						if (z && (y + 1 < r.length)) r[y] = r[y+1];
+						if (z && (y + 1 == r.length)) r.length--;
+						};
+					for (var y = 0; y < r.length; y++) {
+						if (r[y][1] == id) r[y][1] = pid;
+						}
+					alert(JSON.stringify(r));
+					}
+				drawChart();
+				});
+			c.append(i);
+			}
+		});
+      }
+	$(document).ready(function(){
+		drawChart();
+		});
+   </script>
+    </head>
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
+

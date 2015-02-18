@@ -45,7 +45,11 @@ $form = new WP_CRM_Form ($structure);
 $form->set ('state', $wp_crm_state->get());
 
 if ($_POST['object']) {
-	$form->action ();
+	$action = $form->action ();
+	if (!$action['error']) {
+		echo "OK\nADD:" . $action['return']['object']->json ('view');
+		exit (0);
+		}
 	}
 
 $form->render (TRUE);

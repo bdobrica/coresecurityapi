@@ -1,0 +1,13 @@
+<?php
+/*
+App Title: Curs de Test
+App Description:
+App Size: 1
+App Style:
+App Icon: gear 
+*/
+
+$course = new WP_CRM_Course (1);
+$view = new WP_CRM_View ($course);
+unset ($view);
+?>

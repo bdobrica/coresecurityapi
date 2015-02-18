@@ -2,12 +2,50 @@
 class WP_CRM_Form_Structure {
 	private $fields;
 
+	/**
+	 * The constructor builds the WP_CRM_Form_Structure objects from various data sources,
+	 * populating the $fields property.
+	 */
 	public function __construct ($data = null, $context = null) {
 		global $wp_crm_state;
 
+		/**
+		 * If the argument is an object, with the static property $F defined,
+		 * than we can build the structure by processing this data.
+		 */
 		if (is_object($data) && property_exists($data, 'F'))
 			$this->fields = self::_process ($data, $context);
 		else
+		if (is_object($data) && ($data instanceof WP_CRM_Settings)) {
+			$this->fields = array (
+				array (
+					'class' => 'settings',
+					'fields' => $data->get ('fields'),
+					),
+				array (
+					'class' => 'buttons',
+					'fields' => array (
+						'close' => array (
+							'type' => 'close',
+							'label' => 'Anuleaza &raquo;',
+							),
+						'next' => array (
+							'type' => 'submit',
+							'label' => 'Actualizeaza &raquo;',
+							'method' => 'post',
+							'action' => '',
+							'callback' => 'WP_CRM::save',
+							'next' => WP_CRM_State::SaveObject
+							)
+						)
+					)
+				);
+			}
+		else
+		/**
+		 * If the argument is a string, it corresponds to a state of the machine
+		 * handling callbacks like 'login' or 'signup'.
+		 */
 		switch ((string) $data) {
 			case WP_CRM_State::NewsRegistered:
 			case 'newsregistered':
@@ -88,6 +126,10 @@ class WP_CRM_Form_Structure {
 					array (
 						'class' => 'login-buttons',
 						'fields' => array (
+							'message' => array (
+								'type' => 'message',
+								'default' => ''
+								),
 							'next' => array (
 								'type' => 'submit',
 								'label' => 'Autentificare &raquo;',
@@ -147,6 +189,12 @@ class WP_CRM_Form_Structure {
 									'email_exists' => 'Adresa de E-mail este deja folosita de un alt utilizator.',
 									)
 								),
+							'interests' => array (
+								'label' => 'Domenii de interes',
+								'type' => 'select',
+								'multiple' => true,
+								'options' => WP_CRM_Company::$INTERESTS
+								),
 							'password' => array (
 								'placeholder' => 'Parola',
 								'label' => 'Parola',
@@ -172,6 +220,10 @@ class WP_CRM_Form_Structure {
 					array (
 						'class' => 'login-buttons',
 						'fields' => array (
+							'message' => array (
+								'type' => 'message',
+								'default' => ''
+								),
 							'next' => array (
 								'type' => 'submit',
 								'label' => 'Inregistrare &raquo;',
@@ -180,6 +232,86 @@ class WP_CRM_Form_Structure {
 								'action' => '',
 								'next' => WP_CRM_State::Login,
 								'callback' => 'WP_CRM::signup'
+								)
+							)
+						)
+					);
+				break;
+			case WP_CRM_State::Forgot:
+			case 'forgot':
+				$this->fields = array (
+					array (
+						'class' => 'forgot-form',
+						'fields' => array (
+							'email' => array (
+								'placeholder' => 'Adresa de email',
+								'label' => 'Adresa de email',
+								'filters' => array (
+									'empty' => 'Adresa de email este obligatorie.',
+									)
+								),
+							)
+						),
+					array (
+						'class' => 'forgot-buttons',
+						'fields' => array (
+							'message' => array (
+								'type' => 'message',
+								'default' => ''
+								),
+							'next' => array (
+								'type' => 'submit',
+								'label' => 'Recupereaza Parola &raquo;',
+								'class' => 'btn btn-primary',
+								'method' => 'post',
+								'action' => '',
+								'next' => WP_CRM_State::Login,
+								'callback' => 'WP_CRM::forgot'
+								)
+							)
+						)
+					);
+				break;
+			case WP_CRM_State::Reset:
+			case 'reset':
+				$this->fields = array (
+					array (
+						'class' => 'reset-form',
+						'fields' => array (
+							'password' => array (
+								'placeholder' => 'Noua Parola',
+								'label' => 'Parola',
+								'type' => 'password',
+								'filters' => array (
+									'empty' => 'Parola este obligatorie.',
+									)
+								),
+							'confirm_password' => array (
+								'placeholder' => 'Confirma Parola',
+								'label' => 'Confirma Parola',
+								'type' => 'password',
+								'filters' => array (
+									'empty' => 'Parola este obligatorie.',
+									'cofirm' => 'Parola introdusa nu a fost confirmata.',
+									)
+								)
+							)
+						),
+					array (
+						'class' => 'reset-buttons',
+						'fields' => array (
+							'message' => array (
+								'type' => 'message',
+								'default' => ''
+								),
+							'next' => array (
+								'type' => 'submit',
+								'label' => 'Recupereaza Parola &raquo;',
+								'class' => 'btn btn-primary',
+								'method' => 'post',
+								'action' => '',
+								'next' => WP_CRM_State::Login,
+								'callback' => 'WP_CRM::reset'
 								)
 							)
 						)
@@ -265,6 +397,39 @@ class WP_CRM_Form_Structure {
 								),*/
 							),
 						),
+					);
+				break;
+			case WP_CRM_State::ImportObjects:
+				$this->fields = array (
+					array (
+						'class' => 'imports',
+						'fields' => array (
+							'import' => array (
+								'type' => 'file',
+								'label' => 'Fisier'
+								)
+							)
+						),
+					array (
+						'class' => 'buttons',
+						'fields' => array (
+							'prev' => array (
+								'type' => 'submit',
+								'label' => '&laquo; Pasul anterior',
+								'method' => 'post',
+								'action' => '',
+								'next' => WP_CRM_State::AddToCart,
+								),
+							'next' => array (
+								'type' => 'submit',
+								'label' => 'Pasul urmator &raquo;',
+								'method' => 'post',
+								'action' => '',
+								'next' => WP_CRM_State::Payment,
+								'callback' => 'WP_CRM::buy'
+								),
+							)
+						)
 					);
 				break;
 			default:
@@ -382,9 +547,22 @@ class WP_CRM_Form_Structure {
 		}
 
 	private static function _field (&$fields, $object, $info, $label) {
+		/**
+		 * The field is defined as key => label. WHile the label is self explanatory,
+		 * key is a complex field of the form object_key[?condition][:type][;options]
+		 * - object_key is an object key that can be get/set with object's methods
+		 * - condition is a key=value string, where key is an object key that can be get/set with object's methods through the current form
+		 * - type is the field type
+		 * - options is a string of options passed to the renderer.
+		 */
 		if (!empty($info) && (strpos ($info, '?') !== FALSE)) list ($info, $cond) = explode ('?', $info);
 		list ($key, $type) = explode (':', $info);
 		if (!empty($type) && (strpos ($type, ';') !== FALSE)) list ($type, $opts) = explode (';', $type);
+		/**
+		 * Here, the type field in the defined name of the current column is translated to the proper field to be rendered in WP_CRM_Form.
+		 * For example, *bool* is translated into *switch* type (which is a fancier checkbox).
+		 * Also, a place to prepare how the field is displayed and to pre-process the default value.
+		 */
 		switch ((string) $type) {
 			case 'html':
 				$fields[$key] = array (
@@ -396,12 +574,18 @@ class WP_CRM_Form_Structure {
 			case 'bool':
 				$fields[$key] = array (
 					'label' => $label,
-					'type' => 'radio',
-					'options' => array (
-						0 => 'Da',
-						1 => 'Nu'
-						),
+					'type' => 'switch',
 					'default' => $object->get ($key)
+					);
+				break;
+			case 'password':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'password'
+					);
+				$fields['confirm_' . $key] = array (
+					'label' => 'Confirm ' . $label,
+					'type' => 'password'
 					);
 				break;
 			case 'buyer':
@@ -464,6 +648,13 @@ class WP_CRM_Form_Structure {
 					'default' => $object->get ($key)
 					);
 				break;
+			case 'rte':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'rte',
+					'default' => $object->get ($key)
+					);
+				break;
 			case 'array':
 				$fields[$key] = array (
 					'label' => $label,
@@ -488,6 +679,23 @@ class WP_CRM_Form_Structure {
 					'label' => $label,
 					'type' => 'date',
 					'default' => date('d-m-Y', $data ? $data : time())
+					);
+				break;
+			case 'datetime':
+				$data = $object->get ($key);
+				$data = is_numeric($data) ? $data : strtotime($data);
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'datetime',
+					'default' => date('d-m-Y h:i A', $data ? $data : time())
+					);
+				break;
+			case 'template':
+				$templates = array (0 => 'Model Nou');
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'template',
+					'options' => $templates,
 					);
 				break;
 			case 'templates':
@@ -544,21 +752,20 @@ class WP_CRM_Form_Structure {
 
 				foreach ($cards as $card)
 					$options[$card->get ('email')] = $card->get ('fn');
-					
+
 				$fields[$key] = array (
 					'type' => 'checkbox',
+					'default' => true,
 					'label' => $label,
 					'options' => $options
 					);
 				break;
 			case 'attachment':
 				$attachments = $object->get ($key);
-				$options = array ();
-				foreach ($attachments as $attachment)
-					$options[$attachment] = $attachment;
+				//$options = $attachments->gget(array('url', 'title'));
 					
 				$fields[$key] = array (
-					'type' => 'checkbox',
+					'type' => 'attachment',
 					'label' => $label,
 					'options' => $options
 					);
@@ -606,6 +813,50 @@ class WP_CRM_Form_Structure {
 					'label' => $label,
 					'type' => 'switch',
 					'default' => $object->get ($key)
+					);
+				break;
+			case 'liststructure':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'spread',
+					'default' => $object->get ($key)
+					);
+				break;
+			case 'treestructure':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'nested',
+					'default' => $object->get ($key)
+					);
+				break;
+			case 'gantt':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'gantt',
+					'default' => $object->get ($key)
+					);
+				break;
+			case 'duration':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'duration',
+					'default' => $object->get ($key)
+					);
+				break;
+			case 'inventory':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'inventory',
+					'default' => $object->get ($key),
+					'options' => $object->get ($opts) 
+					);
+				break;
+			case 'tree':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'tree',
+					'default' => $object->get ($key),
+					'parent' => get_class ($object) . '-' . $object->get()
 					);
 				break;
 			default:

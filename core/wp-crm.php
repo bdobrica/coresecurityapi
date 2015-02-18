@@ -154,6 +154,8 @@ class WP_CRM_Plugin_Wrapper {
                 $plugin_slug = plugin_basename (__FILE__);
                 $slug = basename (__FILE__);
 
+		load_plugin_textdomain ('WP_CRM_Plugin', false, dirname(plugin_basename(__FILE__)) . '/languages');
+
                 add_filter ('pre_set_site_transient_update_plugins', array ('WP_CRM_Plugin_Wrapper', 'check_update'));
                 add_filter ('plugins_api', array ('WP_CRM_Plugin_Wrapper', 'check_info'), 10, 3);
                 }

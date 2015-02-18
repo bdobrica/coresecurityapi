@@ -5,7 +5,7 @@ global
 	$wp_crm_menu,
 	$current_user;
 
-$wp_crm_buyer = new WP_CRM_Buyer ();
+//$wp_crm_buyer = new WP_CRM_Buyer ();
 $wp_crm_state = new WP_CRM_State ();
 
 if (!is_user_logged_in()) {
@@ -15,6 +15,7 @@ if (!is_user_logged_in()) {
 		case 'signup':
 			$wp_crm_state->set ('state', WP_CRM_State::SignUp);
 			break;
+		case 'reset':
 		case 'forgot':
 			$wp_crm_state->set ('state', WP_CRM_State::Forgot);
 			break;
@@ -47,7 +48,8 @@ if ($current_user->ID && !in_array ($wp_crm_state->get(), array (
 	$wp_crm_user = new WP_CRM_User ($current_user->ID);
 
 	$wp_crm_offices = get_user_meta ($current_user->ID, '_wp_crm_offices', TRUE);
-	$wp_crm_office_query = is_numeric ($wp_crm_offices) ? sprintf ('oid=%d', $wp_crm_offices) : (!empty($wp_crm_offices) ? sprintf ('oid in (%s)', implode (',', $wp_crm_offices)) : '');
+	$wp_crm_offices = is_numeric ($wp_crm_offices) ? array (0, $wp_crm_offices) : (!empty ($wp_crm_offices) ? array_merge (array (0), $wp_crm_offices) : array (0));
+	$wp_crm_office_query = sizeof ($wp_crm_offices) == 1 ? sprintf ('oid=%d', current($wp_crm_offices)) : sprintf ('oid in (%s)', implode (',', $wp_crm_offices));
 
 
 	include (dirname (__FILE__) . '/template/user-header.tpl');

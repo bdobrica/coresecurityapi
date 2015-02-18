@@ -1,289 +1,28 @@
-/*
-Theme Name: WP CRM
-Theme URI: http://www.biletedesucces.ro/
-Description:
-Author: Bogdan Dobrica
-Version: 0.1
-Text Domain: wp-crm
-*/
-
-/* =Reset default browser CSS. Based on work by Eric Meyer: http://meyerweb.com/eric/tools/css/reset/index.html
--------------------------------------------------------------- */
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
-	border: 0;
-	font-family: inherit;
-	font-size: 100%;
-	font-style: inherit;
-	font-weight: inherit;
-	margin: 0;
-	outline: 0;
-	padding: 0;
-	vertical-align: baseline;
-}
-:focus {/* remember to define focus styles! */
-	outline: 0;
-}
-body {
-	line-height: 1;
-}
-ol, ul {
-	list-style: none;
-}
-table {/* tables still need 'cellspacing="0"' in the markup */
-	border-collapse: separate;
-	border-spacing: 0;
-}
-caption, th, td {
-	font-weight: normal;
-	text-align: left;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: "";
-}
-blockquote, q {
-	quotes: "" "";
-}
-a img {
-	border: 0;
-}
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-
-/* some default settings
--------------------------------------------------------------- */
-html,
-body { margin: 0; padding: 0; height: 100%; background: #557790 url(images/main-bg.png) no-repeat center center!important; background-attachment: fixed; }
-.wp-crm-body { clear: both; margin: 10px auto; width: 80%; border: 1px solid #ccc; border-radius: 3px; box-shadow: 1px 1px 1px #eee; padding: 5px; }
-.wp-crm-body { line-height: 1.5em; }
-.wp-crm-body h1 { font-size: 17pt; font-weight: bold; text-align: center; margin: 0.5em 0 1.5em; }
-.wp-crm-body p { margin: 0.2em 0 0.5em; }
-.wp-crm-body p:first-letter { margin-left: 1.5em; }
-.wp-crm-body strong { font-weight: bold; }
-
-.object-series { font-weight: bold; }
-.object-meta-series { font-style: italic; font-weight: normal; }
-.object-number { padding: 0 5px; }
-.object-person { width: 16px; height: 16px; background: url(images/16x16/user-2.png) no-repeat center center; display: block; margin: 0; }
-.object-company { width: 16px; height: 16px; background: url(images/16x16/users.png) no-repeat center center; display: block; margin: 0; }
-
-/* wp-crm
--------------------------------------------------------------- */
-.wp-crm-form-separator,
-.wp-crm-view-separator { clear: both; }
-
-.wp-crm-view-data { margin: 0 10px; padding: 92px 0 32px; }
-.wp-crm-view-table { width: 80%; background: #fff; }
-.wp-crm-view-table thead th img { cursor: pointer; }
-.wp-crm-view-table .wp-crm-view-last { width: 200px; text-align: right; }
-.wp-crm-view-table .wp-crm-view-last .btn-group { text-align: left; }
-
-.wp-crm-view-shadow { width: 100%; height: 100%; background: #000; display: none; z-index: 9998; position: absolute; top: 0; left: 0; }
-.wp-crm-view-window { background: #fff; box-shadow: 1px 1px 1px #ccc; width: 80%; position: fixed; top: 5%; left: 10%; z-index: 9999; display: none; }
-.wp-crm-view-window-header { height: 30px; line-height: 32px; text-align: center; }
-.wp-crm-view-window h3 { font-size: 13pt; padding: 4px 12px 6px; color: #1ca0da; margin: 0 2px 10px; }
-
-.wp-crm-form input[type="text"],
-.wp-crm-form input[type="password"],
-.wp-crm-form textarea { width: 80%; margin: 4px 12px 6px; }
-.wp-crm-form textarea { vertical-align: top; height: 200px; }
-.wp-crm-form .wp-crm-form-button { width: 80%; text-align: left; }
-.wp-crm-form-hidden,
-.wp-crm-form-hidden * { width: 0; height: 0; overflow: none; }
-.wp-crm-form .wp-crm-form-button-wrap { width: 80%; text-align: left; float: right; }
-
-.wp-crm-form { margin: 5px 10px; }
-.wp-crm-form ul {}
-.wp-crm-form ul>li { text-align: right; }
-.wp-crm-form ul>li>h3 { text-align: left; }
-.wp-crm-form label { vertical-align: middle; float: left; width: 18%; margin-right: 2%; text-align: right; }
-
-.wp-crm-form .select-wrap { width: 80%; float: right; margin: 0; padding: 0; }
-.wp-crm-form .select-wrap .btn { margin: 0; }
-.wp-crm-form ul ul.dropdown-menu { margin: 0; padding: 0; float: none; width: 100%; line-height: auto; }
-.wp-crm-form ul ul.dropdown-menu li { float: none; display: inline; line-height: auto; margin: 0; }
-
-.wp-crm-form-buttons { clear: both; text-align: center; margin: 0 10px 10px; padding: 5px; }
-.wp-crm-form-buttons ul { display: inline; text-align: center; }
-.wp-crm-form-buttons li { display: inline; }
-.wp-crm-form-buttons li:first-child { padding-right: 60%; }
-
-.wp-crm-form-list li label { text-align: left; width: auto; }
-
-.wp-crm-form-login { padding: 80px 0 50px; text-align: center; }
-.wp-crm-form-login .wp-crm-form { clear: both; }
-.wp-crm-form-login-form .wp-crm-form-column li { }
-.wp-crm-form-login-form .wp-crm-form-column li input { clear: both; margin: 3px auto;  }
-.wp-crm-form-login-form,
-.wp-crm-form-login-buttons { width: 40%; margin: 0 auto; clear: both; }
-.wp-crm-form-login-buttons input { margin-right: 10%; }
-.wp-crm-form-login-form { padding: 0; }
-
-.wp-crm-form-matrix-wrapper { width: 80%; float: right; margin: 4px 15px 6px; text-align: left; }
-.wp-crm-form .wp-crm-form-matrix { margin: 0; padding: 0; width: 100%; }
-.wp-crm-form-matrix>li { clear: both; margin: 0; padding: 0; }
-.wp-crm-form-matrix .wp-crm-form-matrix-row { margin: 0; padding: 0; display: block; width: 100%; }
-.wp-crm-form-matrix-row li { margin: 0; padding: 0; display: block; width: 66px; float: left; text-align: center!important; }
-.wp-crm-form-matrix-row li input[type="text"] { margin: 4px 6px; }
-.wp-crm-form-matrix .wp-crm-form-matrix-cell { }
-.wp-crm-form-matrix .wp-crm-form-matrix-cell-add-row,
-.wp-crm-form-matrix .wp-crm-form-matrix-cell-date { width: 120px; text-align: center; display: block; float: left; }
-.wp-crm-form-matrix .btn { margin: 0!important; }
-
-.wp-crm-form-tabs { width: 80%; float: right; text-align: left; }
-.wp-crm-form-tabs .nav { float: none; width: 100%; margin: 0; }
-.wp-crm-form-tabs textarea { width: 100%; }
-
-.wp-crm-form-file { width: 80%; margin: 4px 15px 6px; float: right; text-align: left; }
-.wp-crm-form-filedrop { width: 80%; margin: 4px 15px 6px 18px; height: 66px; float: right; }
-.wp-crm-form-filedrop-message { clear: both; width: 100%; text-align: center; display: block; padding: 4px 0; }
-.wp-crm-form-filedrop-preview img { width: 10%; float: left; margin: 2px; }
-.wp-crm-form-filedrop-progress { width: 85%; height: 24px; margin-top: 12px; overflow: hidden; float: right; border: 1px solid #eee; border-radius: 3px; }
-.wp-crm-form-filedrop-progressbar { position: relative; height: 24px; background: #c00; width: 0; }
-
-.wp-crm-view-client { min-height: 100%; background: url(images/biletedesucces.png); }
-.wp-crm-view-payment-wrap { padding: 8% 30%; min-height: 100%; }
-.wp-crm-view-payment { border: 1px solid #999; box-shadow: 3px 3px 1px #ccc; background: #fff; }
-.wp-crm-view-payment form { display: block; width: 300px; margin: 2em auto; position: relative; }
-.wp-crm-view-payment form * { font-size: 14pt; }
-.wp-crm-view-payment form label { display: block; clear: both; margin: 4px 0;  }
-.wp-crm-view-payment form input { clear: both; width: 90%; margin: 0 5%; }
-.wp-crm-view-payment form p { margin: 4px 0; text-align: right; }
-.wp-crm-view-payment form button { }
-.wp-crm-view-mobilpay { margin: 2em; }
-.wp-crm-view-mobilpay * { font-size: 12pt; line-height: 105%; }
-.wp-crm-view-mobilpay p { margin: 0.5em 0 0.7em; text-align: justify; }
-.wp-crm-view-mobilpay li { list-style-type: square; margin-left: 3em; }
-.wp-crm-view-mobilpay form { padding: 10px 0 40px; }
-.wp-crm-view-payment-error { margin: 2em 2em 0; font-size: 12pt; line-height: 105%; }
-
-.wp-crm-form-spread-table { border: 1px solid #333; border-width: 1px 1px 0 0; border-radius: 3px; margin: 1em auto; width: 96%; }
-.wp-crm-form-spread-table thead th { font-weight: bold; padding: 2px 5px; }
-.wp-crm-form-spread-table tbody td { border: 1px solid #333; border-width: 0 0 1px 1px; }
-.wp-crm-form-spread-data { border: 0; width: 100%; padding: 2px 0; }
-.wp-crm-form-spread-cell { border: 1px solid #333; border-width: 0 0 1px 1px; }
-
-.wp-crm-view-affiliate-wrap { width: 100%; padding: 20px 0; }
-.wp-crm-view-affiliate { clear: both; padding: 20px 10px; margin: 0 20px; background: #fff; border: 1px solid #eee; }
-.wp-crm-view-affiliate
-	.wp-crm-view-table { margin: 10px 20px; background: #fff; }
-.wp-crm-view-affiliate
-	.wp-crm-view-table * { font-size: 12pt; }
-.wp-crm-view-affiliate-full { font-size: 12pt; text-align: center; }
-.wp-crm-view-affiliate-full strong { font-size: 12pt; font-weight: bold; }
-.wp-crm-view-affiliate-empty { font-size: 12pt; text-align: center; }
-.wp-crm-view-affiliate-empty strong { font-size: 12pt; font-weight: bold; }
-
-
-.wp-crm-view-rte { width: 80%; height: 240px; }
-.tinyeditor { float: right; margin: 4px 12px 6px; text-align: left; }
-.tinyeditor .wp-crm-view-rte { margin-left: 0; }
-.tinyeditor select { width: auto; line-height: 1.7em; height: 1.7em; }
-.tinyeditor select option { }
-.tinyeditor textarea { margin-left: 1px; padding: 0; border: 0; left: 0; }
-.tinyeditor iframe { float: left; }
-.tinyeditor-footer { clear: both; }
-
-.wp-crm-view-menu-wrap { }
-.wp-crm-view-menu { padding: 92px 6px 0; }
-.wp-crm-view-app { display: block; width: 264px; height: 128px; float: left; margin: 4px; position: relative; background: #ccc; border-radius: 6px; border: 2px solid rgb(52, 73, 94); }
-.wp-crm-view-app-size-1 { width: 128px; }
-	.app-link { display: block; width: 100%; height: 100%; text-decoration: none; color: #fff; position: relative; }
-	.app-title { display: block; position: absolute; right: 16px; bottom: 4px; font-size: 11pt; }
-	.app-slide-wrapper { display: block; width: 264px; height: 128px; overflow: hidden; position: relative; }
-	.app-slide-container { position: relative; }
-	.app-slide { display: block; width: 216px; height: 128px; margin-left: 24px; color: #fff; text-decoration: none; position: relative; clear: both; }
-	.app-slide-title { display: block; font-size: 14pt; position: absolute; top: 8px; }
-	.app-slide-info { display: block; font-size: 32pt; position: absolute; bottom: 8px; right: 16px; }
-	.app-slide-info-highlight { font-size: 32pt; }
-	.app-slide-up { position: absolute; right: 8px; top: 4px; cursor: pointer; }
-	.app-slide-down { position: absolute; right: 8px; bottom: 4px; cursor: pointer; }
-
-	.app-slide-info-b1,
-	.app-slide-info-b2,
-	.app-slide-info-b3,
-	.app-slide-info-b4,
-	.app-slide-info-b5 { display: block; float: left; margin: 1px 3px 2px 5px; }
-	.app-slide-info-label { display: block; font-size: 10pt; color: #fff; }
-	.app-slide-info-b1 { font-size: 26pt; color: #fff; width: 100%; }
-	.app-slide-info-b2 { font-size: 18pt; width: 50%; }
-	.app-slide-info-b3 { font-size: 14pt; }
-	.app-slide-info-b4 { font-size: 12pt; }
-	.app-slide-info-b5 { font-size: 10pt; color: #000; }
-	.app-slide-info-plain { color: #fff; }
-
-.wp-crm-view-bar { position: fixed; width: 100%; top: 0; left: 0; z-index: 9998; }
-.wp-crm-view-bar > .navbar { margin: 2px 10px; }
-
-.wp-crm-view-group { box-shadow: 1px -1px 1px #eee; position: fixed; bottom: 0; left: 0; width: 100%; height: 32px; line-height: 32px; z-index: 9999; overflow: hidden; height: 0; text-align: center; }
-.wp-crm-view-group button { border: 0; cursor: pointer; color: #fff; padding: 4px 12px 6px; text-decoration: none; }
-.wp-crm-view-group button:hover { }
-
-.wp-crm-side-menu { position: fixed; top: 6%; right: 0; width: 0; box-shadow: 1px 1px 1px #eee; }
-
-.wp-crm-view-yes { color: #0c0; font-weight: bold; }
-.wp-crm-view-no { color: #c00; font-weight: bold; }
-
-.wp-crm-highlight { }
-.wp-crm-selected { color: #fff; }
-.wp-crm-percent { height: 12px; width: 60px; position: relative; vertical-align: middle; border: 1px solid #ddd; background: #eee; }
-.wp-crm-percent-bar { height: 12px; }
-.wp-crm-percent-data { position: absolute; top: 0; left: 0; height: 12px; width: 60px; text-align: center; font-size: 7pt; line-height: 12px; }
-
-.wp-crm-room { background: #fff; margin: 10px auto; padding: 15px 0; }
-.wp-crm-room-row { clear: both; }
-.wp-crm-room-seat { float: left; margin: 1px; border: 1px solid #ccc; text-align: center; vertical-align: middle; }
-.wp-crm-room-legend { clear: both; margin: 10px; }
-.wp-crm-room-legend li { display: block; margin: 2px; }
-
-.wp-crm-seats { width: 65px; }
-.wp-crm-seat { height: 12px; width: 12px; margin-right: 1px; margin-bottom: 1px; float: left; }
-
-
-.wp-crm-view-list-wrapper { width: 100%; background: #fff; }
-.wp-crm-view-list-container { overflow: none; }
-.wp-crm-view-separator { clear: both; }
-.wp-crm-view-list-groups { width: 10%; float: left; height: 600px; }
-.wp-crm-view-list-excerpts { width: 90%; float: left; }
-.wp-crm-view-list-excerpts ul { margin-left: 20px; border-left: 1px solid #ccc; padding-left: 20px; }
-.wp-crm-view-list-excerpts ul li {}
-.wp-crm-view-excerpt { clear: both; }
-.wp-crm-view-excerpt .wp-crm-view-excerpt-field { float: left; }
-.wp-crm-view-excerpt .wp-crm-view-excerpt-field label { display: block; }
-.wp-crm-view-excerpt .wp-crm-view-excerpt-field span {}
-.wp-crm-view-excerpt .wp-crm-view-inline-actions { float: right; }
-.wp-crm-view-list-content { width: 60%; height: 600px; }
-.wp-crm-view-list-actions { width: 40%; }
-
-.wp-crm-form-seats-canvas { height: 200px; background: #ffe; }
+/**/
+.wp-crm-form-column input[name="close"] { float: left; }
+.wp-crm-form-column input[name="next"] { float: right; }
 
 /* Seller */
-.ui-widget-seller {  border-radius: 6px; border: 2px solid rgb(189, 195, 199); background: rgb(249, 248, 243); position: absolute; z-index: 99999; }
+.ui-widget-seller {  border-radius: 6px; border: 2px solid rgb(189, 195, 199); background: #fff; position: absolute; z-index: 99999; }
 .ui-widget-seller .ui-widget-seller-header { border-color: #eee; background-color: #eee; color: #000; margin: 1px; text-align: left; }
 .ui-widget-seller-list { text-align: left; max-height: 350px; overflow: auto; }
-.ui-widget-seller-list a { display: block; padding: 4px 16px 6px; font-weight: bold; background-color: #eee; margin: 1px; cursor: pointer; }
+.ui-widget-seller-list a { display: block; padding: 4px 16px 6px; background-color: #eee; margin: 1px; cursor: pointer; }
 .ui-widget-seller-list a:hover { background-color: #39f; }
 
 /* Buyer */
-.ui-widget-buyer { border-radius: 6px; border: 2px solid rgb(189, 195, 199); background: rgb(249, 248, 243); width: 60%; position: absolute; z-index: 99999; }
-.ui-widget-buyer .ui-widget-buyer-header { border-color: #eee; background-color: #eee; color: #000; margin: 1px; text-align: left; }
+.ui-widget-buyer-wrapper { border-radius: 6px; padding: 2px; }
+.ui-widget-buyer-switch { clear: both; display: block; }
+
+
+.ui-widget-buyer { border-radius: 6px; border: 2px solid rgb(189, 195, 199); width: 100%; background: #fff; position: absolute; z-index: 99999; }
+.ui-widget-buyer .ui-widget-buyer-header { color: #000; margin: 1px; text-align: left; }
 .ui-widget-buyer-add { text-align: left; float: left; height: 440px; width: 50%; }
 .ui-widget-buyer-add input[type="text"] { width: 60%; float: right; }
 .ui-widget-buyer-add button { margin: 4px 24px 0; }
 .ui-widget-buyer-add label { width: 30%; line-height: 40px; height: 40px; display: block; float: left; }
 .ui-widget-buyer-add .radio { text-align: left; line-height: 24px; height: 24px; }
 .ui-widget-buyer-list { text-align: left; float: right; height: 440px; overflow: auto; width: 50%; }
-.ui-widget-buyer-list a { display: block; padding: 4px 16px 6px; font-weight: bold; background-color: #eee; margin: 1px; cursor: pointer; border-radius: 6px; }
+.ui-widget-buyer-list a { display: block; padding: 4px 16px 6px; background-color: #eee; margin: 1px; cursor: pointer; border-radius: 6px; }
 .ui-widget-buyer-list a:hover { text-decoration: none; background-color: rgb(93, 173, 226); }
 .widget-list-show {}
 .widget-list-hide { display: none!important; }
@@ -294,9 +33,9 @@ body { margin: 0; padding: 0; height: 100%; background: #557790 url(images/main-
 .ui-widget-person-add { text-align: left; float: left; height: 360px; width: 250px; }
 .ui-widget-person-add input[type="text"] { margin: 0 16px; }
 .ui-widget-person-add button { margin: 4px 24px 0; }
-.ui-widget-person-add label { font-weight: bold; }
+.ui-widget-person-add label { }
 .ui-widget-person-list { text-align: left; float: right; height: 360px; overflow: auto; width: 250px; }
-.ui-widget-person-list a { display: block; padding: 4px 16px 6px; font-weight: bold; background-color: #eee; margin: 1px; cursor: pointer; }
+.ui-widget-person-list a { display: block; padding: 4px 16px 6px; background-color: #eee; margin: 1px; cursor: pointer; }
 .ui-widget-person-list a:hover { background-color: #39f; }
 
 /* Product */
@@ -314,3 +53,91 @@ body { margin: 0; padding: 0; height: 100%; background: #557790 url(images/main-
 .ui-widget-product-basket div { text-align: left; margin: 0; }
 .ui-widget-product-basket input[type="text"] { width: 48px; margin: 0; display: inline; }
 .ui-widget-product-basket button { margin: 0 0 0 24px; }
+
+/* File */
+.wp-crm-form-file { margin: 4px 15px 6px; text-align: left; }
+.wp-crm-form-filedrop { }
+.wp-crm-form-filedrop .fd-file { opacity: 0; font-size: 1px; position: absolute; right: 0; top: 0 margin: 0; width: 0; height: 0; cursor: pointer; filter: alpha(opacity=0); font-family: sans-serif; }
+.wp-crm-form-filedrop-message { clear: both; width: 100%; text-align: center; display: block; padding: 4px 0; }
+.wp-crm-form-filedrop-preview img { width: 10%; float: left; margin: 2px; }
+.wp-crm-form-filedrop-progress { width: 85%; height: 24px; margin-top: 12px; overflow: hidden; float: right; border: 1px solid #eee; border-radius: 3px; }
+.wp-crm-form-filedrop-progressbar { position: relative; height: 24px; background: #c00; width: 0; }
+.wp-crm-form-hidden,
+.wp-crm-form-hidden * { width: 0; height: 0; overflow: none; }
+
+.wp-crm-form-filedrop-list { list-style-type: none; margin: 0; padding: 0; }
+.wp-crm-form-filedrop-list li { margin: 0; padding: 0; clear: both; display: block; font-size: 8pt; line-height: 1.8em; height: 1.8em; overflow: hidden; position: relative; }
+.wp-crm-form-filedrop-list input { margin-right: 0.5em; }
+.wp-crm-form-filedrop-list i { position: absolute; right: 0; top: 0; line-height: 1.8em; height: 1.8em; cursor: pointer; }
+
+/* RTE Input */
+.tinyeditor { width: 100%; }
+.wp-crm-form-textarea-rte-expand { cursor: pointer; }
+
+/* Matrix Input */
+.wp-crm-form-matrix-wrapper { margin: 4px 15px 6px; text-align: left; }
+.wp-crm-form .wp-crm-form-matrix { margin: 0; padding: 0; width: 100%; }
+.wp-crm-form-matrix>div { clear: both; margin: 0; padding: 0; }
+.wp-crm-form-matrix .wp-crm-form-matrix-row { margin: 0; padding: 0; display: block; width: 100%; }
+.wp-crm-form-matrix-row div { margin: 0; padding: 0; display: block; width: 66px; float: left; text-align: center!important; }
+.wp-crm-form-matrix-row div input[type="text"] { margin: 4px 6px; }
+.wp-crm-form-matrix .wp-crm-form-matrix-cell { }
+.wp-crm-form-matrix .wp-crm-form-matrix-cell-add-row,
+.wp-crm-form-matrix .wp-crm-form-matrix-cell-date { width: 120px; text-align: center; display: block; float: left; }
+.wp-crm-form-matrix .btn { margin: 0!important; }
+
+/* Buttons */
+.wp-crm-form-login-buttons,
+.wp-crm-form-forgot-buttons,
+.wp-crm-form-buttons { margin: 1em 0; }
+
+/* E-Invest Specific */
+.wp-crm-form-separator { clear: both; }
+.wp-crm-view-loading { position: absolute; left: 50%; width: 320px; height: 100px; background: #fff; border: 2px solid #eee; border-radius: 6px; box-shadow: 3px 3px 3px #eee;  margin-left: -160px; z-index: 9999; }
+.wp-crm-view-loading-title { text-align: center; padding: 5px; font-weight: bold; display: block; }
+.wp-crm-view-loading .progress { margin: 20px 9px 30px; width: 300px; }
+.wp-crm-view-tree { width: 100%; height: 400px; }
+.wp-crm-view-tree-menu { position: absolute; display: none; z-index: 100000; }
+
+.wp-crm-view-folder-wrapper { clear: both; }
+.wp-crm-view-folder { margin: 2px 0; display: block; clear: both; line-height: 40px; }
+.wp-crm-view-folder:hover { text-decoration: none; }
+.wp-crm-view-folder:before { font-size: 40px; margin-right: 5px; }
+.wp-crm-view-folder-wrapper hr { clear: both; }
+
+.wp-crm-selected { background: #78cd51!important; }
+.wp-crm-inline-input { border: 0; border-bottom: 1px solid #eee; width: 100%; margin: 0; padding: 0; background: transparent; }
+
+/****************** ALEX ADDONS *****************/
+.wp-crm-view-data {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+/* E-Invest Course */
+.wp-crm-view-course-video { }
+.wp-crm-view-course-slide { }
+.wp-crm-view-course-slideshow { position: relative; width: 100%; overflow: hidden; }
+.wp-crm-view-course-slideshow-item { position: absolute; width: 100%; }
+.wp-crm-view-course-slideshow-item img { width: 100%; }
+.wp-crm-view-course-slideshow ul { position: absolute; left: 15px; bottom: 15px; z-index: 10; text-align: left; list-style-type: none outside none; padding: 0; margin: 0; }
+.wp-crm-view-course-slideshow ul li { display: inline; cursor: pointer; padding: 5px; background: #fff; margin: 3px; border-radius: 3px; } 
+.wp-crm-view-course-slideshow ul li.selected { background: #c00; color: #fff; }
+.wp-crm-view-course-slideshow span { position: absolute; top: 50%; display: block; margin-top: -10px; padding: 10px; border-radius: 3px; background: #fff; cursor: pointer; }
+.wp-crm-view-course-slideshow span.prev { left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.wp-crm-view-course-slideshow span.next { right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.wp-crm-view-course-slideshow span.view { right: 15px; top: 15px; margin-top: 0; }
+.wp-crm-view-course-slide-fullscreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; }
+.wp-crm-view-course-slide-shadow { width: 100%; height: 100%; background: #000; opacity: .8; }
+.wp-crm-view-course-slide-fullscreen img { position: absolute; top: 50px; left: 20%; width: 60%; }
+.wp-crm-view-course-slide-fullscreen span { position: absolute; top: 50px; right: 20%; margin-right: -40px; display: block; padding: 10px; border-radius: 3px; background: #fff; cursor: pointer; }
+.wp-crm-view-course-quiz ul { list-style-type: none; }
+.wp-crm-view-course-quiz-question { display: block; }
+
+/* Visual Aid */
+.poscce { margin: 0 -20px 30px; padding: 0; border: 0; text-align: center; font-size: 8pt; font-weight: bold; }
+.poscce img { margin: 0 0 20px; }
+#content.front-page { background-image: url(images/background-ei.png); background-position: center center; }
+.login-box { border-radius: 3px; }
+.login-box .footer { font-size: 8pt; text-align: center; margin-top: 10px; }

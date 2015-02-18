@@ -16,8 +16,10 @@ class WP_CRM_State {
 	const AddObject		= 8;
 	const EditObject	= 9;
 	const SaveObject	= 10;
+	const ImportObjects	= 12;
+	const ExportObjects	= 13;
 
-	const CartActions	= 11;
+	const CartActions	= 14;
 
 	private $ID;
 	private $basket;

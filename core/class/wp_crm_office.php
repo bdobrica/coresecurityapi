@@ -40,8 +40,8 @@ class WP_CRM_Office extends WP_CRM_Model {
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
-        '`uid` int(11) NOT NULL DEFAULT  \'\'',
-        '`cid` int(11) NOT NULL DEFAULT  \'\'',
+		'`uid` int(11) NOT NULL DEFAULT  0',
+		'`cid` int(11) NOT NULL DEFAULT  0',
 		'`name` varchar(64) NOT NULL DEFAULT \'\' UNIQUE',
 		'`description` text NOT NULL',
 		'`url` text NOT NULL',

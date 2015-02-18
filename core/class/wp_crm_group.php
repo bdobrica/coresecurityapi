@@ -4,7 +4,54 @@ INFO: Helper class. Can apply methods on groups of objects. Is able
 to make groups from WP_CRM_List, array of objects or packed string.
 Packing is of the form Class_A-ID#1,ID#2,ID#3;Class_B-ID#4,ID#5,ID#6
 */
-class WP_CRM_Group {
+class WP_CRM_Group extends WP_CRM_Model {
+	public static $T = 'groups';
+	protected static $K = array (
+		'oid',				/** the office id				*/
+		'cid',				/** the company id 				*/
+		'parent',			/** parent id					*/
+		'title',			/** the name of the partition			*/
+		'description',			/** some description				*/
+		'objects',			/** the objects to which this partition applies	*/
+		'type',				/** the type of the partition: auto/user	*/
+		'stamp'
+		);
+	protected static $M_K = array ();
+	protected static $U = array ();
+	protected static $L = array (
+		'WP_CRM_Company',
+		'WP_CRM_Person',
+		'WP_CRM_User'
+		);
+	public static $F = array (
+		'new' => array (
+			'title' => 'Nume',
+			'objects' => 'Obiecte'
+			),
+		'edit' => array (
+			),
+		'view' => array (
+			),
+		'safe' => array (
+			),
+		'excerpt' => array (
+			),
+		'group' => array (
+			)
+		);
+	
+	protected static $Q = array (
+		'`id` int NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`oid` int NOT NULL DEFAULT 0',
+		'`uid` int NOT NULL DEFAULT 0',
+		'`parent` int NOT NULL DEFAULT 0',
+		'`title` text NOT NULL',
+		'`description` text NOT NULL',
+		'`objects` text NOT NULL',
+		'`type` enum(\'auto\',\'user\') NOT NULL DEFAULT \'user\'',
+		'`stamp` int NOT NULL DEFAULT 0'
+		);
+
 	private $objects;
 
 	public function __construct ($data = null) {
@@ -36,6 +83,10 @@ class WP_CRM_Group {
 						foreach ($objects as $object)
 							$this->objects[$classname][(int) $object] = new $classname ((int) $object);
 					}
+			}
+		else
+		if (is_numeric ($data)) {
+			parent::__construct ($data);
 			}
 		}
 
@@ -93,29 +144,68 @@ class WP_CRM_Group {
 		return FALSE;
 		}
 
-	public function save () {
+	public function gsave () {
 		self::groupcall ($this->objects, 'save');
 		}
 
-	public function delete () {
+	public function gdelete () {
 		self::groupcall ($this->objects, 'delete');
 		}
 
-	public function set ($key = null, $value = null) {
+	public function gset ($key = null, $value = null) {
 		self::groupcall ($this->objects, 'set', array (
 			$key,
 			$value
 			));
 		}
 
-	public function get ($key = null, $opts = null) {
-		return self::groupcall ($this->objects, 'get', array (
-			$key,
-			$opts
-			));
+	public function gget ($key = null, $opts = null) {
+		if (is_string ($key))
+			return self::groupcall ($this->objects, 'get', array (
+				$key,
+				$opts
+				));
+		if (is_array ($key) && !empty ($key)) {
+			$out = array ();
+			foreach ($this->objects as $class => $objects) {
+				if (!empty ($objects))
+				foreach ($objects as $id => $object) {
+					$out[$class . '-' . $id] = array ();
+					foreach ($key as $_k)
+						$out[$class . '-' . $id][$_k] = $object->get ($_k, $opts);
+					}
+				}
+			return $out;
+			}
 		}
 
-	public function view () {
+	public static function scan () {
+		if (!empty (static::$L))
+		foreach (static::$L as $class) {
+			try {
+				$dummy = new $class ();
+				}
+			catch (WP_CRM_Exception $wp_crm_exception) {
+				continue;
+				}
+
+			$group_by = $dummy->get ('group by');
+			if (!empty ($group_by))
+			foreach ($group_by as $group_by_key) {
+				$groups = $dummy->get ($group_by_key . '_list');
+				if (!empty ($groups))
+				foreach ($groups as $group) {
+					echo "group : $group\n";
+					}
+				}
+			}
+		}
+
+	public function __toString () {
+		return $this->pack ();
+		}
+
+	public function gview () {
 		return self::groupcall ($this->objects, 'view', func_get_args());
 		}
 	}

@@ -1,6 +1,8 @@
 <?php
 /*
 App Title: Produsele mele
+App Parent: erp
+App Order: 1
 App Description:
 App Size: 1
 App Style:
@@ -8,10 +10,40 @@ App Icon: square
 */
 $list = new WP_CRM_List ('WP_CRM_Product', array ('uid='.$current_user->ID));
 $view = new WP_CRM_View ($list, array (
-		'add' => 'Adauga',
-		'price' => 'Preturi',
-		'edit' => 'Modifica',
-		'delete' => 'Sterge'
+		array (
+			'type' => 'toolbar',
+			'items' => array (
+				'select' => array (
+					'label' => 'Selecteaza',
+					'items' => array (
+						'selall' => array (
+							'label' => 'Tot'
+							),
+						'seldel' => array (
+							'label' => 'Nimic'
+							)
+						),
+					),
+				'add' => array (
+					'label' => 'Adauga',
+					),
+				)
+			),
+		array (
+			'type' => 'column',
+			'label' => 'Actiuni',
+			'items' => array (
+				'edit' => array (
+					'label' => 'Modifica',
+					),
+				'process' => array (
+					'label' => 'Proces',
+					),
+				'delete' => array (
+					'label' => 'Sterge',
+					),
+				)
+			)
 		));
 unset ($view);
 ?>

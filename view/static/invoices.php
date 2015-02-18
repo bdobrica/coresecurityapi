@@ -1,6 +1,8 @@
 <?php
 /*
 App Title: Facturi
+App Parent: finance
+App Order: 1
 App Description:
 App Size: 2
 App Style:
@@ -20,6 +22,42 @@ $actions = array (
 
 if (!current_user_can ('wp_crm_pay') && !current_user_can ('add_users')) unset ($actions['pay']);
 
-$view = new WP_CRM_View ($list, $actions);
+$view = new WP_CRM_View ($list, array (
+		array (
+			'type' => 'toolbar',
+			'items' => array (
+				'add' => array (
+					'label' => 'Factura Noua',
+					),
+				)
+			),
+		array (
+			'type' => 'column',
+			'label' => 'Actiuni',
+			'items' => array (
+				'view' => array (
+					'label' => 'Vezi',
+					),
+				'edit' => array (
+					'label' => 'Modifica',
+					),
+				'pay' => array (
+					'label' => 'Plateste',
+					),
+				'people' => array (
+					'label' => 'Persoane',
+					),
+				'contact' => array (
+					'label' => 'Contact',
+					),
+				'memo' => array (
+					'label' => 'Memo',
+					),
+				'delete' => array (
+					'label' => 'Sterge',
+					),
+				)
+			)
+	));
 unset ($view);
 ?>

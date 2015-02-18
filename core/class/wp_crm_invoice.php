@@ -96,8 +96,8 @@ class WP_CRM_Invoice extends WP_CRM_Basket {
 		'view' => array (
 			'series:series' => 'Factura',
 			'paid%:%' => 'Platita',
-			'paiddate:date' => 'Din data',
-			'stamp:date' => 'Inscriere',
+			'paiddate:date' => 'In data',
+			'stamp:date' => 'Data Factura',
 			'bid:buyer' => 'Cumparator',
 			'buyer:entity' => 'Tip',
 			'coupon' => 'Cupon',
@@ -389,25 +389,83 @@ class WP_CRM_Invoice extends WP_CRM_Basket {
 	public function set ($key = null, $value = null) {
 		global $wpdb;
 
-		switch ((string) $key) {
-			case 'buyer':
-				if (!is_object ($value)) return FALSE;
-				if (!(($value instanceof WP_CRM_Person) || ($value instanceof WP_CRM_Company))) return FALSE;
-				$this->buyer = $value;
-				parent::set ('bid', $value->get());
-				parent::set ('buyer', $value instanceof WP_CRM_Person ? 'person' : 'company');
-				return TRUE;
-				break;
-			}
-
-		if (is_array ($key) && is_null ($value)) {
-			if (isset ($key['buyer']) && is_object ($key['buyer'])) {
-				$key['bid'] = $key['buyer']->get ();
-				$key['buyer'] = $key['buyer'] instanceof WP_CRM_Company ? 'company' : 'person';
+		if (is_string ($key)) {
+			switch ((string) $key) {
+				case 'buyer':
+					if (!is_object ($value)) return FALSE;
+					if (!(($value instanceof WP_CRM_Person) || ($value instanceof WP_CRM_Company))) return FALSE;
+					$this->buyer = $value;
+					parent::set ('bid', $value->get());
+					parent::set ('buyer', $value instanceof WP_CRM_Person ? 'person' : 'company');
+					return TRUE;
+					break;
+				case 'sid':
+					$this->seller = $value instanceof WP_CRM_Company ? $value : new WP_CRM_Company ((int) $value);
+					return WP_CRM_Model::set ($key, $this->seller->get());
+					break;
+				case 'products':
+					return parent::set ($key, $value);
+					break;
+				}
+		
+			if (in_array ($key, self::$K)) {
+				WP_CRM_Model::set ($key, $value);
+				}
+			if (in_array ($key, parent::$K)) {
+				parent::set ($key, $value);
 				}
 			}
 
-		return parent::set ($key, $value);
+		if (is_array ($key) && is_null ($value)) {
+			echo "\n\$key=";
+			var_dump ($key);
+			if (isset ($key['buyer']) && is_object ($key['buyer'])) {
+				$this->buyer = $key['buyer'];
+				$key['bid'] = $key['buyer']->get ();
+				$key['buyer'] = $key['buyer'] instanceof WP_CRM_Company ? 'company' : 'person';
+				}
+			if (isset ($key['sid']) && is_object ($key['sid'])) {
+				$this->seller = $key['sid'];
+				$key['sid'] = $key['sid']->get();
+				}
+			if (isset ($key['products'])) {
+				parent::set ('products', $key['products']);
+				$key['products'] = null;
+				unset ($key['products']);
+				}
+
+			$keys = array_keys ($key);
+			
+			$self = array_intersect ($keys, self::$K);
+			if (!empty ($self)) {
+				echo "\n\$self=";
+				var_dump ($self);
+				$set = array ();
+				foreach ($self as $_k) $set[$_k] = $key[$_k];
+				echo "\n\$set=";
+				var_dump ($set);
+				
+				WP_CRM_Model::set ($set);
+				}
+			$parent = array_intersect ($keys, parent::$K);
+			if (!empty ($parent)) {
+				echo "\n\$parent=";
+				var_dump ($parent);
+				$set = array ();
+				foreach ($parent as $_k) $set[$_k] = $key[$_k];
+				echo "\n\$set=";
+				var_dump ($set);
+
+				WP_CRM_Model::set ($set);
+				}
+			}
+
+		$return = parent::set ($key, $value);
+		/**
+		 * TODO: update products. If (this->ID) .. then
+		 */
+
+		return $return;
 
 		/*
 		HIST:
@@ -954,7 +1012,10 @@ INFO: force updating the values
 				$companies[] = $company_id;
 				}
 
+		print_r ($this->data);
+
 		if (empty($companies) && isset($this->data['sid'])) $companies[] = $this->data['sid'];
+		if (is_object ($this->buyer)) $wp_crm_buyer = new WP_CRM_Buyer ($this->buyer);
 
 		$ids = array ();
 
@@ -974,7 +1035,8 @@ INFO: force updating the values
 					$wp_crm_company->get ('invoice_series');
 
 				parent::save ();
-				$sql = $wpdb->prepare ('select 1+max(coalesce(number,0)) from `' . $wpdb->prefix . static::$T . '` where series=%s', $this->data['series']);
+
+				$sql = $wpdb->prepare ('select 1+coalesce(max(number),0) from `' . $wpdb->prefix . static::$T . '` where series=%s', $this->data['series']);
 				$this->data['number'] = (int) $wpdb->get_var ($sql);
 				$sql = $wpdb->prepare ('update `'. $wpdb->prefix . static::$T .'` set number=%d where id=%d;', array (
 					$this->data['number'],
@@ -994,9 +1056,9 @@ INFO: force updating the values
 				}
 			}
 		else {
-			/*
-			HINT: don't reset this->ID because we have only one company
-			*/
+			/**
+			 * HINT: don't reset this->ID because we have only one company
+			 */
 			if (!empty($companies)) {
 				$wp_crm_company = new WP_CRM_Company ($companies[0]);
 				$this->data['sid'] = $companies[0];
@@ -1011,7 +1073,11 @@ INFO: force updating the values
 				}
 
 			parent::save ();
-			$sql = $wpdb->prepare ('select 1+max(coalesce(number,0)) from `' . $wpdb->prefix . static::$T . '` where series=%s', $this->data['series']);
+
+			/**
+			 * Get the next invoice number for $this->data['series'] and update the records
+			 */
+			$sql = $wpdb->prepare ('select 1+coalesce(max(number),0) from `' . $wpdb->prefix . static::$T . '` where series=%s', $this->data['series']);
 			$this->data['number'] = (int) $wpdb->get_var ($sql);
 			$sql = $wpdb->prepare ('update `'. $wpdb->prefix . static::$T .'` set number=%d where id=%d;', array (
 				$this->data['number'],
@@ -1022,7 +1088,7 @@ INFO: force updating the values
 
 			$ids[] = $this->ID;
 
-			if (count ($companies)) {
+			if (sizeof ($companies)) {
 				if (is_object ($wp_crm_buyer) && ($wp_crm_buyer instanceof WP_CRM_Buyer)) {
 					$sql = $wpdb->prepare ('update `' . $wpdb->prefix . parent::$T . '` set iid=%d where iid=0 and bid=%d;', array (
 							$this->ID,
@@ -1054,6 +1120,7 @@ INFO: force updating the values
 								$values[] = $data[$key];
 								}
 							$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . parent::$T . '` (' . implode(',', parent::$K) . ') values (' . implode (',', $formats) . ');', $values);
+							echo "\nxxxx\n$sql\n";
 							$wpdb->query ($sql);
 							if (!($this->ID = $wpdb->insert_id))
 								throw new WP_CRM_Exception (__CLASS__ . ' :: Saving Failure SQL: ' . "\n" . $sql . "\n", WP_CRM_Exception::Saving_Failure);
@@ -1079,7 +1146,7 @@ INFO: force updating the values
 								$values[] = $data[$key];
 								}
 							$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . parent::$T . '` (' . implode(',', parent::$K) . ') values (' . implode (',', $formats) . ');', $values);
-							echo "\n$sql\n";
+							echo "\nxxxx\n$sql\n";
 							$wpdb->query ($sql);
 							if (!($this->ID = $wpdb->insert_id))
 								throw new WP_CRM_Exception (__CLASS__ . ' :: Saving Failure SQL: ' . "\n" . $sql . "\n", WP_CRM_Exception::Saving_Failure);
@@ -1150,7 +1217,11 @@ INFO: force updating the values
 		$pdf->Cell (0, 7, $this->data['series'] . ' ' . str_pad($this->data['number'], 5, 0, STR_PAD_LEFT));
 		$pdf->style ();
 		$pdf->Ln ();
-		$pdf->Cell (0, 5, 'Data emiterii: ' . date('d-m-Y', $this->data['paiddate'] ? $this->data['paiddate'] : $this->data['stamp']) . ' / ID Client: ' . strtoupper(base_convert(2 * (($this->data['buyer'] == 'person' ? WP_CRM_Person::Padding : WP_CRM_Company::Padding) + $this->buyer->get()) + ($this->data['buyer'] == 'person' ? 0 : 1), 10, self::ID_Base)));
+		$pdf->Cell (0, 5, 'Data emiterii: ' . date('d-m-Y', $this->data['paiddate'] ? $this->data['paiddate'] : $this->data['stamp']) . ' / ID Client: ' . strtoupper(base_convert(2 * ($this->buyer->crypto()) + ($this->data['buyer'] == 'person' ? 0 : 1), 10, self::ID_Base)));
+		/**
+		 * HIST:
+		 */
+		#$pdf->Cell (0, 5, 'Data emiterii: ' . date('d-m-Y', $this->data['paiddate'] ? $this->data['paiddate'] : $this->data['stamp']) . ' / ID Client: ' . strtoupper(base_convert(2 * (($this->data['buyer'] == 'person' ? WP_CRM_Person::Padding : WP_CRM_Company::Padding) + $this->buyer->get()) + ($this->data['buyer'] == 'person' ? 0 : 1), 10, self::ID_Base)));
 		$pdf->Ln ();
 		$pdf->Line (11, 40, 199, 40);
 		$pdf->Ln ();
@@ -1158,16 +1229,18 @@ INFO: force updating the values
 		$logo = $this->seller->get ('logo path');
 		if (file_exists ($logo)) {
 			list ($width, $height) = getimagesize ($logo);
+			
+			if ($width * $height > 0) {
+				$y_offset = 30;
 
-			$y_offset = 30;
+				$x_offset = $y_offset * $width / $height;
+				if ($x_offset > 95) {
+					$x_offset = 95;
+					$y_offset = $x_offset * $height / $width;
+					}
 
-			$x_offset = $y_offset * $width / $height;
-			if ($x_offset > 95) {
-				$x_offset = 95;
-				$y_offset = $x_offset * $height / $width;
+				$pdf->Image ($logo, 200 - $x_offset,  10, $x_offset, $y_offset);
 				}
-
-			$pdf->Image ($logo, 200 - $x_offset,  10, $x_offset, $y_offset);
 			}
 
 		$pdf->columns (5, array ('Vanzator:', 'Cumparator:'));

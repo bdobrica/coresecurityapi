@@ -26,6 +26,10 @@ class WP_CRM_Exception extends Exception {
 	const Invalid_Session		= 24;
 	const Invalid_SRP_Command	= 25;
 	const Missing_Person		= 26;
+	const FileSystem_Access_Error	= 27;
+	const Database_Error		= 28;
+	const File_upload_Error		= 29;
+	const Invalid_File_Size		= 30;
 	
 	
 	public function __construct ($code = 0, $message = null) {
@@ -35,6 +39,12 @@ class WP_CRM_Exception extends Exception {
 	public function get ($key = null) {
 		if ($key == 'code') return parent::getCode();
 		return parent::getMessage ();
+		}
+
+	public function json () {
+		echo json_encode ((object) array (
+			'error'	=> parent::getCode()
+			));
 		}
 	};
 ?>

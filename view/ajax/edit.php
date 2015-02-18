@@ -21,6 +21,11 @@ $structure = new WP_CRM_Form_Structure ($object);
 $form = new WP_CRM_Form ($structure);
 $form->set ('state', $wp_crm_state->get());
 
-if ($_POST['object']) $form->action ();
-$form->render (TRUE);
+if ($_POST['object']) {
+	$form->action ();
+	$object = new $class ((int) $id);
+	echo "OK\nUPDATE:" . $object->changes ();
+	}
+else
+	$form->render (TRUE);
 ?>
