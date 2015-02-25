@@ -98,9 +98,6 @@ jQuery.fn.tinyeditor = function () {
 	if (!this.attr('id')) return;
 	jQuery('<div></div>').css('clear','both').insertAfter(this);
 
-	//alert(this.width());
-	//alert(this.width() + 'x' + this.height());
-
 	this.rte = new TINY.editor.edit('e'+i,{
 		id: this.attr('id'),
 		width: this.width()+'%',
@@ -242,7 +239,7 @@ jQuery.widget('wpcrm.buyer', {
 							jQuery('<button />', {'text': 'OK', 'class': 'btn btn-wide btn-primary pull-right'}).click(function(e){
 								e.preventDefault();
 								jQuery.post (jthis.options.url, jthis.add.serialize() + '&type=' + (jthis.typ[0].checked ? 'company' : 'person'), function(d){
-									alert(JSON.stringify(d));
+									$wpcrmui._log(JSON.stringify(d));
 									var l = jthis.typ[0].checked ? jthis.cls : jthis.pls;
 									if (d.type && (d.type == 'object')) {
 										l.prepend(
@@ -730,6 +727,13 @@ var $wpcrmui = new function () {
 		return null;
 		};
 
+	this._log = function (m, a) {
+		var l = jQuery('.wp-crm-ui-logger textarea');
+		if (l.length < 1) return;
+		l.val ((a ? (l.val() + m) : m) + "\n");
+		return;
+		};
+
 	this.tswap = function (m, n) {
 		if (m == n) return 0;
 		/*
@@ -864,7 +868,7 @@ var $wpcrmui = new function () {
 					success: function(r){
 						var d = jQuery.parseJSON(r);
 						if (d.error) {
-							/** alert ('error!'); /**/
+							$wpcrmui._log ("error!\n" + r);
 							}
 						else {
 							var n = jQuery('.wp-crm-form-file-name', u);
@@ -1058,7 +1062,7 @@ var $wpcrmui = new function () {
 
 			d.filedrop(o).on('fdsend', function(e,fs){
 				fs.each(function(f){
-					/** alert (JSON.stringify(f)); /**/
+					$wpcrmui._log (JSON.stringify(f));
 					f.event('sendXHR', function(){
 						jQuery ('.wp-crm-form-file-bar', d).width('0');
 						});
@@ -1077,13 +1081,13 @@ var $wpcrmui = new function () {
 					jQuery(g.target).closest('li').remove();
 					}));
 				jQuery('.wp-crm-form-filedrop-list', d).append(i);
-				/** alert('done:' + xhr.responseText); /**/
+				$wpcrmui._log('done:' + xhr.responseText);
 				})
 			.on('fileerror', function(e,f,xhre,xhr){
-				/** alert('error:' + xhr.responseText); /**/
+				$wpcrmui._log('error:' + xhr.responseText);
 				})
 			.on('fdiframedone', function(e,xhr){
-				/** alert('idone:' + xhr.responseText); /**/
+				$wpcrmui._log('idone:' + xhr.responseText);
 				});
 
 			jQuery('.wp-crm-form-filedrop-select', d).click(function(e){e.preventDefault();jQuery('.fd-file', d).click();});
@@ -1164,7 +1168,7 @@ var $wpcrmui = new function () {
 				e.preventDefault();
 				var f = jQuery(e.target).closest('form');
 				var c = jQuery('select.wp-crm-view-template', f);
-				/** alert ('load'); /**/
+				$wpcrmui._log ('load');
 				jQuery(e.target).attr('rel', c.val()); 
 				$wpcrmui.xo (e, $wpcrmui.action, 'template', {'action':'load'}, function (d){
 					var f = jQuery(e.target).closest('form');
@@ -1201,7 +1205,7 @@ var $wpcrmui = new function () {
 				e.preventDefault();
 				var f = jQuery(e.target).closest('form');
 				var c = jQuery('select.wp-crm-view-template', f);
-				/** alert ('delete'); /**/
+				$wpcrmui._log('delete');
 				jQuery(e.target).attr('rel', c.val()); 
 				var y = window.confirm ('Esti sigur ca vrei sa stergi "'+jQuery('option:selected',c).text()+'"?') ? 'yes' : 'no';
 				$wpcrmui.xo (e, $wpcrmui.action, 'template', {'action':'delete','confirm':y}, function (d){
@@ -1324,7 +1328,7 @@ var $wpcrmui = new function () {
 						jQuery ('.progress-bar', $wpcrmui.ldg).width('100%');
 						$wpcrmui.ldg.hide();
 
-						/**/ alert(d); return; /**/
+						$wpcrmui._log(d); return;
 
 						if (d.indexOf('OK') == 0) {
 							if (d.indexOf('REDRAW:') > -1) {
@@ -1563,7 +1567,7 @@ var $wpcrmui = new function () {
 		var c = new google.visualization.OrgChart(jQuery(c)[0]);
 		c.draw(d, {allowHtml:true});
 		google.visualization.events.addListener(c, 'select', function(e){
-			/** alert(JSON.stringify(e)); /**/
+			$wpcrmui._log (JSON.stringify(e));
 			});
 		};
 	/*
@@ -1624,7 +1628,7 @@ var $wpcrmui = new function () {
 				jQuery ('.progress-bar', $wpcrmui.ldg).width('100%');
 				$wpcrmui.ldg.hide();
 
-				/** alert(d); /**/
+				$wpcrmui._log(d);
 
 				if (d.indexOf('OK') == 0) {
 					if (d.indexOf('REDRAW:') > -1) {
@@ -1638,7 +1642,7 @@ var $wpcrmui = new function () {
 						var a = d.indexOf('UPDATE:');
 						var b = d.indexOf("\n", a);
 						var c = jQuery(d.substr(a + 7, b - a - 7));
-						/** alert (c); /**/
+						$wpcrmui._log (c);
 						}
 					return;
 					}
@@ -1661,7 +1665,7 @@ var $wpcrmui = new function () {
 			url: u,
 			type: 'GET',
 			success: function(d) {
-				/** alert(d); /**/
+				$wpcrmui._log(d);
 				if (d.indexOf('OK')==0) {
 					if(typeof(s)=='function')s(d.substr(2));
 					}
@@ -1686,7 +1690,7 @@ var $wpcrmui = new function () {
 			url: u,
 			type: 'POST',
 			success: function(d) {
-				/** alert(d); /**/
+				$wpcrmui._log(d);
 				d = JSON.parse(d);
 				if (d.error) {
 					if(typeof(f)=='function')f(d);
@@ -1872,6 +1876,9 @@ var $wpcrmui = new function () {
 					});
 				}
 			});
+
+		/* logging */
+		jQuery('body').append('<div class="wp-crm-ui-logger"><label>Logger:</label><textarea rows="10"></textarea></div>');
 		};
 
 	this.progress = function (e){

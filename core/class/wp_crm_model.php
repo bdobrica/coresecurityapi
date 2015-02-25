@@ -230,6 +230,14 @@ abstract class WP_CRM_Model {
 		if (empty (static::$M_K) || (!in_array ($slug, static::$M_K)))
 			return FALSE;
 
+		if (!$this->ID) {
+			if ($single)
+				$this->data[$slug] = $value;
+			else
+				$this->data[$slug][] = $value;
+			return TRUE;
+			}
+
 		if ($single) {
 			$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . static::$T . '_meta` where oid=%d and meta_key=%s;', array (
 					$this->ID,
@@ -278,6 +286,7 @@ abstract class WP_CRM_Model {
 					$slug,
 					(is_array ($value) || is_object ($value)) ? serialize ($value) : $value
 					));
+			echo $sql;
 			$wpdb->query ($sql);
 			return TRUE;
 			}
@@ -425,6 +434,16 @@ abstract class WP_CRM_Model {
 			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '` (' . implode(',', static::$K) . ') values (' . implode (',', $formats) . ');', $values);
 			$wpdb->query ($sql);
 			if (!($this->ID = $wpdb->insert_id)) throw new WP_CRM_Exception (WP_CRM_Exception::Saving_Failure, __CLASS__ . ' :: Saving Failure SQL: ' . "\n" . $sql . "\n");
+			}
+
+		/**
+		 * Meta Key
+		 */
+		if ($this->ID && !empty(static::$M_K)) {
+			$meta_set = array ();
+			foreach (static::$M_K as $meta_key)
+				if (isset ($this->data[$meta_key]))
+					$this->_meta_set ($meta_key, $this->data[$meta_key]);
 			}
 		}
 
@@ -578,11 +597,64 @@ abstract class WP_CRM_Model {
 		$sql = 'show create table `' . $wpdb->prefix . static::$T . '`;';
 
 		list (, $structure) = $wpdb->get_row ($sql, ARRAY_N);
-		$structure = explode ("\n", $structure);
+		$structure = array_slice (explode ("\n", $structure), 1, -1);
 
-		/*
+		/**
 		 * TODO: when the table structure changes, update the table
 		 */
+
+		$columns_add = array ();
+		$previous_column = '';
+		foreach (static::$Q as $new_column_def) {
+			if (strpos ($new_column_def, '`') !== 0) continue;
+
+			list ($new_column, ) = explode (' ', $new_column_def);
+			$is_new_column = TRUE;
+			foreach ($structure as $old_column_def) {
+				if (strpos ($old_column_def, $new_column) === FALSE) continue;
+				$is_new_column = FALSE;
+				break;
+				}
+
+			if ($is_new_column)
+				$columns_add[] = 'add column ' . $new_column_def . ($previous_column ? (' after ' . $previous_column) : ' first');
+
+			$previous_column = $new_column;
+			}
+
+		if (!empty ($columns_add)) {
+			$sql = 'alter table `' . $wpdb->prefix . static::$T . '` ' . implode (', ', $columns_add) . ';';
+			$wpdb->query ($sql);
+			}
+
+		$columns_drop = array ();
+		foreach ($structure as $old_column_def) {
+			if (strpos ($old_column_def, '`') !== 0) continue;
+
+			list ($old_column, ) = explode (' ', $old_column_def);
+			$is_deprecated = TRUE;
+			foreach (static::$Q as $new_column_def) {
+				if (strpos ($new_column_def, $old_column) === FALSE) continue;
+				$is_deprecated = FALSE;
+				break;
+				}
+
+			if ($is_deprecated)
+				$columns_drop[] = 'drop colum ' . $old_column;
+			}
+
+		if (!empty ($columns_drop)) {
+			$sql = 'alter table `' . $wpdb->prefix . static::$T . '` ' . implode (', ', $columns_drop) . ';';
+			/**
+			 * Afraid a little about automatic upgrade
+			 */
+			#$wpdb->query ($sql);
+			}
+
+		/**
+		 * TODO: should check also the keys
+		 */
+
 		}
 
 	public function delete () {

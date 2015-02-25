@@ -9,6 +9,49 @@
  *
  */
 class WP_CRM_User extends WP_CRM_Model {
+	public static $ROLES = array (
+		'wp_crm_admin'	=> array (
+			'title' => 'WP CRM Office Administrator',
+			'capabilities' => array (
+				'wp_crm_admin'	=> true,
+				'wp_crm_pay'	=> true,
+				'wp_crm_work'	=> true,
+				),
+			),
+		'wp_crm_accountant'	=> array (
+			'title' => 'WP CRM Office Accountant',
+			'capabilities' => array (
+				'wp_crm_pay'	=> true,
+				'wp_crm_work'	=> true,
+				),
+			),
+		'wp_crm_user'	=> array (
+			'title' => 'WP CRM Office User',
+			'capabilities' => array (
+				'wp_crm_work'	=> true,
+				),
+			),
+		'wp_crm_client'	=> array (
+			'title' => 'WP CRM Client',
+			'capabilities' => array (
+				'wp_crm_loyal'	=> true,
+				'wp_crm_shop'	=> true,
+				),
+			),
+		'wp_crm_customer'	=> array (
+			'title' => 'WP CRM Customer',
+			'capabilities' => array (
+				'wp_crm_shop'	=> true,
+				),
+			),
+		'wp_crm_subscriber'	=> array (
+			'title' => 'WP CRM Subscriber',
+			'capabilities' => array (
+				'wp_crm_shop'	=> true,
+				),
+			),
+		);
+
 	public static $T = 'users';
 	public static $K = array (
 		'user_login',
@@ -256,6 +299,9 @@ class WP_CRM_User extends WP_CRM_Model {
 
 	public static function install () {
 		/* stub */
+		if (!empty (self::$ROLES))
+		foreach (self::$ROLES as $role => $options)
+			add_role ($role, $options['title'], $options['capabilities']);
 		}
 	}
 ?>

@@ -31,6 +31,11 @@ class WP_CRM_Menu extends WP_CRM_Model {
 				$sql = 'select id from `' . $wpdb->prefix . WP_CRM_App::$T . '`;';
 				$apps = $wpdb->get_col ($sql);
 				}
+
+			if (empty($apps)) {
+				WP_CRM_App::scan ();
+				$apps = $wpdb->get_col ($sql);
+				}
 			}
 
 		/**

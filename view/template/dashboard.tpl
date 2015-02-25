@@ -1,13 +1,3 @@
-<?php
-/*
-App Title: Companii
-App Description:
-App Size: 1
-App Style:
-App Icon: gears 
-*/
-
-?>
 <div class="row">
 	<div class="col-sm-4">
 <?php

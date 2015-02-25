@@ -34,7 +34,7 @@ class WP_CRM_Task extends WP_CRM_Model {
 			#'importance' => 'Importanta',
 			#'urgency' => 'Urgenta',
 			#'duration_min' => 'Durata minima,
-			'factor:bool' => 'Task multiplicativ?',
+			'factor:bool' => 'Direct proportional cu volumul produsului?',
 			'duration_opt:duration' => 'Durata',
 			#'duration_max' => 'Durata maxima',
 			#'deadline:date' => 'Termen Limita'
@@ -62,7 +62,7 @@ class WP_CRM_Task extends WP_CRM_Model {
 			#'importance' => 'Importanta',
 			#'urgency' => 'Urgenta',
 			#'duration_min' => 'Durata minima',
-			'factor:bool' => 'Task multiplicativ?',
+			'factor:bool' => 'Direct proportional cu volumul produsului?',
 			'duration_opt:duration' => 'Durata optima',
 			#'duration_max' => 'Durata maxima',
 			#'deadline:date' => 'Termen Limita'

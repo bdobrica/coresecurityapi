@@ -35,14 +35,16 @@ foreach ($accounts as $reference => $name) {
 	}
 */
 
+WP_CRM_Product::upgrade ();
+
 #WP_CRM_Partition::install ();
 #WP_CRM_Account::install ();
 #WP_CRM_Currency::scan ();
 #WP_CRM_File::install ();
 #WP_CRM_App::upgrade();
 #WP_CRM_Meta::install ();
-WP_CRM_ACL::install();
-WP_CRM_App::scan();
+#WP_CRM_ACL::install();
+#WP_CRM_App::scan();
 #$actions = WP_CRM_Action::scan();
 #print_r ($actions);
 

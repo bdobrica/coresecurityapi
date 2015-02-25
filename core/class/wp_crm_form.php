@@ -124,7 +124,13 @@ class WP_CRM_Form {
 				$out = strtotime (self::_request ($key . '-date') . ' ' . self::_request ($key . '-time'));
 				break;
 			case 'seller':
-				$out = new WP_CRM_Company ((int) $val);
+				try {
+					$out = new WP_CRM_Company ((int) $val);
+					}
+				catch (WP_CRM_Exception $wp_crm_exception) {
+					$out = null;
+					}
+				$out = is_null ($out) ? null : $out->get ();
 				break;
 			case 'buyer':
 				list ($type, $id) = explode ('-', self::_request ($key . '-id'));

@@ -47,10 +47,9 @@ if ($current_user->ID && !in_array ($wp_crm_state->get(), array (
 	
 	$wp_crm_user = new WP_CRM_User ($current_user->ID);
 
-	$wp_crm_offices = get_user_meta ($current_user->ID, '_wp_crm_offices', TRUE);
+	$wp_crm_offices = get_user_meta ($current_user->ID, WP_CRM_Office::MetaKey, TRUE);
 	$wp_crm_offices = is_numeric ($wp_crm_offices) ? array (0, $wp_crm_offices) : (!empty ($wp_crm_offices) ? array_merge (array (0), $wp_crm_offices) : array (0));
 	$wp_crm_office_query = sizeof ($wp_crm_offices) == 1 ? sprintf ('oid=%d', current($wp_crm_offices)) : sprintf ('oid in (%s)', implode (',', $wp_crm_offices));
-
 
 	include (dirname (__FILE__) . '/template/user-header.tpl');
 

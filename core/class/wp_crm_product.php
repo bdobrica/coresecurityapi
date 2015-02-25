@@ -3,61 +3,80 @@
  * Class describing the WP_CRM_Product object.
  */
 class WP_CRM_Product extends WP_CRM_Model {
-	const Pad_Number	= 3;				// the number from the SKU is padded to this length
+	const Pad_Number	= 3;				/** the number from the SKU is padded to this length				*/
 
+	private static $TYPES	= array (
+		'man'	=> 'Manufactura',			/** Produs manufacturat intern							*/
+		'srv'	=> 'Servicii',				/** Servicii furnizate la cererea clientului					*/
+		'dig'	=> 'Produs Digital',			/** Produs pentru care cumparatorul are drept de acces				*/
+		'int'	=> 'Intermediere',			/** Produse sau servicii intermediate (cumparate si revandute)			*/
+		'evt'	=> 'Eveniment',				/** Servicii furnizate la o anumita ora si data					*/
+		'acr'	=> 'Curs Acreditat'			/** Servicii furnizate acreditat						*/
+		);
+	
 	public static $T = 'products';
 	protected static $K = array (
 		'oid',
 		'cid',
-		'uid',                      // the user that generated this task
-		'series',					// series & number constructs the SKU
+		'uid',						/** the user that generated this task						*/
+		'series',					/** series & number constructs the SKU						*/
 		'number',
-		'color',					// color to display the SKU
-		'url',						// if the product has a remote description
-		'title',					// the name of the product
-		'pid',						// parent product id (if exists)
+		'color',					/** color to display the SKU							*/
+		'url',						/** if the product has a remote description					*/
+		'title',					/** the name of the product							*/
+		'pid',						/** parent product id (if exists)						*/
 		'stamp',
-		'state',					// the product is active
+		'begin',					/** the begin time of this product (for events, lectures, seminars)		*/
+		'end',						/** the end time of this product (for events, lectures, seminars)		*/
+		'state',					/** the product is active							*/
+		'type',						/** the type of this product							*/
 		'flags'
 		);
 
-	protected static $M_K = array (				// it actually doesn't matter what meta_keys are passed here. for now.
-		'struct',					// binary field containing the days of the course (lectures only)
-		'hours',					// the number of hours the lecture supposed to take
-		'theory',					// the number of hours the theoretical background was taught
-		'corno',					// COR number
-		'ancauth',					// ANC authorisation number
-		'ancname',					// ANC authorized name
-		'rnffpa',					// RNFFPA code
-		'competences',					// the resulting competences
-		'studies',					// required studies
-		'uid',						// the owner id
-		'rid',						// location id
-		'tid',						// trainer id
+	protected static $M_K = array (				/** it actually doesn't matter what meta_keys are passed here. for now.		*/
+		'rid',						/** location id									*/
+		'tid',						/** trainer id									*/
+		'struct',					/** binary field containing the days of the course (lectures only)		*/
+		'hours',					/** the number of hours the lecture supposed to take				*/
+		'theory',					/** the number of hours the theoretical background was taught			*/
+		'corno',					/** COR number									*/
+		'ancauth',					/** ANC authorisation number							*/
+		'ancname',					/** ANC authorized name								*/
+		'rnffpa',					/** RNFFPA code									*/
+		'competences',					/** the resulting competences							*/
+		'studies',					/** required studies								*/
 		);
 
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
-		'`oid` int(11) NOT NULL DEFAULT 0',		// office id
-		'`cid` int(11) NOT NULL DEFAULT 0',		// company id
-		'`uid` int(11) NOT NULL DEFAULT 0',     // the user that generated this task
+		'`oid` int(11) NOT NULL DEFAULT 0',		/** office id									*/
+		'`cid` int(11) NOT NULL DEFAULT 0',		/** company id									*/
+		'`uid` int(11) NOT NULL DEFAULT 0',		/** the user that generated this product					*/
 		'`series` varchar(6) NOT NULL DEFAULT \'\'',
  		'`number` int(11) NOT NULL DEFAULT 0',
 		'`color` varchar(6) NOT NULL DEFAULT \'FFFFFF\'',
 		'`url` text NOT NULL',
 		'`title` mediumtext NOT NULL',
 		'`pid` int(11) NOT NULL DEFAULT 0',
-		'`stamp` int(11) NOT NULL DEFAULT 0.00',
+		'`stamp` int(11) NOT NULL DEFAULT 0',
+		'`begin` int(11) NOT NULL DEFAULT 0',
+		'`end` int(11) NOT NULL DEFAULT 0',
 		'`state` int(1) NOT NULL DEFAULT 0',
+		'`type` varchar(3) NOT NULL DEFAULT \'man\'',
 		'`flags` int(11) NOT NULL DEFAULT 0',
 		'UNIQUE KEY `series` (`series`,`number`)'
 		);
+
 	public static $F = array (
 		'new' => array (
 			'code:code' => 'Cod',
 			'title' => 'Denumire',
 			'cid:seller' => 'Companie',
-			'pricematrix:matrix' => 'Pret',
+			'type:array;type_list' => 'Tip',
+			#'pricematrix:matrix' => 'Pret',
+			'begin:date?type=acr' => 'Data inceperii',
+			'end:date?type=acr' => 'Data final',
+			'rnffpa?type=acr' => 'Cod RNFFPA',
 			'tasks:treestructure' => 'Activitati'
 			),
 		'view' => array (
@@ -69,7 +88,12 @@ class WP_CRM_Product extends WP_CRM_Model {
 			'code' => 'Cod',
 			'title' => 'Denumire',
 			'cid:seller' => 'Companie',
-			'pricematrix:matrix' => 'Pret',
+			'type:array;type_list' => 'Tip',
+			#'pricematrix:matrix' => 'Pret',
+			'begin:date?type=acr' => 'Data inceperii',
+			'end:date?type=acr' => 'Data final',
+			'corno?type=acr' => 'Cod COR',
+			'rnffpa?type=acr' => 'Cod RNFFPA',
 			'tasks:treestructure' => 'Activitati'
 			),
 		);
@@ -281,6 +305,10 @@ class WP_CRM_Product extends WP_CRM_Model {
 				break;
 			case 'tasks':
 				return array ();
+				break;
+			case 'type_list':
+			case 'types':
+				return self::$TYPES;
 				break;
 			}
 		return parent::get ($key, $opts);

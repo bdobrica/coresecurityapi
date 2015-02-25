@@ -626,6 +626,7 @@ class WP_CRM_View {
 
 	private static function dropdown ($tree) {
 		$out = '';
+		if (!empty ($tree))
 		foreach ($tree as $item) {
 			$out .= '<li>';
 			if (!empty ($item->children)) {

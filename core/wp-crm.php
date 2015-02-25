@@ -38,48 +38,6 @@ class WP_CRM_Plugin_Wrapper {
 				}
 			fclose ($f);
 			}
-		// create roles - wordpress prevents redefining roles
-
-		/**
-		 * wp_crm_admin is ROOT
-		 */
-		add_role ('wp_crm_admin', 'WP CRM Office Administrator', array (
-			'wp_crm_admin'	=> true,
-			'wp_crm_pay'	=> true,
-			'wp_crm_work'	=> true
-			));
-		/**
-		 * wp_crm_accountant can do financial operations
-		 */
-		add_role ('wp_crm_accountant', 'WP CRM Office Accountant', array (
-			'wp_crm_pay'	=> true,
-			'wp_crm_work'	=> true
-			));
-		/**
-		 * wp_crm_user is a simple employee
-		 */
-		add_role ('wp_crm_user', 'WP CRM Office User', array (
-			'wp_crm_work'	=> true
-			));
-		/**
-		 * wp_crm_client is the client (confirmed by different mechanisms)
-		 */
-		add_role ('wp_crm_client', 'WP CRM Client', array (
-			'wp_crm_loyal'	=> true,
-			'wp_crm_shop'	=> true
-			));
-		/**
-		 * wp_crm_customer is a potential client
-		 */
-		add_role ('wp_crm_customer', 'WP CRM Customer', array (
-			'wp_crm_shop'	=> true
-			));
-		/**
-		 * wp_crm_sleeper is an unconfirmed user.
-		 */
-		add_role ('wp_crm_subscriber', 'WP CRM Subscriber', array (
-			'wp_crm_wakeup' => true
-			));
 
 		/**
 		 * should create some admin features:

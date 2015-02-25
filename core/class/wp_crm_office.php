@@ -5,10 +5,12 @@
  * @see WP_CRM_Company
  */
 class WP_CRM_Office extends WP_CRM_Model {
+	const MetaKey = '_wp_crm_offices';
+
 	public static $T = 'offices';
 	protected static $K = array (
-	    'uid',
-	    'cid',
+		'uid',
+		'cid',
 		'name',
 		'description',
 		'url',
@@ -18,7 +20,7 @@ class WP_CRM_Office extends WP_CRM_Model {
 		'new' => array (
 			'name' => 'Denumire',
 			'description:textarea' => 'Descriere',
-            'cid:company' => 'Companie',
+			'cid:company' => 'Companie',
 			'url' => 'Link',
 			#'companies' => 'Companii Membre'
 			),
@@ -26,14 +28,14 @@ class WP_CRM_Office extends WP_CRM_Model {
 			'name' => 'Denumire',
 			'type' => 'Tip',
 			'description' => 'Descriere',
-            'cid:company' => 'Companie',
+			'cid:company' => 'Companie',
 			'url' => 'Link',
 			#'companies' => 'Companii Membre'
 			),
 		'edit' => array (
 			'name' => 'Denumire',
 			'description:textarea' => 'Descriere',
-            'cid:company' => 'Companie',
+			'cid:company' => 'Companie',
 			'url' => 'Link',
 			#'companies' => 'Companii Membre'
 			)
@@ -118,16 +120,16 @@ class WP_CRM_Office extends WP_CRM_Model {
 				$value = $value->ID;
 				}
 			if (is_numeric ($value)) {
-				$offices = get_user_meta ($value, $wpdb->prefix . WP_CRM_OFFICE::$T, TRUE);
+				$offices = get_user_meta ($value, self::MetaKey, TRUE);
 				if (is_array ($offices)) {
 					if (!in_array ($this->ID, $offices)) {
 						$offices[] = $this->ID;
-						update_user_meta ($value, $wpdb->prefix . WP_CRM_OFFICE::$T, $offices);
+						update_user_meta ($value, self::MetaKey, $offices);
 						}
 					}
 				else {
 					if ($this->ID != $offices) {
-						update_user_meta ($value, $wpdb->prefix . WP_CRM_OFFICE::$T, $this->ID);
+						update_user_meta ($value, self::MetaKey, $this->ID);
 						}
 					}
 				}
