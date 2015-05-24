@@ -38,46 +38,51 @@ class WP_CRM_Theme {
 		return empty ($parsed) ? null : implode ('-', $parsed);
 		}
 
+	public static function breadcrumbs ($url = null) {
+		global $wp_crm_menu;
+
+		$url = is_null ($url) ? $_SERVER['REQUEST_URI'] : $url;
+		if (($sep = strpos($url, '?')) !== FALSE)
+			$url = substr ($url, 0, $sep);
+		$url_pieces = explode ('/', trim ($url, '/'));
+
+		$search = array ();
+		foreach ($wp_crm_menu->get () as $slug => $app)
+			if (in_array ($slug, $url_pieces))
+				$search[$slug] = $app->get ('title');
+		
+		return $search;
+		}
+
+	public static function functions () {
+		remove_action ('wp_head', 'rsd_link');
+		remove_action ('wp_head', 'wlwmanifest_link');
+		remove_action( 'wp_head', 'wp_shortlink_wp_head');
+		remove_action ('wp_head', 'wp_generator');
+		
+		}
+
 	public static function init () {
 		$url = get_bloginfo ('stylesheet_directory');
-		
+
+		wp_enqueue_style ('genius-bootstrap', $url . '/assets/css/bootstrap.min.css', array (), '0.1');
+		wp_enqueue_style ('genius-style', $url . '/assets/css/style.min.css', array (), '0.1');
+		wp_enqueue_style ('genius-retina', $url . '/assets/css/retina.min.css', array (), '0.1');
+		wp_enqueue_style ('genius-print', $url . '/assets/css/print.css', array (), '0.1', 'print');
+
+		#wp_enqueue_style ('wp-crm-converse', $url . '/assets/css/converse.min.css');
+		wp_enqueue_style ('candy', $url . '/assets/candy/res/default.css');
+
+		wp_enqueue_style ('wp-crm', $url . '/style.css', array (), '0.2');
+
+		wp_enqueue_style ('roboto-font', 'https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic&subset=latin-ext,latin');		
 		wp_enqueue_style ('tiny-editor', $url . '/script/tinyeditor/tinyeditor.css', array (), '0.1');
 		wp_enqueue_style ('flowplayer-skin', $url . '/script/flowplayer/skin/minimalist.css', array (), '5.5');
 
 		wp_enqueue_script ('jquery');
 		wp_enqueue_script ('filedrop-min', $url . '/script/filedrop-min.js', array (), '0.1');
-		//wp_enqueue_script ('jquery-filedrop', $url . '/script/jquery.filedrop.js', array ('jquery'), '0.1.0');
 		wp_enqueue_script ('tiny-editor', $url . '/script/tinyeditor/tiny.editor.js', array (), '0.1');
 
-		/*
-		wp_enqueue_style ('tiny-editor', $url . '/script/tinyeditor/tinyeditor.css', array (), '0.1');
-		//wp_enqueue_style ('jquery-ui-metro', $url . '/script/jMetro/css/jquery-ui.css', array (), '0.24');
-
-		wp_enqueue_style ('twitter-bootstrap', $url . '/ui/bootstrap/css/bootstrap.css', array (), '0.1');
-		wp_enqueue_style ('twitter-prettify', $url . '/ui/bootstrap/css/prettify.css', array (), '0.1');
-		wp_enqueue_style ('flat-ui', $url . '/ui/css/flat-ui.css', array (), '0.1');
-
-		wp_enqueue_script ('jquery');
-		//wp_enqueue_script ('jquery-ui-metro', $url . '/script/jMetro/js/jquery-ui.1.10.1.min.js', array ('jquery'), '1.10.1');
-		wp_enqueue_script ('jquery-filedrop', $url . '/script/jquery.filedrop.js', array ('jquery'), '0.1.0');
-		wp_enqueue_script ('tiny-editor', $url . '/script/tinyeditor/tiny.editor.packed.js', array (), '0.1');
-
-		wp_enqueue_script ('jquery-ui-flat', $url . '/ui/js/jquery-ui-1.10.3.custom.min.js', array ('jquery'), '0.1');
-		wp_enqueue_script ('jquery-ui-touch', $url . '/ui/js/jquery.ui.touch-punch.min.js', array (), '0.1');
-
-		wp_enqueue_script ('twitter-bootstrap', $url . '/ui/js/bootstrap.min.js', array (), '0.1');
-		wp_enqueue_script ('twitter-bootstrap-select', $url . '/ui/js/bootstrap-select.js', array (), '0.1');
-		wp_enqueue_script ('twitter-bootstrap-switch', $url . '/ui/js/bootstrap-switch.js', array (), '0.1');
-		wp_enqueue_script ('jquery-ui-checkbox', $url . '/ui/js/flatui-checkbox.js', array (), '0.1');
-		wp_enqueue_script ('jquery-ui-radio', $url . '/ui/js/flatui-radio.js', array (), '0.1');
-		wp_enqueue_script ('jquery-ui-tagsinput', $url . '/ui/js/jquery.tagsinput.js', array (), '0.1');
-		wp_enqueue_script ('jquery-ui-placeholder', $url . '/ui/js/jquery.placeholder.js', array (), '0.1');
-		wp_enqueue_script ('jquery-ui-stackable', $url . '/ui/js/jquery.stackable.js', array (), '0.1');
-		wp_enqueue_script ('jquery-ui-application', $url . '/ui/js/application.js', array (), '0.1');
-		wp_enqueue_script ('twitter-booster-prettify', $url . '/ui/js/bootstrap/js/google-code-prettify/prettify.js', array (), '0.1');
-		*/
-
-	
 		wp_enqueue_script ('twitter-bootstrap-select', $url . '/assets/js/bootstrap-select.js', array (), '0.1');
 		wp_enqueue_script ('twitter-bootstrap-switch', $url . '/assets/js/bootstrap-switch.js', array (), '0.1');
 		wp_enqueue_script ('jquery-ui-checkbox', $url . '/assets/js/flatui-checkbox.js', array (), '0.1');
@@ -89,7 +94,6 @@ class WP_CRM_Theme {
 		wp_enqueue_script ('wp-crm-jquery-ui', $url . '/assets/js/jquery-ui-1.10.3.custom.min.js');
 		wp_enqueue_script ('wp-crm-jquery-touch-punch', $url . '/assets/js/jquery.ui.touch-punch.min.js');
 		wp_enqueue_script ('wp-crm-jquery-sparkline', $url . '/assets/js/jquery.sparkline.min.js');
-		wp_enqueue_script ('wp-crm-fullcalendar', $url . '/assets/js/fullcalendar.min.js');
 		wp_enqueue_script ('wp-crm-jquery-flot', $url . '/assets/js/jquery.flot.min.js');
 		wp_enqueue_script ('wp-crm-jquery-flot-pie', $url . '/assets/js/jquery.flot.pie.min.js');
 		wp_enqueue_script ('wp-crm-jquery-flot-stack', $url . '/assets/js/jquery.flot.stack.min.js');
@@ -104,6 +108,8 @@ class WP_CRM_Theme {
 		wp_enqueue_script ('wp-crm-timepicker', $url . '/assets/js/bootstrap-timepicker.min.js');
 		wp_enqueue_script ('wp-crm-daterangepicker', $url . '/assets/js/daterangepicker.min.js');
 		//wp_enqueue_script ('wp-crm-jquery-easy-pie-chart', $url . '/assets/js/jquery.easy-pie-chart.min.js');
+		wp_enqueue_script ('wp-crm-fullcalendar', $url . '/assets/js/fullcalendar.min.js');
+
 		wp_enqueue_script ('wp-crm-jquery-datatables', $url . '/assets/js/jquery.dataTables.min.js');
 		wp_enqueue_script ('wp-crm-datatables-bootstrap', $url . '/assets/js/dataTables.bootstrap.min.js');
 		wp_enqueue_script ('wp-crm-custom', $url . '/assets/js/custom.min.js');
@@ -116,7 +122,18 @@ class WP_CRM_Theme {
 
 		wp_enqueue_script ('flowplayer', $url . '/script/flowplayer/flowplayer.min.js', array ('jquery'), '5.5');
 
-		wp_enqueue_script ('wp-crm', $url . '/script/wp-crm.js', array ('jquery'), '0.5');
+		#wp_enqueue_script ('wp-crm-converse', $url . '/assets/js/converse.nojquery.min.js');
+		wp_enqueue_script ('wp-crm-candy-libs', $url . '/assets/candy/libs/libs.min.js', array ('jquery'), '1.7.1');
+		wp_enqueue_script ('wp-crm-candy', $url . '/assets/candy/candy.min.js', array ('jquery'), '1.7.1');
+
+		if (current_user_can ('manage_options')) {
+			wp_enqueue_script ('jquery-iris', $url . '/assets/js/iris.min.js', array ('jquery'), '1.0.7');
+			wp_enqueue_script ('wp-crm', $url . '/script/wp-crm-administrator.js', array ('jquery'), '0.7.8');
+			}
+		else {
+			wp_enqueue_script ('jquery-iris', $url . '/assets/js/iris.min.js', array ('jquery'), '1.0.7');
+			wp_enqueue_script ('wp-crm', $url . '/script/wp-crm.js', array ('jquery'), '0.7.8');
+			}
 		//wp_enqueue_script ('wp-crm-footer', $url . '/script/wp-crm-footer.js', array ('wp-crm'), '0.1', TRUE);
 	
 /*		wp_enqueue_script ('wp-crm-salsa20', $url . '/assets/xmpp/script/salsa20.js');	
@@ -139,8 +156,7 @@ class WP_CRM_Theme {
 		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
 		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
 		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
-		wp_enqueue_script ('', $url . '/assets/xmpp/script/');	
-		wp_enqueue_script ('wp-crm-converse', $url . '/assets/xmpp/converse.js');*/
+		wp_enqueue_script ('', $url . '/assets/xmpp/script/');*/
 		}
 
 	public static function post () {
@@ -148,6 +164,10 @@ class WP_CRM_Theme {
 		}
 
 	public static function head () {
+		}
+
+	public static function logout () {
+		setcookie ('WP_CRM_BOSH_COOKIE', '', time() - 86400);
 		}
 
 	public static function __ ($text) { return __ ($text, __CLASS__); }

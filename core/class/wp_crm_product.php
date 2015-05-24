@@ -8,28 +8,35 @@ class WP_CRM_Product extends WP_CRM_Model {
 	private static $TYPES	= array (
 		'man'	=> 'Manufactura',			/** Produs manufacturat intern							*/
 		'srv'	=> 'Servicii',				/** Servicii furnizate la cererea clientului					*/
-		'dig'	=> 'Produs Digital',			/** Produs pentru care cumparatorul are drept de acces				*/
 		'int'	=> 'Intermediere',			/** Produse sau servicii intermediate (cumparate si revandute)			*/
 		'evt'	=> 'Eveniment',				/** Servicii furnizate la o anumita ora si data					*/
-		'acr'	=> 'Curs Acreditat'			/** Servicii furnizate acreditat						*/
+		'acr'	=> 'Curs Acreditat',			/** Servicii furnizate acreditat						*/
+		'dig'	=> 'Produs Digital',			/** Produs pentru care cumparatorul are drept de acces				*/
+		);
+
+	private static $DIGITAL = array (			/** objects that can be digital products					*/
+		'WP_CRM_Course'		=> 'Cursuri Online',	/** online courses								*/
+		'WP_CRM_Support'	=> 'Documente Suport',	/** support documents for courses						*/
 		);
 	
 	public static $T = 'products';
 	protected static $K = array (
-		'oid',
-		'cid',
+		'oid',						/** the office id								*/
+		'cid',						/** the company id 								*/
 		'uid',						/** the user that generated this task						*/
 		'series',					/** series & number constructs the SKU						*/
 		'number',
 		'color',					/** color to display the SKU							*/
 		'url',						/** if the product has a remote description					*/
 		'title',					/** the name of the product							*/
+		'description',
 		'pid',						/** parent product id (if exists)						*/
 		'stamp',
 		'begin',					/** the begin time of this product (for events, lectures, seminars)		*/
 		'end',						/** the end time of this product (for events, lectures, seminars)		*/
 		'state',					/** the product is active							*/
 		'type',						/** the type of this product							*/
+		'resource',					/** the object associated with this product in case of a digital product	*/
 		'flags'
 		);
 
@@ -57,12 +64,14 @@ class WP_CRM_Product extends WP_CRM_Model {
 		'`color` varchar(6) NOT NULL DEFAULT \'FFFFFF\'',
 		'`url` text NOT NULL',
 		'`title` mediumtext NOT NULL',
+		'`description` text NOT NULL',
 		'`pid` int(11) NOT NULL DEFAULT 0',
 		'`stamp` int(11) NOT NULL DEFAULT 0',
 		'`begin` int(11) NOT NULL DEFAULT 0',
 		'`end` int(11) NOT NULL DEFAULT 0',
 		'`state` int(1) NOT NULL DEFAULT 0',
 		'`type` varchar(3) NOT NULL DEFAULT \'man\'',
+		'`resource` varchar(64) NOT NULL DEFAULT \'\'',
 		'`flags` int(11) NOT NULL DEFAULT 0',
 		'UNIQUE KEY `series` (`series`,`number`)'
 		);
@@ -74,10 +83,12 @@ class WP_CRM_Product extends WP_CRM_Model {
 			'cid:seller' => 'Companie',
 			'type:array;type_list' => 'Tip',
 			#'pricematrix:matrix' => 'Pret',
+			'description:rte' => 'Descriere',
 			'begin:date?type=acr' => 'Data inceperii',
 			'end:date?type=acr' => 'Data final',
 			'rnffpa?type=acr' => 'Cod RNFFPA',
-			'tasks:treestructure' => 'Activitati'
+			'resource:array;digital_list?type=dig' => 'Produs',
+			#'tasks:treestructure' => 'Activitati'
 			),
 		'view' => array (
 			'code' => 'Cod',
@@ -90,11 +101,13 @@ class WP_CRM_Product extends WP_CRM_Model {
 			'cid:seller' => 'Companie',
 			'type:array;type_list' => 'Tip',
 			#'pricematrix:matrix' => 'Pret',
+			'description:rte' => 'Descriere',
 			'begin:date?type=acr' => 'Data inceperii',
 			'end:date?type=acr' => 'Data final',
 			'corno?type=acr' => 'Cod COR',
 			'rnffpa?type=acr' => 'Cod RNFFPA',
-			'tasks:treestructure' => 'Activitati'
+			'resource:array;digital_list?type=dig' => 'Produs',
+			#'tasks:treestructure' => 'Activitati'
 			),
 		);
 	
@@ -160,6 +173,7 @@ class WP_CRM_Product extends WP_CRM_Model {
 
 	public function buy ($buyer = null) {
 		global
+			$current_user,
 			$wp_crm_buyer,
 			$wpdb;
 
@@ -169,13 +183,15 @@ class WP_CRM_Product extends WP_CRM_Model {
 		if (is_object ($buyer)) {
 			if ($this->is ('series owned', $buyer)) throw new WP_CRM_Exception (0);
 
-			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . WP_CRM_Basket::$T . '` (bid, pid, buyer, code, stamp) values (%d, %d, %s, %s, %ld);', array (
+			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . WP_CRM_Basket::$T . '` (uid, bid, pid, buyer, code, stamp) values (%d, %d, %d, %s, %s, %ld);', array (
+					$current_user->ID,
 					$buyer->get (),
 					$this->ID,
 					$buyer->get ('type'),
 					$this->get ('code'),
 					time ()
 					));
+			echo $sql;
 			$wpdb->query ($sql);
 			return TRUE;
 			}
@@ -309,6 +325,69 @@ class WP_CRM_Product extends WP_CRM_Model {
 			case 'type_list':
 			case 'types':
 				return self::$TYPES;
+				break;
+			case 'digital_list':
+				$digital = array ();
+				foreach (self::$DIGITAL as $class => $title) {
+					$objects = new WP_CRM_List ($class);
+					if ($objects->is ('empty')) continue;
+					$items = array ('title' => $title, 'items' => array ());
+					foreach ($objects->get () as $object) $items['items'][$object->get('self')] = $object->get ('name');
+					$digital[]= $items;
+					}
+				return $digital;
+				break;
+			case 'checklist':
+				$out = array (
+					array ('#', 'Cerinta', '', '')
+					);
+				$requirements = new WP_CRM_List ('WP_CRM_Requirement', array ('class=\'' . get_class ($this) . '\'', 'rid=' . $this->ID));
+				if ($requirements->is ('empty')) return array ();
+				$c = 1;
+				$context = implode (',', array (
+					$this->get ('self'),
+					is_object ($opts) ? $opts->get ('self') : NULL
+					));
+				foreach ($requirements->get () as $requirement) {
+					$out[] = array (
+						($c++) . '.',
+						$requirement->get ('title') .
+						'<small>' . $requirement->get ('description') . '</small>',
+						'<i class="fa fa-times"></i>',
+						'<button class="btn btn-sm btn-primary wp-crm-view-actions wp-crm-view-instance" rel="' . $requirement->get ('self') . ';' . $context . '"><i class="fa fa-edit"></i></button>'
+						);
+					}
+				return $out;	
+				break;	
+			case 'checklist_form':
+				$out = array ();
+				$requirements = new WP_CRM_List ('WP_CRM_Requirement', array ('class=\'' . get_class ($this) . '\'', 'rid=' . $this->ID));
+				if ($requirements->is ('empty')) return NULL;
+				$out['wp_crm_product_id'] = array (
+					'type' => 'hidden',
+					'default' => $this->ID
+					);
+				foreach ($requirements->get () as $requirement)
+					$out[$requirement->get ('key')] = $requirement->get ('field', $this);
+
+				return array (
+					array (
+						'class' => 'requirements',
+						'fields' => $out
+						),
+					array (
+						'class' => 'buttons',
+						'fields' => array (
+							'next' => array (
+								'type' => 'submit',
+								'label' => 'Salveaza &raquo;',
+								'method' => 'post',
+								'action' => '',
+								'callback' => 'WP_CRM_Requirement::process'
+								)
+							)
+						),
+					);
 				break;
 			}
 		return parent::get ($key, $opts);
@@ -756,6 +835,11 @@ class WP_CRM_Product extends WP_CRM_Model {
 	public function errors () {
 		if (empty($this->errors)) return FALSE;
 		return implode ("\n", $this->errors);
+		}
+
+	public function render ($class) {
+		return '<h3>' . $this->data['title'] . '</h3>
+<div class="' . $class . '-product">' . $this->data['description'] . '</div>';
 		}
 
 	public function __destruct () {

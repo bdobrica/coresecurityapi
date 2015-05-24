@@ -1,8 +1,8 @@
 <?php
 /*
-App Title: Utilizatori
+App Title: Users
 App Parent: system
-App Order: 1
+App Order: 2
 App Description:
 App Size: 1
 App Style:
@@ -24,11 +24,14 @@ $view = new WP_CRM_View ($list, array (
 							)
 						)
 					),
-				'task' => array (
-					'label' => 'Stabileste Task',
+				'orders' => array (
+					'label' => 'Status Comenzi',
 					),
-				'viewtasks' => array (
-					'label' => 'Task-uri Curente',
+				'assignment' => array (
+					'label' => 'Stabileste Tema',
+					),
+				'viewassigments' => array (
+					'label' => 'Vizualizeaza Teme',
 					),
 				'contact' => array (
 					'label' => 'Contacteaza',
@@ -45,11 +48,17 @@ $view = new WP_CRM_View ($list, array (
 				'edit' => array (
 					'label' => 'Modifica',
 					),
-				'task' => array (
-					'label' => 'Stabileste Task',
+				'assignment' => array (
+					'label' => 'Stabileste Tema',
 					),
-				'viewtasks' => array (
-					'label' => 'Task-uri Curente',
+				'viewassignment' => array (
+					'label' => 'Vizualizeaza Teme',
+					),
+				'orders' => array (
+					'label' => 'Status Comenzi',
+					),
+				'contact' => array (
+					'label' => 'Contacteaza',
 					),
 				'delete' => array (
 					'label' => 'Sterge',

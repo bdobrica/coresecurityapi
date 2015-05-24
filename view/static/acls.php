@@ -1,52 +1,48 @@
 <?php
 /*
-App Title: Permisiuni
+App Title: Permissions
 App Parent: system
-App Order: 4
+App Order: 3
 App Description:
 App Size: 1
 App Style:
-App Icon: gears
+App Icon: shield
 */
-$list = new WP_CRM_List ('WP_CRM_ACL');
-$view = new WP_CRM_View ($list, array (
-		array (
-			'type' => 'toolbar',
-			'items' => array (
-				'select' => array (
-					'label' => 'Selecteaza',
-					'items' => array (
-						'selall' => array (
-							'label' => 'Tot'
-							),
-						'seldel' => array (
-							'label' => 'Nimic'
-							)
-						),
-					),
-				'add' => array (
-					'label' => 'Adauga',
-					),
-				'import' => array (
-					'label' => 'Importa',
-					),
-				)
-			),
-		array (
-			'type' => 'column',
-			'label' => 'Actiuni',
-			'items' => array (
-				'view' => array (
-					'label' => 'Vezi',
-					),
-				'edit' => array (
-					'label' => 'Modifica',
-					),
-				'delete' => array (
-					'label' => 'Sterge',
-					),
-				)
-			)
-		));
-unset ($view);
 ?>
+<form action="" method="post">
+	<table>
+		<tbody>
+			<tr>
+				<th>
+				</th>
+<?php
+$roles = $wp_crm_user->get ('role_list');
+foreach ($roles as $key => $value) {
+?>
+				<th>
+					&nbsp; <?php echo str_replace('WP CRM ', '', $value); ?> &nbsp;
+				</th>
+<?php
+	}
+?>
+			</tr>
+<?php
+$capabilities = $wp_crm_user->get ('capability_list');
+foreach ($capabilities as $key => $value) {
+?>
+			<tr>
+				<th><?php echo ucwords (str_replace (array ('wp_crm_', '_'), array ('', ' '), $key)); ?></th>
+<?php
+	foreach ($roles as $_key => $_value) {
+?>
+				<td style="text-align: center;"><input type="checkbox" value="" /></td>
+<?php
+		} // end foreach
+?>
+			</tr>
+<?php
+	} // end foreach
+?>
+		</tbody>
+	</table>
+</form>

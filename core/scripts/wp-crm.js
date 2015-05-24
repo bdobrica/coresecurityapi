@@ -447,5 +447,13 @@ jQuery(document).ready(function(){
 		jQuery(this).closest('table').find('a').css('background-image','');
 		jQuery(this).css('background-image','url(/wp-content/plugins/wp-crm/icons/check.png)').closest('table').find('span').css('background-color', jQuery(this).attr('rel'));
 		});
+	require(['converse'], function(converse){
+    converse.initialize({
+        bosh_service_url: 'https://bind.conversejs.org', // Please use this connection manager only for testing purposes
+        i18n: locales.en, // Refer to ./locale/locales.js to see which locales are supported
+        show_controlbox_by_default: true,
+        roster_groups: true
+    });
+		});
 	});
 

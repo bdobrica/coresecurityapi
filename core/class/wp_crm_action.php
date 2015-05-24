@@ -7,9 +7,10 @@
 class WP_CRM_Action extends WP_CRM_Model {
 	public static $T = 'actions';
 	protected static $K = array (
-		'eid',
-		'action',
-		'exec',
+		'eid',					/** event id for the event firing this action */
+		'exec',					/** the action slug */
+		'title',				/** the title of this action */
+		'description',				/** a short description for this action */
 		'flags'
 		);
 	public static $F = array (
@@ -20,11 +21,16 @@ class WP_CRM_Action extends WP_CRM_Model {
 		'private' => array (
 			)
 		);
+	protected static $U = array (
+		'eid',
+		'exec'
+		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
 		'`eid` int(11) NOT NULL DEFAULT 0',
-		'`action` varchar(32) NOT NULL DEFAULT \'\'',
 		'`exec` varchar(64) NOT NULL DEFAULT \'\'',
+		'`title` text NOT NULL',
+		'`description` text NOT NULL',
 		'`flags` int(11) NOT NULL DEFAULT 0'
 		);
 
@@ -48,7 +54,7 @@ class WP_CRM_Action extends WP_CRM_Model {
 				while ($n = readdir ($d)) {
 					if (!preg_match ('/\.php$/', $n)) continue;
 					if ($f = fopen ( $path . '/actions/' . $n, 'r')) {
-						$act = array (	'slug' => '',
+						$act = array (	'exec' => '',
 								'title' => '',
 								'description' => '',
 								'events' => '',
@@ -61,8 +67,8 @@ class WP_CRM_Action extends WP_CRM_Model {
 								case 1:
 									if (strpos ($l, '*/') === 0) {
 										$flag = 2;
-										if ($act['slug'] && $act['title']) {
-											$actions[$act['slug']] = $act;
+										if ($act['exec'] && $act['title']) {
+											$actions[$act['exec']] = $act;
 											}
 										}
 									else
@@ -80,7 +86,7 @@ class WP_CRM_Action extends WP_CRM_Model {
 								default:
 									if (strpos ($l, '/*') === 0) {
 										$flag = 1;
-										$act['slug'] = str_replace ('.php', '', $n);
+										$act['exec'] = str_replace ('.php', '', $n);
 										}
 								}
 							if ($flag == 2) break;
@@ -92,7 +98,44 @@ class WP_CRM_Action extends WP_CRM_Model {
 				closedir ($d);
 				}
 			}
-		return $actions;
+
+		$out = array ();
+
+		foreach ($actions as $action_data) {
+			if (isset ($action_data['events']) && ($action_data['events'] == '*')) {
+				unset ($action_data['events']);
+				$action_data['eid'] = 0;
+				}
+			if (isset ($action_data['events'])) {
+				$event_slugs = explode (',', $action_data['events']);
+				unset ($action_data['events']);
+
+				if (!empty ($event_slugs))
+				foreach ($event_slugs as $event_slug) {
+					echo "Event: $event_slug\n";
+					try {
+						$event = new WP_CRM_Event ($event_slug);
+						}
+					catch (WP_CRM_Exception $exception) {
+						$event = null;
+						echo "Null event.\n";
+						}
+					if (is_null ($event)) continue;
+
+					$action_data['eid'] = $event->get ();
+
+					$action = new WP_CRM_Action ($action_data);
+					try {
+						$action->save ();
+						$out[$action->get()] = $action;
+						}
+					catch (WP_CRM_Exception $exception) {
+						echo "Action failed.\n";
+						}
+					}
+				}
+			}
+		return $out;
 		}
 	}
 ?>

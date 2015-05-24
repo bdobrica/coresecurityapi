@@ -1,8 +1,9 @@
 <?php
 /*
-App Title: Sistem
+App Title: System
+App Requires: wp_crm_system
 App Parent:
-App Order: 3
+App Order: 5
 App Description:
 App Size: 2
 App Style:

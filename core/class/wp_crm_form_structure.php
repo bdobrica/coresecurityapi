@@ -7,7 +7,9 @@ class WP_CRM_Form_Structure {
 	 * populating the $fields property.
 	 */
 	public function __construct ($data = null, $context = null) {
-		global $wp_crm_state;
+		global
+			$wp_crm_state,
+			$wp_crm_user;
 
 		/**
 		 * If the argument is an object, with the static property $F defined,
@@ -25,6 +27,10 @@ class WP_CRM_Form_Structure {
 				array (
 					'class' => 'buttons',
 					'fields' => array (
+						'object' => array (
+							'type' => 'hidden',
+							'default' => 'WP_CRM_Settings-0'
+							),
 						'close' => array (
 							'type' => 'close',
 							'label' => 'Anuleaza &raquo;',
@@ -213,6 +219,10 @@ class WP_CRM_Form_Structure {
 								'filters' => array (
 									'empty' => 'Parola este obligatorie.',
 									'cofirm' => 'Parola introdusa nu a fost confirmata.',
+									'password' => 'Parola trebuie sa contina cel putin o litera mica.',
+									'Password' => 'Parola trebuie sa contina cel putin o litera mare.',
+									'p4ssword' => 'Parola trebuie sa contina cel putin o cifra.',
+									'*assword' => 'Parola trebuie sa contina cel putin un semn de punctuatie.'
 									)
 								)
 							)
@@ -375,28 +385,14 @@ class WP_CRM_Form_Structure {
 			case 'payment':
 				$this->fields = array (
 					array (
-						'class' => 'buttons',
+						'class' => 'onlinepayment',
 						'fields' => array (
-							'prev' => array (
-								'type' => 'submit',
-								'label' => '&laquo; Pasul anterior',
-								'method' => 'post',
-								'action' => '',
-								'next' => WP_CRM_State::Participants
+							'onlinepayment' => array (
+								'type' => 'payment',
+								'label' => 'Plata Online',
 								)
-				/*
-				TODO: online payment
-				*/
-								/*,
-							'next' => array (
-								'type' => 'submit',
-								'label' => 'Pasul urmator &raquo;',
-								'method' => 'post',
-								'action' => '',
-								'next' => WP_CRM_State::AddToCart
-								),*/
-							),
-						),
+							)
+						)
 					);
 				break;
 			case WP_CRM_State::ImportObjects:
@@ -432,6 +428,47 @@ class WP_CRM_Form_Structure {
 						)
 					);
 				break;
+			case WP_CRM_State::AddOrder:
+				$user = new WP_CRM_User (FALSE);
+
+				$options = array ();
+				$companies = $user->get ('company_list');
+				if (!$companies->is ('empty'))
+				foreach ($companies->get () as $company) $options[$company->get()] = $company->get ('name');
+	
+				$this->fields = array (
+					array (
+						'class' => 'addorder',
+						'fields' => array (
+							'object' => array (
+								'type' => 'hidden',
+								'default' => is_object($context) ? $context->get ('self') : ''
+								),
+							'buyer' => array (
+								'type' => 'client',
+								'label' => 'Beneficiar',
+								),
+							)
+						),
+					array (
+						'class' => 'buttons',
+						'fields' => array (
+							'close' => array (
+								'type' => 'close',
+								'label' => 'Anuleaza &raquo;',
+								),
+							'next' => array (
+								'type' => 'submit',
+								'label' => 'Achizitioneaza &raquo;',
+								'method' => 'post',
+								'action' => '',
+								'callback' => 'WP_CRM::order',
+								'next' => WP_CRM_State::SaveOrder
+								)
+							)
+						),
+					);
+				break;
 			default:
 				$this->fields = array (
 					array (
@@ -443,91 +480,19 @@ class WP_CRM_Form_Structure {
 								'default' => $wp_crm_state->get ('basket')
 								),
 					)), array (
-						'label' => 'Persoana Fizica',
-						'class' => 'tab',
-						'name' => 'tabs',
 						'fields' => array (
-							'p_last_name' => array (
-								'label' => 'Nume',
-								),
-							'p_first_name' => array (
-								'label' => 'Prenume',
-								),
-							'p_uin' => array (
-								'label' => 'CNP',
-								),
-							'p_email' => array (
-								'label' => 'E-Mail',
-								'filters' => array (
-									'empty' => 'Adresa de E-mail este obligatorie.',
-									'email' => 'Adresa de E-mail nu este valida.',
-									)
-								),
-							'p_phone' => array (
-								'label' => 'Telefon',
-								'filters' => array (
-									'empty' => 'Numarul de telefon este obligatoriu.',
-									'phone' => 'Numarul de telefon nu este valid.',
-									)
-								),
-					)), array (
-						'label' => 'Persoana Juridica',
-						'class' => 'tab',
-						'name' => 'tabs',
-						'fields' => array (
-							'c_name' => array (
-								'label' => 'Companie',
-								),
-							'c_uin' => array (
-								'label' => 'Cod Fiscal',
-								),
-							'c_rc' => array (
-								'label' => 'Reg. Com.',
-								),
-							'c_address' => array (
-								'label' => 'Adresa',
-								),
-							'c_county' => array (
-								'label' => 'Judetul',
-								),
-							'c_bank' => array (
-								'label' => 'Banca',
-								),
-							'c_account' => array (
-								'label' => 'Cont IBAN',
-								),
-							'c_email' => array (
-								'label' => 'E-Mail',
-								'filters' => array (
-									'empty' => 'Adresa de E-mail este obligatorie.',
-									'email' => 'Adresa de E-mail nu este valida.',
-									),
-								),
-							'c_phone' => array (
-								'label' => 'Telefon',
-								'filters' => array (
-									'empty' => 'Numarul de telefon este obligatoriu.',
-									'phone' => 'Numarul de telefon nu este valid.',
-									),
-								),
-							'd_label' => array (
-								'type' => 'label',
-								'label' => 'Delegat:'
-								),
-							'd_last_name' => array (
-								'label' => 'Nume',
-								),
-							'd_first_name' => array (
-								'label' => 'Prenume',
+							'buyer' => array (
+								'label' => 'Cumparator',
+								'type' => 'client',
 								),
 					)), array (
 						'class' => 'tos',
 						'fields' => array (
 							'tos' => array (
 								'type' => 'tos',
-								'label' => 'Da, sunt de acord cu <a href="http://www.biletedesucces.ro/tos/" class="tos-link" target="_blank" title="Termeni si Conditii">termenii si conditiile</a> acestui serviciu.',
+								'label' => 'Da, sunt de acord cu <a href="' . (($_SERVER['HTTPS'] ? 'https://' : 'http://') . $_SERVER['HTTP_HOST']) . '/tos/" class="tos-link" target="_blank" title="Termeni si Conditii">termenii si conditiile</a> acestui serviciu.',
 								'filters' => array (
-									'empty' => 'Acceptarea <a href="http://www.biletedesucces.ro/tos/" target="_blank" title="Termeni si Conditii">termenilor si conditiilor</a> acestui serviciu este obligatorie!'
+									'empty' => 'Acceptarea <a href="' . (($_SERVER['HTTPS'] ? 'https://' : 'http://') . $_SERVER['HTTP_HOST']) . '/tos/" target="_blank" title="Termeni si Conditii">termenilor si conditiilor</a> acestui serviciu este obligatorie!'
 									)
 								)
 							),
@@ -547,6 +512,8 @@ class WP_CRM_Form_Structure {
 		}
 
 	private static function _field (&$fields, $object, $info, $label) {
+		global
+			$wp_crm_state;
 		/**
 		 * The field is defined as key => label. WHile the label is self explanatory,
 		 * key is a complex field of the form object_key[?condition][:type][;options]
@@ -595,6 +562,14 @@ class WP_CRM_Form_Structure {
 					'default' => is_object ($object->buyer) ? $object->buyer : null
 					);
 				break;
+			case 'payment':
+				$data = $wp_crm_state->get ('data');
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'payment',
+					'default' => (isset ($data['callback']) && isset ($data['callback']['invoice_ids'])) ? $data['callback']['invoice_ids'] : NULL,
+					);
+				break;
 			case 'seller':
 				$fields[$key] = array (
 					'label' => $label,
@@ -635,6 +610,7 @@ class WP_CRM_Form_Structure {
 					'default' => $object->get ($key)
 					);
 				break;
+			case 'object':
 			case 'hidden':
 				$fields[$key] = array (
 					'type' => 'hidden',
@@ -688,6 +664,15 @@ class WP_CRM_Form_Structure {
 					'label' => $label,
 					'type' => 'datetime',
 					'default' => date('d-m-Y h:i A', $data ? $data : time())
+					);
+				break;
+			case 'color':
+				$data = $object->get ($key);
+				$data = is_numeric($data) ? $data : strtotime($data);
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'color',
+					'default' => '#' . $data
 					);
 				break;
 			case 'template':
@@ -790,7 +775,10 @@ class WP_CRM_Form_Structure {
 					'label' => $label,
 					'type' => 'file',
 					'default' => $object->get ($key),
-					'options' => $object::$F['opts']
+					'options' => $object::$F['opts'],
+					'path' => $object instanceof WP_CRM_File ?
+						'' :
+						urlencode ($object->get ('class') . '/' . $key)
 					);
 				break;
 			case 'seats':
@@ -855,6 +843,14 @@ class WP_CRM_Form_Structure {
 				$fields[$key] = array (
 					'label' => $label,
 					'type' => 'tree',
+					'default' => $object->get ($key),
+					'parent' => get_class ($object) . '-' . $object->get()
+					);
+				break;
+			case 'children':
+				$fields[$key] = array (
+					'label' => $label,
+					'type' => 'children',
 					'default' => $object->get ($key),
 					'parent' => get_class ($object) . '-' . $object->get()
 					);
@@ -977,6 +973,25 @@ class WP_CRM_Form_Structure {
 
 	public function get ($key = null, $options = null) {
 		return $this->fields;
+		}
+
+	public function set ($key = null, $value = null) {
+		if (is_string ($key)) {
+			switch ($key) {
+				case 'defaults':
+					if (!is_array ($value)) return FALSE;
+					if (empty ($this->fields)) return FALSE;
+					foreach ($this->fields as $col => $data) {
+						if (!empty ($data['fields']))
+							foreach ($data['fields'] as $key => $opts) {
+								if (in_array ($key, array_keys ($value)))
+									$this->fields[$col]['fields'][$key]['default'] = $value[$key];
+								}
+						}
+					return TRUE;
+					break;
+				}
+			}
 		}
 
 	public function is ($key = null, $opts = null) {

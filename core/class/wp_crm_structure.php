@@ -244,7 +244,6 @@ abstract class WP_CRM_Structure {
 				}
 			if (sizeof ($key) && sizeof ($this->list)) {
 				$removed = array_diff (array_keys ($this->list), array_keys ($key));
-				print_r ($removed);
 				if (!empty ($removed))
 					foreach ($removed as $remove) {
 						$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . static::$T . '` where id=%d;', array (

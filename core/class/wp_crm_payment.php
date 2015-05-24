@@ -5,7 +5,8 @@ class WP_CRM_Payment extends WP_CRM_Model {
 	const Bank	=  4;
 	const Receipt	=  8;
 	const Treasury	= 16;
-	const Mobile	= 32;
+	const OnLine	= 32;
+	const Mobile	= 64;
 
 	public static $T = 'payments';
 	public static $K = array (
@@ -62,10 +63,11 @@ class WP_CRM_Payment extends WP_CRM_Model {
 		self::Bank	=> 'Transfer Bancar (OP)',
 		self::Receipt	=> 'Chitanta (numerar)',
 		self::Treasury	=> 'Trezorerie (OP)',
+		self::OnLine	=> 'Plata Electronica',
 		self::Mobile	=> 'Telefon Mobil (on-line)'
 		);
 
-	public static function mobilpay ($invoice, $echo = TRUE) {
+	public static function mobilpay ($invoice, $echo = FALSE) {
 		include (dirname(__FILE__) . '/Mobilpay/Payment/Request/Abstract.php');
 		include (dirname(__FILE__) . '/Mobilpay/Payment/Request/Card.php');
 		include (dirname(__FILE__) . '/Mobilpay/Payment/Invoice.php');
@@ -73,17 +75,17 @@ class WP_CRM_Payment extends WP_CRM_Model {
 
 
 		$paymentUrl = TRUE ?
-				'http://sandboxsecure.mobilpay.ro' :
+				'https://sandboxsecure.mobilpay.ro' :
 				'https://secure.mobilpay.ro';
 
-		if (!file_exists (dirname(__FILE__).'/Mobilpay/Security/' . $invoice->seller->get() . '.cer'))
+		if (!file_exists (dirname(__FILE__).'/Mobilpay/Security/acreditate.cer'))
 			throw new WP_CRM_Exception ('Missing Security Certificate', WP_CRM_Exception::Missing_Security);
 
-		$x509FilePath 	= dirname(__FILE__).'/Mobilpay/Security/'.$invoice->seller->get().'.cer';
+		$x509FilePath 	= dirname(__FILE__).'/Mobilpay/Security/acreditate.cer';
 		try {
 			srand((double) microtime() * 1000000);
 			$objPmReqCard 					= new Mobilpay_Payment_Request_Card();
-			$objPmReqCard->signature 			= $invoice->seller->get('mobilpay');
+			$objPmReqCard->signature 			= 'QG7T-YM3D-6BM3-U614-S1P2';
 			$objPmReqCard->orderId 				= $invoice->get('series');
 			$objPmReqCard->confirmUrl 			= get_bloginfo('stylesheet_directory') . '/ajax/mobilpay.php?inv=' . $invoice->get('id');
 			$objPmReqCard->returnUrl 			= get_bloginfo('url') . '/mobilpay?inv=' . $invoice->get('id');
@@ -127,12 +129,40 @@ class WP_CRM_Payment extends WP_CRM_Model {
 		<li>prin numerar sau card, la sediul companiei noastre</li>
 	</ul>
 	<p>Iti multumim pentru increderea acordata ' . $invoice->seller->get('name') . '!</p>';
-			$out .= '<form method="post" action="'.$paymentUrl.'" target="_blank"><input type="hidden" name="env_key" value="' . $objPmReqCard->getEnvKey() . '" /><input type="hidden" name="data" value="' . $objPmReqCard->getEncData() . '" /><input type="submit" name="submit" value="PLATESTE ACUM!" /></form><div style="text-align: center;"><img src="' . get_bloginfo ('stylesheet_directory') . '/images/mobilpay.png" /></div>';
+			$out .= '<form method="post" action="'.$paymentUrl.'" target="_blank" style="text-align: center;"><input type="hidden" name="env_key" value="' . $objPmReqCard->getEnvKey() . '" /><input type="hidden" name="data" value="' . $objPmReqCard->getEncData() . '" /><button class="btn btn-sm btn-success">PLATESTE ACUM!</button></form><div style="text-align: center;"><img src="' . get_bloginfo ('stylesheet_directory') . '/images/mobilpay.png" /></div>';
 			}
 		else {
 			$out .= '<p>Pentru moment, sistemul de plata online nu este functional.</p>';
 			}
 
+		if ($echo) echo $out;
+		return $out;
+		}
+
+	public static function paypal ($invoice, $echo = FALSE) {
+		$exchange = new WP_CRM_Currency ();
+		$amount = $exchange->convert ($invoice->get ('value'), 'RON', 'EUR');
+		$out .= '<p>Ai posibilitatea sa platesti <strong>chiar acum</strong>, online, factura primita pe email, cu ajutorul cardului. Apasa butonul <strong>PayPal Check Out</strong> si urmeaza pasii, completand cu atentie toate campurile indicate. Plata online se realizeaza securizat prin intermediul <a href="https://www.paypal.com" target="_blank" title="PayPal">PayPal</a>. Pentru a plati online, trebuie sa fii de acord cu <a href="/tos" target="_blank">termenii si conditiile ' . $invoice->seller->get('name') . '</a> pentru plata online!</p>
+	<p>Alte modalitati de plata, conform instructiunilor primite deja prin email, sunt urmatoarele:
+	<ul type="square">
+		<li>prin ordin de plata sau virament bancar</li>
+		<li>prin numerar sau card, la sediul companiei noastre</li>
+	</ul>
+	<p>Iti multumim pentru increderea acordata ' . $invoice->seller->get('name') . '!</p>';
+		$out .= '
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="text-align: center;">
+<input type="hidden" name="cmd" value="_xclick" />
+<input type="hidden" name="business" value="madalin.matica@gmail.com" />
+<input type="hidden" name="item_name" value="' . $invoice->get ('product_list') . '" />
+<input type="hidden" name="invoice" value="' . $invoice->get ('series') . '" />
+<input type="hidden" name="amount" value="' . sprintf ('%.2f', $amount) . '" />
+<input type="hidden" name="currency_code" value="EUR" />
+
+<input type="hidden" name="return" value="https://api.acreditate.ro/paypal-success" />
+<input type="hidden" name="cancel_return" value="https://api.acreditate.ro/paypal-cancel" />
+<input type="hidden" name="notify_url" value="https://api.acreditate.ro/wp-content/themes/wp-crm/ajax/widget/paypal.php" />
+<input type="image" name="submit" border="0" src="https://www.paypalobjects.com/en_US/i/btn/btn_xpressCheckout.gif" alt="PayPal - The safer, easier way to pay online">
+</form>';
 		if ($echo) echo $out;
 		return $out;
 		}

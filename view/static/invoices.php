@@ -1,13 +1,38 @@
 <?php
 /*
-App Title: Facturi
-App Parent: finance
-App Order: 1
+App Title: Orders
+App Parent: ecommerce
+App Requires: wp_crm_work
+App Order: 4
 App Description:
-App Size: 2
+App Size: 1
 App Style:
 App Icon: files-o 
 */
+$role = $wp_crm_user->get ('role');
+if (in_array ($role, array ('wp_crm_subscriber'))) {
+$list = new WP_CRM_List ('WP_CRM_Invoice', array (sprintf('bid=%d', $wp_crm_user->get('person')->get()), 'buyer=\'person\''));
+
+$view = new WP_CRM_View ($list, array (
+		array (
+			'type' => 'column',
+			'label' => 'Actiuni',
+			'items' => array (
+				'view' => array (
+					'label' => 'Vezi',
+					),
+				'pay' => array (
+					'label' => 'Plateste',
+					),
+				'people' => array (
+					'label' => 'Persoane',
+					),
+				)
+			)
+	));
+unset ($view);
+	}
+else {
 $list = new WP_CRM_List ('WP_CRM_Invoice', current_user_can ('add_users') ? null : array ($wp_crm_office_query ? $wp_crm_office_query : sprintf ('uid=%d', $current_user->ID)));
 $actions = array (
 	'add' => 'Factura Noua',
@@ -60,4 +85,5 @@ $view = new WP_CRM_View ($list, array (
 			)
 	));
 unset ($view);
+}
 ?>

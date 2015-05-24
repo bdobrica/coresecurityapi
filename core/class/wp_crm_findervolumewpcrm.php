@@ -440,15 +440,16 @@ class WP_CRM_FinderVolumeWPCRM extends WP_CRM_FinderVolumeDriver {
 			}
 
 		return array (
-			'phash'		=> $this->encode($object->get ('parent')),
+			'phash'		=> $object->get ('parent') ? $this->encode($object->get ('parent')) : null,
 			'name'		=> $object->get ('title'),
 			'size'		=> (int) $object->get ('size'),
 			'ts'		=> (int) $object->get ('updated'),
 			'mime'		=> $object->get ('mime'),
 			'read'		=> TRUE,
 			'write'		=> TRUE,
-			'dirs'		=> !$object->get ('children')->is ('empty'),
-			'file_path'	=> $object->get ('file_path')
+			'dirs'		=> $object->get ('children')->is ('empty') ? 0 : 1,
+			'file_path'	=> $object->get ('file_path'),
+			'locked'	=> $object->get ('locked')
 			/**
 			 * Optional:
 			 */

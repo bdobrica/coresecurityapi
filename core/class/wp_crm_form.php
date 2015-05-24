@@ -94,7 +94,9 @@ class WP_CRM_Form {
 		}
 
 	private function _process ($key, $type = null) {
-		global $wp_crm_state;
+		global
+			$wp_crm_state,
+			$wp_crm_user;
 
 		$data = $wp_crm_state->get ('data');
 
@@ -123,6 +125,9 @@ class WP_CRM_Form {
 			case 'datetime':
 				$out = strtotime (self::_request ($key . '-date') . ' ' . self::_request ($key . '-time'));
 				break;
+			case 'color':
+				$out = str_replace ('#', '', strtoupper ($val));
+				break;
 			case 'seller':
 				try {
 					$out = new WP_CRM_Company ((int) $val);
@@ -139,9 +144,55 @@ class WP_CRM_Form {
 				 */
 				$out = $type == 'WP_CRM_Person' ? new WP_CRM_Person ((int) $id) : new WP_CRM_Company ((int) $id);
 				break;
+			case 'payment':
+				$out = isset ($data['callback']) && isset ($data['callback']['invoice_ids']) ? $data['callback']['invoice_ids'] : NULL;
+				break;
+			case 'client':
+				if (self::_request ($key . '-type') == 'person') {
+					$object = $wp_crm_user->get ('person');
+					if (self::_request ($key . '-p-update')) {
+						$object->set (array (
+							'last_name'	=> self::_request ($key . '-last-name'),
+							'first_name'	=> self::_request ($key . '-first-name'),
+							'uin'		=> self::_request ($key . '-p-uin'),
+							'email'		=> self::_request ($key . '-p-email'),
+							'phone'		=> self::_request ($key . '-p-phone')
+							));
+						}
+					}
+				if (self::_request ($key . '-type') == 'company') {
+					if (($id = self::_request ($key . '-company')) > 0) {
+						$object = new WP_CRM_Company ((int) $id);
+						if (self::_request ($key . '-c-update')) {
+							$object->set (array (
+								'name'	=> self::_request ($key . '-name'),
+								'uin'	=> self::_request ($key . '-uin'),
+								'rc'	=> self::_request ($key . '-rc'),
+								'email' => self::_request ($key . '-c-email'),
+								'phone' => self::_request ($key . '-c-phone')
+								));
+							}
+						}
+					if ($id < 0) {
+						$object = new WP_CRM_Company (array (
+							'name'	=> self::_request ($key . '-name'),
+							'uin'	=> self::_request ($key . '-uin'),
+							'rc'	=> self::_request ($key . '-rc'),
+							'email' => self::_request ($key . '-c-email'),
+							'phone' => self::_request ($key . '-c-phone')
+							));
+						$object->save ();
+						}
+					}
+				$out = is_object ($object) ? $object->get ('self') : '';
+				break;
 			case 'file':
 				$out = json_decode (stripslashes ($val));
 				$out = is_null ($out) ? $val : $out;
+				if (!$out)
+					break;
+				$out = (array) $out[0];
+				$out = new $out['class'] ($out['id']);
 				break;
 			case 'attachment':
 				$attachments = self::_request ($key);
@@ -215,7 +266,9 @@ class WP_CRM_Form {
 					if (!isset ($out[$id])) $out[$id] = array ();
 					$out[$id][$prop] = $_val;
 					}
-				print_r ($out);
+				break;
+			case 'children':
+				$out = '';
 				break;
 			case 'switch':
 				$out = $val == 'on' ? 1 : 0;
@@ -250,6 +303,18 @@ class WP_CRM_Form {
 			 */
 			case 'empty':
 				return empty($data) ? TRUE : FALSE;
+				break;
+			case 'Password':
+				return preg_match('/[A-Z]+/', $data) ? FALSE : TRUE;
+				break;
+			case 'password':
+				return preg_match('/[a-z]+/', $data) ? FALSE : TRUE;
+				break;
+			case 'p4ssword':
+				return preg_match('/[0-9]+/', $data) ? FALSE : TRUE;
+				break;
+			case '*assword':
+				return preg_match('/[^A-z0-9]+/', $data) ? FALSE : TRUE;
 				break;
 			case 'phone':
 				return preg_match ('/^[0-9 .]+$/', $data) ? FALSE : TRUE;
@@ -332,6 +397,8 @@ class WP_CRM_Form {
 							}
 						}
 					}
+
+				$this->payload['callback'] = $return;
 				}
 			}
 		return array ('error' => FALSE, 'return' => $return);
@@ -349,6 +416,8 @@ class WP_CRM_Form {
 
 		if (is_array($field)) {
 			$out = '';
+
+			if (isset($field['label'])) $field['label'] = WP_CRM::_ ($field['label']);
 
 			switch ($field['type']) {
 				case 'basket':
@@ -399,7 +468,7 @@ class WP_CRM_Form {
 								}
 							else {
 								$out .= '<' . self::$ITEMSTAG . '><label>Am un cupon pentru discount:</label></' . self::$ITEMSTAG . '>';
-								$out .= '<' . self::$ITEMSTAG . '><input type="hidden" class="'.$this->class.'-coupon-data" name="coupondata" value="" /><input type="text" name="coupon" value="" /><input type="button" name="couponquery" value="Activeaza" class="'.$this->class.'-coupon-query" /></' . self::$ITEMSTAG . '>';
+								$out .= '<' . self::$ITEMSTAG . '><input type="hidden" class="' . $this->class . '-coupon-data" name="coupondata" value="" /><input type="text" name="coupon" value="" /> <button name="couponquery" class="btn btn-sm btn-success ' . $this->class . '-coupon-query">Activeaza</button></' . self::$ITEMSTAG . '>';
 								}
 							}
 
@@ -442,7 +511,8 @@ class WP_CRM_Form {
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
 					if (!is_array($field['default'])) $field['default'] = array ($field['default']);
 
-					$out .= '<div class="controls"><select name="' . $key . (isset($field['multiple']) ? '[]' : '') . '" class="form-control ' . $this->class . '-select"' . (isset($field['multiple']) ? ' multiple' : '') . '>';
+					$out .= '<div class="controls"><select name="' . $key . (isset($field['multiple']) ? '[]' : '') . '" class="form-control ' . $this->class . '-select"' . (isset($field['multiple']) ? ' multiple' : '') . ' data-placeholder="Alege ...">';
+
 					foreach ($field['options'] as $k => $v) {
 						if (isset ($v['items']) && is_array ($v['items']) && !empty ($v['items'])) {
 							$out .= '<optgroup label="' . $v['title'] . '">';
@@ -453,7 +523,12 @@ class WP_CRM_Form {
 						else
 							$out .= '<option value="' . $k . '"' . (in_array ($k, $field['default']) ? ' selected' : '' ) . '>' . $v . '</option>';
 						}
-					$out .= '</select></div>';
+					$out .= '</select>';
+					
+					if ($field['add'])
+						$out .= '<button class="upd-select wp-crm-view-actions wp-crm-view-add btn btn-sm btn-block" name="newoption" rel="' . $field['add']['object'] . '"><i class="fa fa-plus"></i> ' . $field['add']['label'] . '</button>';
+					$out .= '</div>';
+
 					$out .= '<div class="' . $this->class . '-separator"></div>';
 					break;
 				case 'button':
@@ -491,7 +566,8 @@ class WP_CRM_Form {
 					$out .= '<input class="form-control input-sm ' . $this->class . '-password" type="password" name="'.$key.'" value="'.$field['default'].'" />';
 					break;
 				case 'hidden':
-					$out .= '<input type="hidden" name="'.$key.'" value="'.$field['default'].'" />';
+				case 'object':
+					$out .= '<input type="hidden" name="' . $key . '" value="' . $field['default'] . '" />';
 					break;
 				case 'label':
 					$out .= '<label>' . $field['label'] . '</label><div style="clear: both;"></div>';
@@ -499,7 +575,7 @@ class WP_CRM_Form {
 					break;
 				case 'tos':
 					$rnd = rand ();
-					$out .= '<input type="checkbox" name="'.$key.'" value="1" id="tos-'.$rnd.'" ' . ($field['default'] ? 'checked ' : '') . '/><label for="tos-'.$rnd.'">'.$field['label'].'</label>';
+					$out .= '<label for="tos-'.$rnd.'"><input type="checkbox" name="'.$key.'" value="1" id="tos-'.$rnd.'" ' . ($field['default'] ? 'checked ' : '') . '/> ' . $field['label'] . '</label>';
 					break;
 				case 'date':
 					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
@@ -517,6 +593,11 @@ class WP_CRM_Form {
 					$out .= '<div class="col-lg-6"><div class="input-group bootstrap-timepicker"><span class="input-group-addon"><i class="fa fa-clock-o"></i></span><input type="text" name="'.$key.'-time" value="'.$time.'" class="form-control input-sm ' . $this->class . '-time" /></div></div>';
 					$out .= '</div>';
 					break;
+				case 'color':
+					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
+					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
+					$out .= '<input type="text" name="'.$key.'" value="'.$field['default'].'" class="form-control input-sm ' . $this->class . '-color" />';
+					break;
 				case 'seller':
 					if ($field['label']) $out .= '<label>' . $field['label'] . '</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
@@ -524,7 +605,7 @@ class WP_CRM_Form {
 					
 					$out .= '<div class="controls"><select name="' . $key . '" class="form-control ' . $this->class . '-select">';
 
-					$list = new WP_CRM_List ('WP_CRM_Company', current_user_can ('add_users') ? null : array ($wp_crm_office_query ? $wp_crm_office_query : sprintf ('uid=%d', $current_user->ID)));
+					$list = new WP_CRM_List ('WP_CRM_Company', array('id=1'));// current_user_can ('add_users') ? null : array ($wp_crm_office_query ? $wp_crm_office_query : sprintf ('uid=%d', $current_user->ID)));
 					if (!$list->is ('empty'))
 						foreach ($list->get() as $wp_crm_company) {
 							$out .= '<option value="' . $wp_crm_company->get() . '"' . ($wp_crm_company->get() == $field['default'] ? ' selected' : '') . '>' . $wp_crm_company->get ('name') . '</option>';
@@ -537,6 +618,112 @@ class WP_CRM_Form {
 					if ($field['label']) $out .= '<label>' . $field['label'] . '</label>';
 					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
 					$out .= '<input type="text" class="form-control input-sm ' . $this->class . '-buyer ' . (isset($field['class']) ? (' '.$field['class']) : '') . '" name="'.$key.'" value="' . (is_object ($field['default']) ? $field['default']->get ('name') : '') . '" rel="' . (is_object ($field['default']) ? (($field['default'] instanceof WP_CRM_Company ? 'company' : 'person') . '-' . $field['default']->get()) : 0). '" />';
+					break;
+				case 'client':
+					global $wp_crm_user;
+
+					if (!is_object ($wp_crm_user))
+						$wp_crm_user = new WP_CRM_User (FALSE);
+
+					$rnd = rand ();
+
+					if ($field['label']) $out .= '<label>' . $field['label'] . '</label>';
+					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
+
+					$out .= '<div>';
+					$out .= '<' . self::$ITEMSTAG . '><label class="radio ' . $this->class . '-label"><input type="radio" name="' . $key . '-type" value="person" data-selected="radio" data-target="#' . $key . '_person_' . $rnd . '"' . ($field['default'] === $k ? ' checked' : '') . ' /> ' . WP_CRM::_ ('Person') . '</label></' . self::$ITEMSTAG . '>';
+
+					$out .= '<div id="' . $key . '_person_' . $rnd . '" class="collapse">';
+					$out .= '<label>' . WP_CRM::_ ('Last Name') . '</label>';
+					$out .= '<input type="text" placeholder="' . WP_CRM::_ ('Popescu') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-last-name" value="'. $wp_crm_user->get ('last_name') .'" />';
+					$out .= '<label>' . WP_CRM::_ ('First Name') . '</label>';
+					$out .= '<input type="text" placeholder="' . WP_CRM::_ ('Vasile') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-first-name" value="'. $wp_crm_user->get ('first_name') .'" />';
+					$out .= '<label>' . WP_CRM::_ ('Person UIN') . '</label>';
+					$out .= '<input type="text" placeholder="' . WP_CRM::_ ('xxxxxxxxxxxxx') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-p-uin" value="' . $wp_crm_user->get ('uin') . '" />';
+					$out .= '<label>' . WP_CRM::_ ('E-Mail') . '</label>';
+					$out .= '<input type="text" placeholder="' . WP_CRM::_ ('email@adress') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-p-email" value="' . $wp_crm_user->get ('email') . '" />';
+					$out .= '<label>' . WP_CRM::_ ('Phone') . '</label>';
+					$out .= '<input type="text" placeholder="' . WP_CRM::_ ('07xx xxx xxx') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-p-phone" value="' . $wp_crm_user->get ('phone') . '" />';
+					$out .= '<' . self::$ITEMSTAG . '><label class="checkbox ' . $this->class . '-label"><input type="checkbox" name="' . $key . '-p-update" value="1" /> ' . WP_CRM::_ ('Update Your Profile Data') . '</label></' . self::$ITEMSTAG . '>';
+					$out .= '</div>';
+					$out .= '</div>';
+
+
+					$out .= '<div>';
+					$out .= '<' . self::$ITEMSTAG . '><label class="radio ' . $this->class . '-label"><input type="radio" name="' . $key . '-type" value="company" data-selected="radio" data-target="#' . $key . '_company_' . $rnd . '"' . ($field['default'] === $k ? ' checked' : '') . ' /> ' . WP_CRM::_ ('Company') . '</label></' . self::$ITEMSTAG . '>';
+
+					$out .= '<div id="' . $key . '_company_' . $rnd . '" class="collapse">';
+					$out .= '<div class="controls"><select name="' . $key . '-company" class="form-control ' . $this->class . '-select" data-placeholder="Alege ..." data-autofill="ajax" data-requestobject="WP_CRM_Company-" data-target="#' . $key . '_company_' . $rnd . '">';
+
+					$company_list = $wp_crm_user->get ('company_list');
+					$companies = array ('0' => 'Choose A Company ...');
+					if (!$company_list->is ('empty'))
+					foreach ($company_list->get () as $company)
+						$companies[$company->get ()] = $company->get ('name');
+					$companies['-1'] = 'Add New ...';
+					foreach ($companies as $k => $v) {
+						if (isset ($v['items']) && is_array ($v['items']) && !empty ($v['items'])) {
+							$out .= '<optgroup label="' . WP_CRM::_ ($v['title']) . '">';
+							foreach ($v['items'] as $_k => $_v)
+								$out .= '<option value="' . $_k . '"' . (in_array ($_k, $field['default']) ? ' selected' : '' ) . '>' . WP_CRM::_ ($_v) . '</option>';
+							$out .= '</optgroup>';
+							}
+						else
+							$out .= '<option value="' . $k . '"' . (is_array ($field['default']) && in_array ($k, $field['default']) ? ' selected' : '' ) . '>' . WP_CRM::_ ($v) . '</option>';
+						}
+					$out .= '</select>';
+					
+					$out .= '<label>' . WP_CRM::_ ('Company Name') . '</label>';
+					$out .= '<input type="text" data-autofill="name" placeholder="' . WP_CRM::_ ('My Company Ltd.') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-name" value="" />';
+					$out .= '<label>' . WP_CRM::_ ('Company UIN') . '</label>';
+					$out .= '<input type="text" data-autofill="uin" placeholder="' . WP_CRM::_ ('xxxxxxxx') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-uin" value="" />';
+					$out .= '<label>' . WP_CRM::_ ('Registration Number') . '</label>';
+					$out .= '<input type="text" data-autofill="rc" placeholder="' . WP_CRM::_ ('Jxx/xxxx/xxxx') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-rc" value="" />';
+					$out .= '<label>' . WP_CRM::_ ('E-Mail') . '</label>';
+					$out .= '<input type="text" data-autofill="email" placeholder="' . WP_CRM::_ ('email@adress') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-c-email" value="' . $wp_crm_user->get ('email') . '" />';
+					$out .= '<label>' . WP_CRM::_ ('Phone') . '</label>';
+					$out .= '<input type="text" data-autofill="phone" placeholder="' . WP_CRM::_ ('07xx xxx xxx') . '" class="form-control input-sm' . (isset($field['class']) ? ' ' . $field['class'] : '') . '" name="' . $key . '-c-phone" value="' . $wp_crm_user->get ('phone') . '" />';
+					$out .= '<' . self::$ITEMSTAG . '><label class="checkbox ' . $this->class . '-label"><input type="checkbox" name="' . $key . '-c-update" value="1" /> ' . WP_CRM::_ ('Update Your Company Data') . '</label></' . self::$ITEMSTAG . '>';
+
+					$out .= '</div>';
+					$out .= '</div>';
+					$out .= '</div>';
+
+					$out .= '<div class="' . $this->class . '-separator"></div>';
+					break;
+				case 'payment':
+					if ($field['label']) $out .= '<label>'.$field['label'].'</label>';
+					if ($field['help']) $out .= '<small>'.$field['help'].'</small>';
+
+					if (empty ($field['default'])) break;
+
+					$invoices = array ();
+					foreach ($field['default'] as $invoice_id) {
+						try {
+							$invoice = new WP_CRM_Invoice ((int) $invoice_id);
+							}
+						catch (WP_CRM_Exception $wp_crm_exception) {
+							continue;
+							}
+						$invoices[] = $invoice;
+						}
+
+					if (empty ($invoices)) break;
+
+					$out .= '</form>';
+
+					$invoice = current ($invoices);
+					
+					$out .= '<div class="row"><div class="col-md-6">';
+
+					/** PayPal */
+					$out .= WP_CRM_Payment::paypal ($invoice);
+					$out .= '</div><div class="col-md-6">';
+					/** MobilPay */
+					$out .= WP_CRM_Payment::mobilpay ($invoice);
+					$out .= '</div></div>';
+
+					$out .= '<form action="" method="post">';
 					break;
 				case 'product':
 					global $wpdb;
@@ -602,7 +789,7 @@ class WP_CRM_Form {
 						 */
 						if (sizeof ($spread) < 2) {
 							$row = array ();
-							foreach ($spread[0] as $key => $label) {
+							foreach ($spread[0] as $col => $label) {
 								$row[] = '<input class="form-control input-sm" name="' . $key . '_cell_n0_' . $col . '" value="" type="text" />';
 								}
 							$row[] = '<button class="btn btn-sm ' . $this->class . '-spread-del-row btn-danger fa fa-times"></button>';
@@ -829,18 +1016,26 @@ class WP_CRM_Form {
 					$out .= '<div class="' . $this->class . '-file-view"></div>';
 					$out .= '<input type="hidden" name="' . $key . '" value="' . ($field['default'] ? str_replace ('"', '&quot;', (json_encode ($field['default']))) : '') . '" />';
 					
-					if (is_array ($field['default']))
+					if (is_array ($field['default']) && !empty($field['default']))
 						$field['default'] = $field['default'][0];
+					if (is_string ($field['default']) && $field['default'])
+						$field['default'] = new WP_CRM_File ($field['default']);
 
 					$out .= '<div class="row">
 					<div class="col-md-4">
-						<span class="' . $this->class . '-file-name">' . (is_object ($field['default']) ? ('<a href="' . $field['default']->url . '" target="_blank" />' . $field['default']->name . ' <i class="fa fa-external-link"></i></a>') : 'Apasa butonul Select pentru a alege un fisier, urmat de Upload pentru a-l incarca.') . '</span>
+						<span class="' . $this->class . '-file-name">' . (is_object ($field['default']) ?
+							(in_array ($field['default']->get ('type'), array ('jpg', 'png')) ?
+								('<a href="' . $field['default']->get ('url') . '" target="_blank"><img src="' . $field['default']->get ('url', 'c32x32') . '" alt="' . $field['default']->get ('title') . '" /></a>') :
+								('<a href="' . $field['default']->get ('url') . '" target="_blank">' . $field['default']->get ('title') . ' <i class="fa fa-external-link"></i></a>')
+								) :
+							'Apasa butonul Select pentru a alege un fisier, urmat de Upload pentru a-l incarca.'
+						) . '</span>
 					</div>
 					<div class="col-md-2">
 						<input type="button" name="' . $key . '-select" value="Select" class="' . $this->class . '-file-select form-control btn btn-warning" />
 					</div>
 					<div class="col-md-2">
-						<input type="button" name="' . $key . '-upload" value="Upload" class="' . $this->class . '-file-upload form-control btn btn-success" />
+						<input type="button" name="' . $key . '-upload" value="Upload" class="' . $this->class . '-file-upload form-control btn btn-success" data-path="' . $field['path'] . '" />
 					</div>
 					<div class="col-md-4">
 						<div class="' . $this->class . '-file-progress progress slim ui-progressbar progressGreen simpleProgress"><div class="' . $this->class . '-file-bar ui-progressbar-value"></div></div>
@@ -912,6 +1107,37 @@ class WP_CRM_Form {
 <button class="btn btn-primary"><i class="fui-plus"></i></button>
 <button class="btn btn-danger"><i class="fui-cross"></i></button>
 </div><div class="' . $this->class . '-seats-canvas"></div>';
+					break;
+				case 'children':
+					if ($field['label']) $out .= '<label>' . $field['label'] . '</label>';
+					if ($field['help']) $out .= '<label>' . $field['help'] . '</label>';
+
+					if ($field['default'] instanceof WP_CRM_List) {
+						$view = new WP_CRM_View ($field['default'], array (
+								array (
+									'type' => 'toolbar',
+									'items' => array (
+										'add' => array (
+											'label' => 'Adauga'
+											)
+										)
+									),
+								array (
+									'type' => 'column',
+									'label' => 'Actiuni',
+									'items' => array (
+										'edit'	=> array (
+											'label' => 'Modifica',
+											),
+										'delete' => array (
+											'label' => 'Sterge'
+											),
+										)
+									)
+								));
+						$out .= $view->get ();
+						unset ($view);
+						}
 					break;
 				case 'contact':
 					if ($field['label']) $out .= '<label>' . $field['label'] . '</label>';
@@ -1031,9 +1257,10 @@ class WP_CRM_Form {
 			if ($column['class'] == 'tab') {
 				$this->html .= '<p class="'.$this->class.'-collabel">'.$column['label'].'</p>';
 				$slug = preg_replace('/[^a-z]+/', '-', strtolower(trim($column['label'])));
+				$rnd = rand();
 				$tabs .= $this->payload[$column['name']] ? 
-					('<' . self::$ITEMSTAG . '><input'.($this->payload[$column['name']] == $slug ? ' checked="checked"' : '').' type="radio" name="' . $column['name'] . '" value="'.$slug.'" />'.$column['label'].'</' . self::$ITEMSTAG . '>') :
-					('<' . self::$ITEMSTAG . '><input'.($c ? '' : ' checked="checked"').' type="radio" name="' . $column['name'] . '" value="'.$slug.'" />'.$column['label'].'</' . self::$ITEMSTAG . '>');
+					('<label for="tab-'.$rnd.'"><input'.($this->payload[$column['name']] == $slug ? ' checked="checked"' : '').' id="tab-'.$rnd.'" type="radio" name="' . $column['name'] . '" value="'.$slug.'" /> ' . $column['label'] . '</label>') :
+					('<label for="tab-'.$rnd.'"><input'.($c ? '' : ' checked="checked"').' id="tab-'.$rnd.'" type="radio" name="' . $column['name'] . '" value="'.$slug.'" />' . $column['label'] . '</label>');
 				$c ++;
 				}
 			if (in_array ($column['class'], array ('label', 'separator'))) {
@@ -1042,8 +1269,9 @@ class WP_CRM_Form {
 				}
 			else {
 				$this->html .= '<' . self::$GROUPTAG . ' class="'.$this->class.'-column'.($column['label'] ? (' '.$this->class.'-tabtarget') : '').'">';
-				foreach ($column['fields'] as $key => $field)
+				foreach ($column['fields'] as $key => $field) {
 					$this->html .= $this->_render ($key, $field);
+					}
 				}
 			$this->html .= '</' . self::$GROUPTAG . '>';
 			$this->html .= '</div>';

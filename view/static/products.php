@@ -1,7 +1,8 @@
 <?php
 /*
-App Title: Produsele mele
-App Parent: erp
+App Title: Products
+App Parent: ecommerce
+App Requires: wp_crm_admin
 App Order: 1
 App Description:
 App Size: 1
@@ -35,6 +36,12 @@ $view = new WP_CRM_View ($list, array (
 			'items' => array (
 				'edit' => array (
 					'label' => 'Modifica',
+					),
+				'price' => array (
+					'label' => 'Preturi',
+					),
+				'requirements' => array (
+					'label' => 'Checklist',
 					),
 				'process' => array (
 					'label' => 'Proces',

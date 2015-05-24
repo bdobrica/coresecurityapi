@@ -67,7 +67,7 @@ class WP_CRM_Template extends WP_CRM_Model {
 			$keys = $object->get ('keys');
 			if (!empty($keys))
 				foreach ($keys as $key) {
-					$var = '{' . $role . '.' . parent::slug ($key) . '}';
+					$var = '[' . $role . '.' . parent::slug ($key) . ']';
 					$val = $object->get ($key);
 					$this->data['subject'] = str_replace ($var, $val, $this->data['subject']);
 					$this->data['content'] = str_replace ($var, $val, $this->data['content']);
@@ -75,8 +75,8 @@ class WP_CRM_Template extends WP_CRM_Model {
 			}
 		else
 		if (is_string($role) && is_string($object)) {
-			$this->data['subject'] = str_replace ($role, $object, $this->data['subject']);
-			$this->data['content'] = str_replace ($role, $object, $this->data['content']);
+			$this->data['subject'] = str_replace ('[' . $role . ']', $object, $this->data['subject']);
+			$this->data['content'] = str_replace ('[' . $role . ']', $object, $this->data['content']);
 			}
 		}
 

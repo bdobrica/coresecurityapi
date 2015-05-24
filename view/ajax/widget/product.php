@@ -8,5 +8,8 @@ $current_user = wp_get_current_user ();
 $list = new WP_CRM_List ('WP_CRM_Product', /* current_user_can ('edit_users') ? null : */ array (
 	'uid=' . $current_user->ID
 	));
-echo $list->get ('json');
+if ($list->is ('empty'))
+	echo $list->get ('json');
+else
+	echo '[]';
 ?>

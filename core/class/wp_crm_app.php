@@ -24,6 +24,7 @@ class WP_CRM_App extends WP_CRM_Model {
 		'icon',
 		'title',
 		'description',
+		'requires',
 		'size',
 		'style',
 		'clicks'
@@ -47,6 +48,7 @@ class WP_CRM_App extends WP_CRM_Model {
 		'`icon` varchar(64) NOT NULL DEFAULT \'\'',
 		'`title` text NOT NULL',
 		'`description` text NOT NULL',
+		'`requires` varchar(32) NOT NULL DEFAULT \'\'',
 		'`size` int(11) NOT NULL DEFAULT 2',
 		'`style` text NOT NULL',
 		'`clicks` int(11) NOT NULL DEFAULT 0',
@@ -63,6 +65,7 @@ class WP_CRM_App extends WP_CRM_Model {
 								'parent' => '',
 								'order' => '',
 								'title' => '',
+								'requires' => '',
 								'size' => '',
 								'style' => '',
 								'icon' => '');

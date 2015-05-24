@@ -68,6 +68,12 @@ class WP_CRM_Office extends WP_CRM_Model {
 		'wp_crm_acountant'	=> 0,
 		);
 
+	public function __construct ($data = null) {
+		parent::__construct ($data);
+
+		$this->data['companies'] = $this->data['companies'] ? unserialize ($this->data['companies']) : array ();
+		}
+
 	public function add ($company = null) {
 		if (is_numeric ($company)) {
 			try {

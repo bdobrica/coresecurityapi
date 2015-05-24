@@ -10,11 +10,16 @@ class WP_CRM_List {
 	*/
 	private $group;
 	private $class;
+	/**
+	 * DEBUG
+	 */
+	private $debug;
 
 	public function __construct ($class, $filter = null) {
 		$this->class = $class;
 		$this->filter = $filter;
 		$this->list = null;
+		$this->debug = false;
 		}
 
 	public function flat ($data = null) {
@@ -36,6 +41,7 @@ class WP_CRM_List {
 		global $wpdb;
 		$class = $this->class;
 		$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . $class::$T . '` where ' . (empty($this->filter) ? 1 : implode (' and ', $this->filter)), null);
+		if ($this->debug) WP_CRM::debug ($sql);
 		$ids = $wpdb->get_col ($sql);
 		if (!empty($ids))
 			foreach ($ids as $id)
@@ -152,6 +158,17 @@ class WP_CRM_List {
 		return $this->list;
 		}
 
+	public function set ($key = null, $value = null) {
+		if (is_string ($key)) {
+			switch ($key) {
+				case 'debug':
+					$this->debug = is_null ($value) ? TRUE : $value;
+					return TRUE;
+					break;
+				}
+			}
+		}
+
 	public function sort ($by = 'stamp', $opts = 'asc') {
 		switch ((string) $by) {
 			case 'name':
@@ -169,7 +186,7 @@ class WP_CRM_List {
 				break;
 			}
 		if ($opts == 'desc' && (!empty($this->list)))
-			array_reverse ($this->list);
+			$this->list = array_reverse ($this->list);
 		if (!empty($this->list))
 			reset ($this->list);
 		}

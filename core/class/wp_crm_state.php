@@ -3,6 +3,7 @@ class WP_CRM_State {
 	const AddToCart		= 0;
 	const Participants	= 1;
 	const Payment		= 2;
+	const OnlinePayment	= 19;
 
 	const News		= 4;
 	const NewsRegistered	= 5;
@@ -12,14 +13,18 @@ class WP_CRM_State {
 	const Logged		= 3;
 	const SignUp		= 12;
 	const Forgot		= 13;
+	const Reset		= 14;
 
 	const AddObject		= 8;
 	const EditObject	= 9;
 	const SaveObject	= 10;
-	const ImportObjects	= 12;
-	const ExportObjects	= 13;
+	const ImportObjects	= 15;
+	const ExportObjects	= 16;
 
-	const CartActions	= 14;
+	const CartActions	= 11;
+
+	const AddOrder		= 17;
+	const SaveOrder		= 18;
 
 	private $ID;
 	private $basket;

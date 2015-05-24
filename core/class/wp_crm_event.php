@@ -1,5 +1,11 @@
 <?php
 class WP_CRM_Event extends WP_CRM_Model {
+	/**
+	 * WP_CRM_Event -> context = $who, $what, $from, $when
+	 */
+	private static $SKIP_NOTICE = array (
+		'timer'
+		);
 	public static $T = 'events';
 	protected static $K = array (
 		'eid',			# parent events (can create a chain of events)
@@ -45,6 +51,9 @@ class WP_CRM_Event extends WP_CRM_Model {
 		return parent::get ($key, $opts);
 		}
 
+	/**
+	 * The fire method runs all actions attached to this event.
+	 */
 	public function fire ($data = null) {
 		$out = array ();
 
@@ -52,7 +61,7 @@ class WP_CRM_Event extends WP_CRM_Model {
 		if (!(is_null ($this->do) || $this->do->is ('empty')))
 			foreach ($this->do->get() as $action)
 				try {
-					$action->do ($data);
+					$action->run ($data);
 					}
 				catch (WP_CRM_Exception $wp_crm_exception) {
 					$out[$action->get ()] = $wp_crm_exception->get ('code');
@@ -60,6 +69,19 @@ class WP_CRM_Event extends WP_CRM_Model {
 
 		if (!empty($out))
 			throw new WP_CRM_Exception (WP_CRM_Exception::Event_Misfired);
+		}
+
+	public static function event ($event = null, $who = null, $what = null, $from = null, $when = null) {
+		global
+			$wp_crm_user;
+
+		if (is_null ($event)) return;
+		if (is_null ($who)) $who = is_object ($wp_crm_user) ? $wp_crm_user : ($wp_crm_user = new WP_CRM_User (FALSE));
+		if (is_null ($when)) $when = time ();
+		$event = parent::slug ($event);
+
+		if (in_array ($event, static::$SKIP_NOTICE)) return TRUE;
+		WP_CRM_Notice::notice ($event, $who, $what, $from, $when);
 		}
 	}
 ?>

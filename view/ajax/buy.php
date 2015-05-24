@@ -9,9 +9,7 @@ global
 
 $wp_crm_buyer = new WP_CRM_Buyer ();
 $wp_crm_state = new WP_CRM_State ();
-$wp_crm_state->set ('state', WP_CRM_State::AddObject);
-
-$event = substr (basename(__FILE__), 0, strrpos (basename (__FILE__), '.'));
+$wp_crm_state->set ('state', WP_CRM_State::AddOrder);
 
 $data = $_GET['object'] ? $_GET['object'] : $_POST['object'];
 
@@ -22,7 +20,18 @@ if (!class_exists ($class)) die ('Err.');
 if (!is_numeric($id)) die ('Err.');
 
 $object = new $class ((int) $id);
-	
+
+$structure = new WP_CRM_Form_Structure ($wp_crm_state->get());
+$form = new WP_CRM_Form ($structure);
+$form->set ('state', $wp_crm_state->get());
+
+$form->action ();
+
+$form->render (TRUE);
+
+/*
+$event = substr (basename(__FILE__), 0, strrpos (basename (__FILE__), '.'));
+
 if ($_SERVER['REMOTE_ADDR'] == '86.127.44.197') {
 ////////////////////////////////////////////////////////////////////////////////////////
 $requirements = new WP_CRM_List ('WP_CRM_Requirement', array (
@@ -88,6 +97,5 @@ $form->render (TRUE);
  * The product has some requirements. If they are not met, they should be filled before
  * allowing the user to buy it.
  */
-
 
 ?>

@@ -1,15 +1,27 @@
 <?php
 /*
-App Title: Clienti
-App Parent: crm
-App Order: 1
+App Title: Clients
+App Parent: ecommerce
+App Requires: wp_crm_admin
+App Order: 3
 App Description:
-App Size: 2
+App Size: 1
 App Style:
-App Icon: users 
+App Icon: users
 */
-ini_set ('display_errors', 1);
-$list = new WP_CRM_List ('WP_CRM_Client', array ('pid='.((int)$_GET['filter'])));
+?>
+<div class="row">
+	<div class="col-sm-12">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#tab-persons">Persoane Fizice</a></li>
+			<li><a href="#tab-companies">Persoane Juridice</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="tab-persons">
+				<div class="row">
+					<div class="col-lg-12">
+<?php
+$list = new WP_CRM_List ('WP_CRM_Client');
 $view = new WP_CRM_View ($list, array (
 		array (
 			'type' => 'toolbar',
@@ -29,25 +41,28 @@ $view = new WP_CRM_View ($list, array (
 				'edit' => array (
 					'label' => 'Modifica',
 					),
-				'view' => array (
-					'label' => 'Vezi',
-					),
 				'invoice' => array (
 					'label' => 'Factura',
-					),
-				'pay' => array (
-					'label' => 'Plati',
 					),
 				)
 			)
 		));
 unset ($view);
-/*
+?>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane active" id="tab-companies">
+				<div class="row">
+					<div class="col-lg-12">
+<?php
+$list = new WP_CRM_List ('WP_CRM_Company', array ('id<>1'));
+$view = new WP_CRM_View ($list, array (
 		array (
 			'type' => 'toolbar',
 			'items' => array (
-				'' => array (
-					'label' => '',
+				'add' => array (
+					'label' => 'Adauga',
 					),
 				)
 			),
@@ -55,10 +70,23 @@ unset ($view);
 			'type' => 'column',
 			'label' => 'Actiuni',
 			'items' => array (
-				'' => array (
-					'label' => '',
+				'add' => array (
+					'label' => 'Adauga',
+					),
+				'edit' => array (
+					'label' => 'Modifica',
+					),
+				'invoice' => array (
+					'label' => 'Factura',
 					),
 				)
 			)
-*/
+		));
+unset ($view);
 ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

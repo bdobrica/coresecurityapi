@@ -55,6 +55,12 @@ abstract class WP_CRM_Model {
 	 */
 	protected static $L = array ();
 	/**
+	 * Additional table to handle instances of this object, relative to object types listed in
+	 * this array.
+	 * @var array (list of WP_CRM_Model decendants that provide a unique pair {instance_key, instance_value})
+	 */
+	protected static $I = array ();
+	/**
 	 * Pair of (actions, form elements).
 	 * Form elements are defined as name[:type] => label, where
 	 * 	name is a string containing the database key,
@@ -98,6 +104,7 @@ abstract class WP_CRM_Model {
 	 */
 	protected $data;
 	protected $group;
+	private $debug;
 
 	public function __construct ($data = null) {
 		global $wpdb;
@@ -121,7 +128,7 @@ abstract class WP_CRM_Model {
 				self::parse ('number', $data)
 				)), ARRAY_A);
 			if (!empty($row)) {
-				$this->ID = (int) $row->id;
+				$this->ID = (int) $row['id'];
 				$this->data = $row;
 				}
 			else
@@ -133,12 +140,50 @@ abstract class WP_CRM_Model {
 				if (isset($data[$key]))
 					$this->data[$key] = $data[$key];
 
-			if (isset($data['id'])) $this->ID = (int) $data['id'];
+			if (isset($data['id'])) {
+				$this->ID = (int) $data['id'];
+				/**
+				 * Correct behaviour, but needs to be closely analyzed as it breaks the site.
+				 *
+				if ($this->ID) {
+					$row = $wpdb->get_row ($wpdb->prepare ('select * from `' . $wpdb->prefix . static::$T . '` where id=%d;', (int) $data), ARRAY_A);
+					if (!empty($row)) {
+						$this->data = $row;
+						return;
+						}
+					}
+				 ** */
+				}
+
+			/**
+			 * Also the correct behaviour, but needs analysis.
+			 *
+			if (!empty(static::$U)) {
+				$pieces = array ();
+				$values = array ();
+				$can_identify = TRUE;
+
+				foreach (static::$U as $key) {
+					$pieces[] = '`' . $key . '`=%s';
+					$values[] = $this->data[$key];
+					if (!isset ($this->data[$key])) $can_identify = FALSE;
+					}
+
+				if ($can_identify) {
+					$row = $wpdb->get_row ($wpdb->prepare ('select * from `' . $wpdb->prefix . static::$T . '` where ' . implode (' and ', $pieces) . ';', $values), ARRAY_A);
+					if (!empty ($row)) {
+						$this->ID = (int) $row['id'];
+						$this->data = $row;
+						return;
+						}
+					}
+				}
+			 ** */
 			}
 		}
 
 	public static function slug ($key) {
-		return str_replace(array(' ', '-'), '_', strtolower(trim($key)));
+		return trim (preg_replace('/[^a-z]+/', '_', strtolower(trim($key))), '_');
 		}
 
 	public static function _unserialize ($data) {
@@ -189,6 +234,8 @@ abstract class WP_CRM_Model {
 			return get_class ($this) . '-' . $this->ID;
 		if ($slug == 'keys')
 			return static::$K;
+		if ($slug == 'class')
+			return get_class ($this);
 		if (isset($this->data[$slug]))
 			return $this->data[$slug];
 		#if (in_array ($slug, static::$K))
@@ -286,7 +333,6 @@ abstract class WP_CRM_Model {
 					$slug,
 					(is_array ($value) || is_object ($value)) ? serialize ($value) : $value
 					));
-			echo $sql;
 			$wpdb->query ($sql);
 			return TRUE;
 			}
@@ -310,7 +356,7 @@ abstract class WP_CRM_Model {
 					if (!in_array($slug, static::$K))
 						continue;
 						//throw new WP_CRM_Exception (__CLASS__ . ' :: Invalid Assignment', WP_CRM_Exception::Invalid_Assignment);
-					$update[] = $slug . '=%s';
+					$update[] = '`' . $slug . '`=%s';
 					$values[] = $value;
 					$this->data[$slug] = $value;
 					}
@@ -325,6 +371,12 @@ abstract class WP_CRM_Model {
 			}
 		else {
 			$slug = static::slug ($key);
+
+			if ($slug == 'debug') {
+				$this->debug = is_null ($value) ? TRUE : $value;
+				return TRUE;
+				}
+
 			if (in_array ($slug, static::$M_K)) {
 				$this->_meta_set ($key, $value);
 				return;
@@ -335,7 +387,7 @@ abstract class WP_CRM_Model {
 			if ($this->ID) {
 				if (is_object ($value) && ($value instanceof WP_CRM_Model))
 					$value = $value->get();
-				$sql = $wpdb->prepare ('update `' . $wpdb->prefix . static::$T . '` set '.$slug.'=%s where id=%d;', $value, $this->ID);
+				$sql = $wpdb->prepare ('update `' . $wpdb->prefix . static::$T . '` set `' . $slug . '`=%s where id=%d;', $value, $this->ID);
 				$wpdb->query ($sql);
 				}
 			}
@@ -368,7 +420,7 @@ abstract class WP_CRM_Model {
 
 	public function json ($data = FALSE) {
 		if (is_string ($data) && in_array ($data, array_keys (static::$F)) && !empty(static::$F[$data])) {
-			$out = array ();
+			$out = array ('id' => $this->ID, 'self' => get_class ($this) . '-' . $this->ID);
 			foreach (static::$F[$data] as $key => $label)
 				$out[$key] = $this->data[$key];
 			return json_encode ((object) $out);
@@ -391,19 +443,26 @@ abstract class WP_CRM_Model {
 	 */
 	public function save () {
 		global $wpdb;
+
 		if ($this->ID) throw new WP_CRM_Exception (WP_CRM_Exception::Object_Exists);
 
 		if (in_array ('uid', static::$K) && !$this->data['uid']) {
-			$current_user = wp_get_current_user ();
-			if ($current_user->ID)
-				$this->data['uid'] = $current_user->ID;
+			try {
+				$user = new WP_CRM_User (FALSE);
+				$this->data['uid'] = $user->get ();
+				if (in_array ('oid', static::$K) && !$this->data['oid']) {
+					$this->data['oid'] = current ($user->get ('offices'));
+					}
+				}
+			catch (WP_CRM_Exception $wp_crm_exception) {
+				}
 			}
 
 		if (!empty(static::$U)) {
 			$pieces = array ();
 			$values = array ();
 			foreach (static::$U as $key) {
-				$pieces[] = $key . '=%s';
+				$pieces[] = '`' . $key . '`=%s';
 				$values[] = $this->data[$key];
 				}
 
@@ -415,7 +474,7 @@ abstract class WP_CRM_Model {
 				$pieces = array ();
 				$values = array ();
 				foreach (static::$K as $key) {
-					$pieces[] = $key . '=%s';
+					$pieces[] = '`' . $key . '`=%s';
 					$values[] = $this->data[$key];
 					}
 				$values[] = $this->ID;
@@ -431,7 +490,7 @@ abstract class WP_CRM_Model {
 				$formats[] = '%s';
 				$values[] = $this->data[$key];
 				}
-			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '` (' . implode(',', static::$K) . ') values (' . implode (',', $formats) . ');', $values);
+			$sql = $wpdb->prepare ('insert into `' . $wpdb->prefix . static::$T . '` (`' . implode('`,`', static::$K) . '`) values (' . implode (',', $formats) . ');', $values);
 			$wpdb->query ($sql);
 			if (!($this->ID = $wpdb->insert_id)) throw new WP_CRM_Exception (WP_CRM_Exception::Saving_Failure, __CLASS__ . ' :: Saving Failure SQL: ' . "\n" . $sql . "\n");
 			}
@@ -554,38 +613,58 @@ abstract class WP_CRM_Model {
 		/**
 		 * Create META table if needed.
 		 */
-		if (empty (static::$M_K)) return;
-		$sql = $uninstall ?
-			'drop table `' . $wpdb->prefix . static::$T . '_meta`;' :
-			'create table `' . $wpdb->prefix . static::$T . '_meta` (
-				`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-				`oid` int(11) NOT NULL DEFAULT 0,
-				`gid` int(11) NOT NULL DEFAULT 0,
-				`meta_key` varchar(64) NOT NULL DEFAULT \'\',
-				`meta_value` text NOT NULL,
-				KEY `oid` (`oid`),
-				KEY `gid` (`gid`),
-				KEY `meta_key` (`meta_key`)
-				) engine MyISAM default charset=utf8;';
-		if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '_meta\';') != ($wpdb->prefix . static::$T . '_meta'))
-			$wpdb->query ($sql);
+		if (!empty (static::$M_K)) {
+			$sql = $uninstall ?
+				'drop table `' . $wpdb->prefix . static::$T . '_meta`;' :
+				'create table `' . $wpdb->prefix . static::$T . '_meta` (
+					`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+					`oid` int(11) NOT NULL DEFAULT 0,
+					`gid` int(11) NOT NULL DEFAULT 0,
+					`meta_key` varchar(64) NOT NULL DEFAULT \'\',
+					`meta_value` text NOT NULL,
+					KEY `oid` (`oid`),
+					KEY `gid` (`gid`),
+					KEY `meta_key` (`meta_key`)
+					) engine MyISAM default charset=utf8;';
+			if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '_meta\';') != ($wpdb->prefix . static::$T . '_meta'))
+				$wpdb->query ($sql);
+			}
 
 		/**
 		 * Create the link table.
 		 */
-		if (empty (static::$L)) return;
-		$sql = $uninstall ?
-			'drop table `' . $wpdb->prefix . static::$T . '_link`;' :
-			'create table `' . $wpdb->prefix . static::$T . '_link` (
-				`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-				`lid` int(11) NOT NULL DEFAULT 0,
-				`object` varchar(64) NOT NULL DEFAULT \'\',
-				`oid` int(11) NOT NULL DEFAULT 0,
-				KEY `lid` (`oid`),
-				KEY `object` (`object`)
-				) engine MyISAM default charset=utf8;';
-		if ($wpdb->get_var ('show tables like \`' . $wpdb->prefix . static::$T . '_link\';') != ($wpdb->prefix . static::$T . '_link'))
-			$wpdb->query ($sql);
+		if (!empty (static::$L)) {
+			$sql = $uninstall ?
+				'drop table `' . $wpdb->prefix . static::$T . '_link`;' :
+				'create table `' . $wpdb->prefix . static::$T . '_link` (
+					`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+					`lid` int(11) NOT NULL DEFAULT 0,
+					`object` varchar(64) NOT NULL DEFAULT \'\',
+					`oid` int(11) NOT NULL DEFAULT 0,
+					KEY `lid` (`oid`),
+					KEY `object` (`object`)
+					) engine MyISAM default charset=utf8;';
+			if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '_link\';') != ($wpdb->prefix . static::$T . '_link'))
+				$wpdb->query ($sql);
+			}
+
+		if (!empty (static::$I)) {
+			$object_rows = array ();
+			foreach (static::$I as $class_name)
+				$object_rows[] = sprintf ('`%s_id` int(11) NOT NULL DEFAULT 0,', strtolower ($class_name));
+
+			$sql = $uninstall ?
+				'drop table `' . $wpdb->prefix . static::$T . '_instance`;' :
+				'create table `' . $wpdb->prefix . static::$T . '_instance` (
+					`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+					`rid` int(11) NOT NULL DEFAULT 0,
+					' . implode ("\n", $object_rows) . '
+					`value` text NOT NULL,
+					KEY `rid` (`rid`)
+					) engine MyISAM default charset=utf8;';
+			if ($wpdb->get_var ('show tables like \'' . $wpdb->prefix . static::$T . '_instance\';') != ($wpdb->prefix . static::$T . '_instance'))
+				$wpdb->query ($sql);
+			}
 		}
 
 	public static function upgrade () {
@@ -655,6 +734,12 @@ abstract class WP_CRM_Model {
 		 * TODO: should check also the keys
 		 */
 
+		}
+
+	public static function has_key ($key = null) {
+		if (!is_string ($key)) return FALSE;
+		if (in_array ($key, static::$K)) return TRUE;
+		return FALSE;
 		}
 
 	public function delete () {

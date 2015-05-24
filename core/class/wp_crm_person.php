@@ -36,7 +36,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'new' => array (
 			'first_name' => 'Prenume',
 			'last_name' => 'Nume',
-			'avater:file' => 'Avatar',
+			'avatar:file' => 'Avatar',
 			'email' => 'E-Mail',
 			'address' => 'Adresa',
 			'phone' => 'Telefon',
@@ -44,7 +44,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		'edit' => array (
 			'first_name' => 'Prenume',
 			'last_name' => 'Nume',
-			'avater:file' => 'Avatar',
+			'avatar:file' => 'Avatar',
 			'email' => 'E-Mail',
 			'address' => 'Adresa',
 			'phone' => 'Telefon',
@@ -231,7 +231,7 @@ class WP_CRM_Person extends WP_CRM_Model {
 		$wpdb->query ($sql);
 		}
 
-	public function get ($key = null, $value = null) {
+	public function get ($key = null, $opts = null) {
 		global $wpdb;
 
 		switch ((string) $key) {
@@ -264,10 +264,20 @@ class WP_CRM_Person extends WP_CRM_Model {
 							'Stimata dna.' :
 							'Stimate' );
 				break;
-				
+			case 'avatar':
+				if (!$this->data['avatar']) return WP_CRM_File::url (implode (DIRECTORY_SEPARATOR, array (
+					WP_CRM_File::Path,
+					strtolower ($this->get ('class')),
+					$key,
+					'default.png'
+					)));
+				if (is_string ($opts) && !empty ($opts)) {
+					return WP_CRM_File::resize ($this->data['avatar'], $opts);
+					}
+				break;
 			}
 
-		return parent::get ($key, $value);
+		return parent::get ($key, $opts);
 		/*
 		HIST: sa nu uitam proprietatile
 		*/

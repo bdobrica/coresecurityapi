@@ -25,5 +25,7 @@ $form = new WP_CRM_Form ($structure);
 $form->set ('state', $wp_crm_state->get());
 
 if ($_POST['object']) $form->action ();
+
+echo "<!-- MODAL_TITLE: Modifica Preturi -->";
 $form->render (TRUE);
 ?>

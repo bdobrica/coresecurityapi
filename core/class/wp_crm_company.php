@@ -3,6 +3,8 @@
  * Company is a class for handling corporate clients.
  */
 class WP_CRM_Company extends WP_CRM_Model {
+	const MetaKey		= '_wp_crm_companies';
+
 	const Padding		= 9327432;
 
 	const Default_Company	= 1;
@@ -162,9 +164,13 @@ class WP_CRM_Company extends WP_CRM_Model {
 		'`flags` int(1) NOT NULL DEFAULT 0',
 		'FULLTEXT KEY `name` (`name`,`email`)'
 		);
+	protected static $U = array (
+		'uin'
+		);
 	public static $F = array (
 		'new' => array (
 			'name' => 'Companie',
+			'logo:file' => 'Logo',
 			'uin' => 'Cod Fiscal',
 			'rc' => 'Reg. Com.',
 			'address' => 'Adresa (Strada, Numar, Oras)',
@@ -263,7 +269,8 @@ class WP_CRM_Company extends WP_CRM_Model {
 		if (is_string ($key)) {
 			switch ((string) $key) {
 				case 'logo path':
-					return dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/' . ltrim (preg_replace('/^http[s]?:\/\/[^\/]+/', '', $this->get ('logo')), '/');
+					return WP_CONTENT_DIR . '/logos/' . $this->get ('logo');
+					//return dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/' . ltrim (preg_replace('/^http[s]?:\/\/[^\/]+/', '', $this->get ('logo')), '/');
 					break;
 				case 'title':
 		/*
@@ -370,6 +377,20 @@ class WP_CRM_Company extends WP_CRM_Model {
 				return ($opts & $mask) == $opts ? TRUE : FALSE;
 				break;
 			}
+		}
+
+	public static function openapi ($uin = null) {
+		if (is_null ($uin)) return FALSE;
+		$oapi = simplexml_load_file ('http://openapi.ro/api/companies/' . $uin . '.xml');
+		$data = array (
+			'uin'		=> $uin,
+			'name'		=> (string) $oapi->name,
+			'rc'		=> (string) $oapi->{'registration-id'},
+			'address'	=> ((string) $oapi->address) . ', ' . ((string) $oapi->city),
+			'county'	=> (string) $oapi->state,
+			'phone'		=> (string) $oapi->phone
+			);
+		return $data;
 		}
 
 	public function save () {

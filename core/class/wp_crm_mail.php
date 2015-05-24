@@ -1,6 +1,6 @@
 <?php
 class WP_CRM_Mail extends WP_CRM_Model {
-	const Debug = false;
+	const Debug = 4;
 	public static $T = 'mails';
 	protected static $K = array (
 		'oid',
@@ -86,7 +86,7 @@ class WP_CRM_Mail extends WP_CRM_Model {
 		$this->interface->Host		= $this->data['host'];
 		$this->interface->SMTDebug	= WP_CRM_Mail::Debug;
 		$this->interface->SMTPAuth	= true;
-		$this->interface->SMTPSecure	= $this->data['secure'];
+		$this->interface->SMTPSecure	= $this->data['secure'] ? strtoupper($this->data['secure']) : '';
 		$this->interface->Port		= $this->data['port'];
 		$this->interface->Username	= $this->data['username'];
 		$this->interface->Password	= $this->data['password'];
@@ -106,7 +106,27 @@ class WP_CRM_Mail extends WP_CRM_Model {
 		return parent::get ($key, $opts);
 		}
 
+	public function test () {
+		try {
+			$this->interface->SmtpConnect();
+			$this->interface->SmtpClose ();
+			return TRUE;
+			}
+		catch (phpmailerException $exception) {
+			if ($this->debug) WP_CRM::debug ($exception->getMessage(), $this);
+			}
+		return FALSE;
+		}
+
 	public function send ($to, $message, $attachments = null) {
+		if (is_string ($to))
+			$this->interface->AddAddress ($to);
+		else
+		if (is_array ($to) && isset ($to['email']))
+			$this->interface->AddAddress ($to['email'], $to['name'] ? : '');
+		else
+			return FALSE;
+
 		/*
 		TODO: check if $message is an instance for Template object
 		*/
@@ -120,20 +140,25 @@ class WP_CRM_Mail extends WP_CRM_Model {
 			$this->interface->MsgHTML	($message['content']);
 			}
 
-		$this->interface->AddAddress ($to);
-
 		if (is_string($attachments) && !empty($attachments))
 			$attachments = array ($attachments);
 
 		if (!empty($attachments))
 			foreach ($attachments as $name => $path)
 				$this->interface->AddAttachment ($path, $name);
+
+		$out = TRUE;
 		try {
 			$this->interface->Send ();
 			}
 		catch (phpmailerException $e) {
-			echo $e->getMessage ();
+			//echo "Exception: \n" . $e->getMessage ();
+			$out = FALSE;
 			}
+
+		$this->interface->ClearAddresses ();
+
+		return $out;
 		}
 	}
 ?>

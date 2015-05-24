@@ -9,6 +9,7 @@ class WP_CRM_Basket extends WP_CRM_Model {
 
 	public static $T = 'basket';
 	protected static $K = array (
+		'uid',
 		'bid',
 		'pid',
 		'cid',
@@ -24,6 +25,7 @@ class WP_CRM_Basket extends WP_CRM_Model {
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`uid` int(11) NOT NULL DEFAULT 0',
 		'`bid` int(11) NOT NULL DEFAULT 0',
 		'`pid` int(11) NOT NULL DEFAULT 0',
 		'`cid` int(11) NOT NULL DEFAULT 0',
@@ -46,15 +48,15 @@ class WP_CRM_Basket extends WP_CRM_Model {
 	public function __construct ($data = null) {
 		global
 			$wpdb,
-			$wp_crm_buyer;
+			$wp_crm_user;
 
 		$this->meta_id = 1;
 
 		if (is_null ($data)) {
 			$this->products = array ();
 
-			if ($wp_crm_buyer instanceof WP_CRM_Buyer) {
-				$sql = $wpdb->prepare ('select code,quantity from `' . $wpdb->prefix . self::$T . '` where iid=0 and bid=%d;', $wp_crm_buyer->get ());
+			if ($wp_crm_user instanceof WP_CRM_User) {
+				$sql = $wpdb->prepare ('select code,quantity from `' . $wpdb->prefix . self::$T . '` where iid=0 and bid=%d;', $wp_crm_user->get ());
 
 				$rows = $wpdb->get_results ($sql);
 				if (!empty($rows))
@@ -115,7 +117,7 @@ class WP_CRM_Basket extends WP_CRM_Model {
 	public function set ($key = null, $value = null) {
 		global
 			$wpdb,
-			$wp_crm_buyer;
+			$wp_crm_user;
 
 		switch ((string) $key) {
 			/**
@@ -210,7 +212,8 @@ class WP_CRM_Basket extends WP_CRM_Model {
 	public function add ($product, $quantity = null, $dontadd = FALSE) {
 		global
 			$wpdb,
-			$wp_crm_buyer;
+			//$wp_crm_buyer,
+			$wp_crm_user;
 
 		if (is_string ($product))
 			$product = new WP_CRM_Product ($product);
@@ -228,20 +231,20 @@ class WP_CRM_Basket extends WP_CRM_Model {
 			
 			$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . self::$T . '` where code=%s and bid=%d;', array (
 				$product->get ('code'),
-				$wp_crm_buyer->get ()
+				$wp_crm_user->get ()
 				));
 			$wpdb->query ($sql);
 			}
 		else {
 			$sql = $wpdb->prepare ('select id from `' . $wpdb->prefix . self::$T . '` where code=%s and bid=%d;', array (
 				$product->get ('code'),
-				$wp_crm_buyer->get ()
+				$wp_crm_user->get ()
 				));
 			if ($wpdb->get_var ($sql)) {
 				$sql = $wpdb->prepare ('update `' . $wpdb->prefix . self::$T . '` set quantity=%d where code=%s and bid=%d;', array (
 					$this->products[$product->get('code')],
 					$product->get ('code'),
-        	                        $wp_crm_buyer->get ()
+        	                        $wp_crm_user->get ()
 					));
 				$wpdb->query ($sql);
 				}
@@ -260,7 +263,7 @@ class WP_CRM_Basket extends WP_CRM_Model {
 
 	public function save () {
 		global
-			$wp_crm_buyer;
+			$wp_crm_user;
 
 
 		if (get_called_class () == __CLASS__) {
@@ -270,7 +273,7 @@ class WP_CRM_Basket extends WP_CRM_Model {
 					$wp_crm_price = $wp_crm_product->get ('price', $quantity);
 
 					$this->data = array (
-						'bid' => $wp_crm_buyer->get (),
+						'bid' => $wp_crm_user->get (),
 						'cid' => $wp_crm_product->get ('cid'),
 						'pid' => $wp_crm_product->get (),
 						'product' => $wp_crm_product->get ('title'),
@@ -297,7 +300,7 @@ class WP_CRM_Basket extends WP_CRM_Model {
 	public function delete () {
 		global $wpdb;
 
-		$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . self::$T . '` where bid=%d and iid=0;', $wp_crm_buyer->get ());
+		$sql = $wpdb->prepare ('delete from `' . $wpdb->prefix . self::$T . '` where bid=%d and iid=0;', $wp_crm_user->get ());
 		$wpdb->query ($sql);
 		}
 

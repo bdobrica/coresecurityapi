@@ -74,34 +74,38 @@ $offices = new WP_CRM_List ('WP_CRM_Office', array (is_numeric ($wp_crm_offices)
 
 if ($offices->is ('empty')) {
 	$office = new WP_CRM_Office (array ('name' => $current_user->user_email));
-	$office->save ();
+	try {
+		$office->save ();
 
-	$list = new WP_CRM_List ('WP_CRM_Company', array ('oid=' . $office->get ()));
-	$view = new WP_CRM_View ($list, array (
-		array (
-			'type' => 'toolbar',
-			'items' => array (
-				'add' => array (
-					'label' => 'Organizatie Noua'
+		$list = new WP_CRM_List ('WP_CRM_Company', array ('oid=' . $office->get ()));
+		$view = new WP_CRM_View ($list, array (
+			array (
+				'type' => 'toolbar',
+				'items' => array (
+					'add' => array (
+						'label' => 'Organizatie Noua'
+						)
 					)
-				)
-			),
-		array (
-			'type' => 'column',
-			'label' => 'Actiuni',
-			'items' => array (
-				'view' => array (
-					'label' => 'Vezi'
-					),
-				'memo' => array (
-					'label' => 'Memo'
-					),
-				'delete' => array (
-					'label' => 'Sterge'
-					)
-				))
-		));
-	unset ($view);
+				),
+			array (
+				'type' => 'column',
+				'label' => 'Actiuni',
+				'items' => array (
+					'view' => array (
+						'label' => 'Vezi'
+						),
+					'memo' => array (
+						'label' => 'Memo'
+						),
+					'delete' => array (
+						'label' => 'Sterge'
+						)
+					))
+			));
+		unset ($view);
+		}
+	catch (WP_CRM_Exception $wp_crm_exception) {
+		}
 	}
 else
 	foreach ($offices->get () as $office) {

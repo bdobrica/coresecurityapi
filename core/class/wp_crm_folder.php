@@ -16,6 +16,7 @@ class WP_CRM_Folder extends WP_CRM_Model {
 		'current',				# the current version. if 0, use pop on serialized array
 		'updated',				# the last modification timestamp
 		'stamp',				# the creation timestamp
+		'locked',				# is the folder locked?
 		'flags'					# some binary flags
 		);
 
@@ -30,6 +31,7 @@ class WP_CRM_Folder extends WP_CRM_Model {
 		'`current` int NOT NULL DEFAULT 0',
 		'`updated` int NOT NULL DEFAULT 0',
 		'`stamp` int NOT NULL DEFAULT 0',
+		'`locked` int(1) NOT NULL DEFAULT 0',
 		'`flags` int NOT NULL DEFAULT 0',
 		'KEY (`parent`)'
 		);
@@ -88,6 +90,9 @@ class WP_CRM_Folder extends WP_CRM_Model {
 					if (!$this->data['parent']) return $this->data['title'];
 					$sql = $wpdb->prepare ('select title from `' . $wpdb->prefix . self::$T . '` where id=%d;', $this->data['parent']);
 					return $wpdb->get_var ($sql);
+					break;
+				case 'size':
+					return 0;
 					break;
 				}
 			}

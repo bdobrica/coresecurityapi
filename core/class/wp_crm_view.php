@@ -40,10 +40,11 @@ class WP_CRM_View {
 		 */
 		$this->out = '';
 		$this->class = 'wp-crm-view';
-		$this->actions = array ('toolbars' => array (), 'columns' => array ());
+		$this->actions = array ('fields' => array (), 'toolbars' => array (), 'columns' => array ());
 
 		if (!empty ($actions))
 			foreach ($actions as $action_group)
+				if (is_array ($action_group))
 				switch ($action_group['type']) {
 					case 'toolbar':
 						$this->actions['toolbars'][] = $action_group;
@@ -51,6 +52,9 @@ class WP_CRM_View {
 					case 'switch':
 					case 'column':
 						$this->actions['columns'][] = $action_group;
+						break;
+					case 'fields':
+						$this->actions['fields'] = $action_group;
 						break;
 					}
 
@@ -113,11 +117,18 @@ class WP_CRM_View {
 						/**
 						 * No fields, nothing to display. No more errors.
 						 */
-						if (empty ($fields)) break;
+						if (!empty ($this->actions['fields'])) {
+							$fields = $this->actions['fields']['items'];
+							$field_keys = array_keys ($fields);
+							$cols = array_values ($fields);
+							}
+						else {
+							if (empty ($fields)) break;
 
-						$field_keys = array_keys ($fields);
-						$cols[] = '#';
-						$cols = array_merge ($cols, array_values ($fields));
+							$field_keys = array_keys ($fields);
+							$cols = array ('#');
+							$cols = array_merge ($cols, array_values ($fields));
+							}
 
 						if (!empty ($this->actions['columns']))
 							foreach ($this->actions['columns'] as $actions_column) {
@@ -127,7 +138,10 @@ class WP_CRM_View {
 						if (!empty($list)) {
 							$c = 0;
 							foreach ($list as $id => $item) {
-								$rows[$c] = array (($c+1).'. <input type="hidden" name="object" class="' . $this->class . '-object-id" value="' . $object->get('class') . '-' . $item->get() . '" />');
+								$rows[$c] = $cols[0] == '#' ?
+									array ('<span class="' . $this->class . '-row-count">' . ($c + 1) . '</span>. <input type="hidden" name="object" class="' . $this->class . '-object-id" value="' . $object->get('class') . '-' . $item->get() . '" />') :
+									array ();
+
 								foreach ($field_keys as $key_type) {
 									$key = $key_type;
 									if (!empty($key_type) && (strpos ($key_type, '?') !== FALSE)) list ($key_type, $cond) = explode ('?', $key_type);
@@ -149,7 +163,11 @@ class WP_CRM_View {
 								$c++;
 								}
 							}
-						$this->table ($cols, $rows);
+						
+						if (!empty ($this->actions['fields']))
+							$this->table ($this->actions['fields']['headerless'] ? array () : $cols, $rows);
+						else
+							$this->table ($cols, $rows);
 						break;
 					case 'WP_CRM_App':
 						$this->out = '<div class="' . $this->class . '-app ' . $this->class . '-app-size-' . $object->get('size') . '">' . $object->render () . '</div>';
@@ -290,7 +308,7 @@ class WP_CRM_View {
 						$this->table ($object->get ('cols'), $object->get ('rows'));
 						break;
 					case 'WP_CRM_Folder':
-						$this->out .= '<div class="' . $this->class . '-file-manager"></div>' . "\n";
+						$this->out .= '<div class="' . $this->class . '-file-manager" rel="' . get_bloginfo ('stylesheet_directory') . '/tools/finder.php"></div>' . "\n";
 						/*
 						$this->out .= '<div class="' . $this->class . '-folder-wrapper">' . "\n";
 
@@ -315,7 +333,7 @@ class WP_CRM_View {
 						$this->out .= '<div class="' . $this->class . '-separator"></div>' . "\n";
 						*/
 						break;
-					case 'WP_CRM_Course':
+					default:
 						$this->out = $object->render ($this->class);
 						break;
 					}
@@ -350,7 +368,7 @@ class WP_CRM_View {
 				$out = '';
 				break;
 			case 'bool':
-				$out = $data ? '<span class="wp-crm-view-yes">Da</span>' : '<span class="wp-crm-view-no">Nu</span>';
+				$out = $data ? ('<span class="wp-crm-view-yes">' . WP_CRM::_ ('Yes') . '</span>') : ('<span class="wp-crm-view-no">' . WP_CRM::_ ('No') . '</span>');
 				break;
 			case 'float':
 				if ($data == 0)
@@ -360,9 +378,25 @@ class WP_CRM_View {
 				break;
 			case 'date':
 				if (!$data)
-					$out = 'N/A';
+					$out = WP_CRM::_ ('N/A');
 				else
 					$out = date ('d-m-Y', $data);
+				break;
+			case 'datetime':
+				if (!$data)
+					$out = WP_CRM::_ ('N/A');
+				else
+					$out = date ('d-m-Y H:i:s', $data);
+				break;
+			case 'user':
+				if (!(is_numeric ($data) && (((int) $data) > 0))) break;
+				try {
+					$user = new WP_CRM_User ((int) $data);
+					}
+				catch (WP_CRM_Exception $wp_crm_exception) {
+					break;
+					}
+				$out = $user->get ('user_login');
 				break;
 			case 'person':
 			case 'safeperson':
@@ -405,7 +439,7 @@ class WP_CRM_View {
 				foreach ($data as $key => $val) $out += $val;
 				break;
 			case 'add':
-				$out = '<button class="btn btn-xs btn-block btn-primary ' . $data['class'] . '-actions ' . $data['class'] . '-add" rel="' . $data['id'] . ';' . urlencode($data['filter']) . '">' . $data['value'] . '</button>';
+				$out = '<button class="btn btn-xs btn-block btn-primary ' . $data['class'] . '-actions ' . $data['class'] . '-add" rel="' . $data['id'] . ';' . urlencode($data['filter']) . '">' . WP_CRM::_ ($data['value']) . '</button>';
 				break;
 			case 'toolbars':
 				/**
@@ -419,20 +453,22 @@ class WP_CRM_View {
 						foreach ($data['toolbars'] as $toolbar) {
 							if (!empty ($toolbar['items'])) {
 								$action = '';
+								if ($toolbar['context'])
+									$out .= '<input type="hidden" name="context" value="' . $toolbar['context'] . '" />';
 								foreach ($toolbar['items'] as $key => $button) {
 									if (!empty ($button['items'])) {
 										$out .= '<span class="btn-group">' . "\n";
-										$out .= '<button class="btn dropdown-toggle" data-toggle="dropdown">' . $button['label'] . '<span class="caret"></span></button>' . "\n";
+										$out .= '<button class="btn dropdown-toggle" data-toggle="dropdown">' . WP_CRM::_ ($button['label']) . '<span class="caret"></span></button>' . "\n";
 										$out .= '<ul class="dropdown-menu">';
 
 										$action = '';
 										foreach ($button['items'] as $_key => $_button)
-											$out .= '<li><a href="#" class="' . $data['class'] . '-actions ' . $data['class'] . '-' . ($action ? : $_key) . '" rel="' . $data['id'] . ';' . urlencode($data['filter']) . ( $action ? (';' . $_key) : '' ) . '">' . $_button['label'] . '</a></li>';
+											$out .= '<li><a href="#" class="' . $data['class'] . '-actions ' . $data['class'] . '-' . ($action ? : $_key) . '" rel="' . $data['id'] . ';' . urlencode($data['filter']) . ( $action ? (';' . $_key) : '' ) . '">' . WP_CRM::_ ($_button['label']) . '</a></li>';
 										$out .= '</ul>';
 										$out .= '</span>' . "\n";
 										}
 									else
-										$out .= '<button class="' . $data['class'] . '-actions ' . $data['class'] . '-' . ($action ? : $key) . ' btn" rel="' . $data['id'] . ';' . urlencode($data['filter']) . ( $action ? (';' . $key) : '' ) . '">' . $button['label'] . '</button>' . "\n";
+										$out .= '<button class="' . $data['class'] . '-actions ' . $data['class'] . '-' . ($action ? : $key) . ' btn" rel="' . $data['id'] . ';' . urlencode($data['filter']) . ( $action ? (';' . $key) : '' ) . '">' . WP_CRM::_ ($button['label']) . '</button>' . "\n";
 									}
 								}
 							}
@@ -452,7 +488,7 @@ class WP_CRM_View {
 						foreach ($data['actions']['items'] as $key => $switch) {
 							$out .= '<label class="switch pull-right">' . "\n";
 							$out .= '<input name="' . $key . '" class="switch-input ' . $data['class'] . '-actions ' . $data['class'] . '-' . $key . '" rel="' . $data['id'] . ':' . $switch['object']->get('self') . '" type="checkbox" ' . ($data['object']->link ($switch['object']) ? 'checked' : '') . ' ' . ($switch['unique'] ? ('data-unique="' . $data['object']->get ($switch['unique']) . '"') : '') . '/>' . "\n";
-							$out .= '<span class="switch-label" data-off="Off" data-on="On"></span>' . "\n";
+							$out .= '<span class="switch-label" data-off="' . WP_CRM::_ ('Off') . '" data-on="' . WP_CRM::_ ('On') . '"></span>' . "\n";
 							$out .= '<span class="switch-handle"></span>' . "\n";
 							$out .= '</label>' . "\n";
 							}
@@ -461,16 +497,21 @@ class WP_CRM_View {
 						if (empty ($data['actions']['items'])) break;
 						if (count ($data['actions']['items']) == 1) {
 							foreach ($data['actions']['items'] as $key => $button)
-								$out .= '<button class="btn btn-xs btn-block ' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '">' . $button['label'] . '</button>' . "\n";
+								$out .= '<button class="upd-table btn btn-xs btn-block ' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '">' . WP_CRM::_ ($button['label']) . '</button>' . "\n";
 							break;
 							}
 						$group = '';
 						foreach ($data['actions']['items'] as $key => $button) {
-							$group .= '<li><a class="' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '" href="#">' . $button['label'] . '</a></li>' . "\n";
+							if ($button['type'] == 'link') {
+								list ($_class, $_id) = explode ('-', $data['id']);
+								$group .= '<li><a href="' . sprintf ($button['url'], (int) $_id) . '">' . WP_CRM::_ ($button['label']) . '</a></li>' . "\n";
+								}
+							else
+								$group .= '<li><a class="upd-table ' . $data['class'] . '-actions ' . $data['class']. '-' . $key . '" rel="' . $data['id'] . '" href="#">' . WP_CRM::_ ($button['label']) . '</a></li>' . "\n";
 							}
 
 						$out .= '<div class="btn-group">' . "\n";
-						$out .= '<button class="btn btn-primary btn-xs">' . $data['actions']['label'] . '</button>';
+						$out .= '<button class="btn btn-primary btn-xs">' . WP_CRM::_ ($data['actions']['label']) . '</button>';
 						$out .= '<button class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
 						$out .= '<span class="dropdown-arrow dropdown-arrow-inverse"></span>' . "\n";
 						$out .= '<ul class="dropdown-menu dropdown-inverse pull-right ' . $data['class'] . '-actions-wrap">' . "\n" . $group . "\n" . '</ul>' . "\n";
@@ -565,7 +606,7 @@ class WP_CRM_View {
 		if (!empty ($cols)) {
 			$out_head = '';
 			foreach ($cols as $pos => $col)
-				$out_head .= WP_CRM_View::th ($col . ($pos+1<count($cols) ? ' <img src="' . get_bloginfo ('stylesheet_directory') . '/images/up-arrow.png" alt="" title="" />' : ''), $this->class . '-table-head' . ($pos+1 == count($cols) ? (' ' . $this->class . '-last') : ''));
+				$out_head .= WP_CRM_View::th ($col . (($pos+1<count($cols)) && $col ? '<i class="fa fa-sort column-sort"></i>' : ''), $this->class . '-table-head' . ($pos+1 == count($cols) ? (' ' . $this->class . '-last') : ''));
 			$out_head = WP_CRM_View::tr ($out_head);
 			$out_head = WP_CRM_View::thw ($out_head);
 			}

@@ -2,8 +2,15 @@
 class WP_CRM_Course extends WP_CRM_Model {
 	const Path	= 'courses';
 
+	private static $TYPES = array (
+		);
+
 	public static $T = 'courses';
 	protected static $K = array (
+		'oid',						/** the office id								*/
+		'cid',						/** the company id 								*/
+		'uid',
+		'type',
 		'hash',
 		'series',
 		'number',
@@ -23,6 +30,8 @@ class WP_CRM_Course extends WP_CRM_Model {
 		'edit' => array (
 			),
 		'view' => array (
+			'name'		=> 'Denumire',
+			'description'	=> 'Descriere'
 			),
 		'safe' => array (
 			),
@@ -33,6 +42,9 @@ class WP_CRM_Course extends WP_CRM_Model {
 		);
 	protected static $Q = array (
 		'`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT',
+		'`oid` int(11) NOT NULL DEFAULT 0',		/** office id									*/
+		'`cid` int(11) NOT NULL DEFAULT 0',		/** company id									*/
+		'`uid` int(11) NOT NULL DEFAULT 0',		/** the user that generated this product					*/
 		'`hash` varchar(32) NOT NULL DEFAULT \'\' UNIQUE',
 		'`series` varchar(6) NOT NULL DEFAULT \'\'',
 		'`number` int NOT NULL DEFAULT 0',
@@ -43,11 +55,11 @@ class WP_CRM_Course extends WP_CRM_Model {
 		);
 
 	private $course;
-	private $unit;
+	private $units;
 
 	public function __construct ($data = null) {
 		$this->course = null;
-		$this->unit = array ();
+		$this->units = array ();
 
 		parent::__construct ($data);
 
@@ -60,11 +72,10 @@ class WP_CRM_Course extends WP_CRM_Model {
 				}
 
 			if ($this->course instanceof SQLite3) {
-				$unit = $this->course->querySingle ('select id from units where parent=0 and completed=0 order by oid asc limit 0,1;');
-				while (!is_null ($unit)) {
-					$this->unit[] = $unit;
-					$unit = $this->course->querySingle (sprintf ('select id from units where parent=%d and completed=0 order by oid asc limit 0,1;', $unit));
-					}
+				$units_result = $this->course->query ('select id from units where parent=0 order by oid asc;');
+				if ($units_result instanceof SQLite3Result)
+					while ($units = $units_result->fetchArray (SQLITE3_ASSOC))
+						$this->units[] = $units['id'];
 				}
 			}
 		}
@@ -94,6 +105,34 @@ class WP_CRM_Course extends WP_CRM_Model {
 					var_dump ($e);
 					}
 				}
+
+			/**
+			 * Each course is a folder containing at least a .db3 file with the following schema:
+			 * meta:
+			 * CREATE TABLE meta (
+			 *	meta_key text not null default '',
+			 *	meta_value text not null default '');
+			 * meta_keys are:
+			 * 	- series
+			 *	- number
+			 *	- name
+			 *	- description
+			 * units:
+			 * CREATE TABLE units (
+			 *	id int not null primary key,
+			 *	parent int not null default 0,
+			 *	oid int not null default 0,
+			 *	duration int not null default 0,
+			 *	completed int not null default 0,
+			 *	name text not null default '');
+			 * resources:
+			 * CREATE TABLE resources (
+			 *	id int not null primary key,
+			 *	unit_id int not null default 0,
+			 *	type int not null default 0,
+			 *	path text not null default '',
+			 *	name text not null default '');
+			 */
 
 			if (!is_null ($db) && !empty($db_file)) {
 				$db_path = str_replace (WP_CONTENT_DIR . DIRECTORY_SEPARATOR . self::Path . DIRECTORY_SEPARATOR, '', $db_file);
@@ -130,14 +169,71 @@ class WP_CRM_Course extends WP_CRM_Model {
 				'units' => $meta_data['units']
 				));
 			$wp_crm_course->save ();
+
+			/** Creating Default Objects */
+			/** Forum */
+			$forum = new WP_CRM_Forum (array (
+				'title'		=> 'Forum ' . $meta_data['name'],
+				'description'	=> $meta_data['description'],
+				'parent'	=> $wp_crm_course->get (),
+				'stamp'		=> time ()
+				));
+			$forum->save ();
+			$topic = new WP_CRM_Forum_Topic (array (
+				'title'		=> 'Discutii Generale',
+				'description'	=> 'Discutii Generale referitoare la cursul ' . $meta_data['name'],
+				'parent'	=> $forum->get(),
+				'stamp'		=> time ()
+				));
+			$topic->save ();
+			$reply = new WP_CRM_Forum_Reply (array (
+				'parent'	=> $topic->get(),
+				'description'	=> 'Porneste discutia privitoare la cursul ' . $meta_data['name'] . ', raspunzand la acest mesaj.',
+				'stamp'		=> time ()
+				));
+			$reply->save ();
+			/** Wiki */
+			$wiki = new WP_CRM_Wiki (array (
+				'slug'		=> strtolower($meta_data['series']),
+				'title'		=> 'Wiki ' . $meta_data['name'],
+				'description'	=> $meta_data['description'],
+				'parent'	=> $wp_crm_course->get (),
+				'stamp'		=> time ()
+				));
+			$wiki->save ();
+			$page = new WP_CRM_Wiki_Page (array (
+				'slug'		=> 'main',
+				'title'		=> 'Prima Pagina',
+				'content'	=> 'Editeaza-ma!',
+				'parent'	=> $wiki->get (),
+				'stamp'		=> time ()
+				));
+			$page->save ();
+			/** Blog */
+			$blog = new WP_CRM_Blog (array (
+				'title'		=> 'Blog ' . $meta_data['name'],
+				'description'	=> $meta_data['description'],
+				'parent'	=> $wp_crm_course->get (),
+				'stamp'		=> time ()
+				));
+			$blog->save ();
+			$entry = new WP_CRM_Blog_Entry (array (
+				'title'		=> 'A fost adaugat cursul ' . $meta_data['name'],
+				'description'	=> 'Astazi, a fost adaugat cursul ' . $meta_data['name'],
+				'parent'	=> $blog->get (),
+				'stamp'		=> time ()
+				));
+			$entry->save ();
 			}
 		}
 
 	public function render ($class = '') {
-		end($this->unit);
-		$unit = $this->course->querySingle (sprintf ('select * from units where id=%d', current($this->unit)), true);
+		global $wpdb;
+
+		reset($this->units);
+		$unit = $this->course->querySingle (sprintf ('select * from units where id=%d', current($this->units)), true);
 		$resources = array ();
-		$res_rows = $this->course->query (sprintf ('select * from resources where unit_id=%d', current($this->unit)));
+		$res_rows = $this->course->query (sprintf ('select * from resources where unit_id=%d', current($this->units)));
 		while ($res_row = $res_rows->fetchArray (SQLITE3_ASSOC)) {
 			$resources[] = $res_row;
 			}
@@ -162,16 +258,18 @@ class WP_CRM_Course extends WP_CRM_Model {
 							}
 						fclose ($f);
 						}
-					$out[$type] .= '<div class="' . $class . '-course-player" data-swf="' . get_stylesheet_directory_uri () . '/script/flowplayer/flowplayer.swf" data-ratio="0.4167"' . (!empty($cue_data) ? ('data-cuepoints="[' . implode (',', array_keys($cue_data)) . ']" data-cueslides="' . implode (',', array_values($cue_data)) . '"') : '') . '>';
+					$out[$type] .= '<div class="' . $class . '-course-player" data-swf="' . get_stylesheet_directory_uri () . '/script/flowplayer/flowplayer.swf" data-ratio="0.5625"' . (!empty($cue_data) ? ('data-cuepoints="[' . implode (',', array_keys($cue_data)) . ']" data-cueslides="' . implode (',', array_values($cue_data)) . '"') : '') . '>';
 					$out[$type] .= '<video preload="none">';
 					$out[$type] .= '<source type="video/mp4" src="' . WP_CONTENT_URL . '/' . self::Path . '/' . dirname($this->data['path']) . '/' . $resource['path'] . '" />';
 					$out[$type] .= '</video>';
 					$out[$type] .= '</div>';
 					break;
 				case 2: #slide
+					if (count ($resources)) $single = TRUE; else $single = FALSE;
+
 					if (!is_dir (WP_CONTENT_DIR . DIRECTORY_SEPARATOR . self::Path . DIRECTORY_SEPARATOR . dirname($this->data['path']) . DIRECTORY_SEPARATOR . $resource['path'])) break;
 					if (!($s = opendir (WP_CONTENT_DIR . DIRECTORY_SEPARATOR . self::Path . DIRECTORY_SEPARATOR . dirname($this->data['path']) . DIRECTORY_SEPARATOR . $resource['path']))) break;
-					$out[$type] .= '<div class="' . $class . '-course-slideshow">';
+					$out[$type] .= '<div class="' . $class . '-course-slideshow" ' . ($single ? 'style="height: 480px; width: 600px;"' : '') . '>';
 
 					$slides = array ();
 					while (FALSE !== ($i = readdir ($s))) {
@@ -249,6 +347,74 @@ class WP_CRM_Course extends WP_CRM_Model {
 				}
 			}
 
+		/**
+		 * Create Units List
+		 */
+		$out[10] = '';
+		if (!empty ($this->units)) {
+			$out[10] .= '<ol>';
+			foreach ($this->units as $unit_id) {
+				$unit_result = $this->course->query (sprintf ('select * from units where id=%d;', (int) $unit_id));
+				if ($unit_result instanceof SQLite3Result) {
+					$unit = $unit_result->fetchArray (SQLITE3_ASSOC);
+
+					$subunit_result = $this->course->query (sprintf ('select * from units where parent=%d order by oid asc;', (int) $unit_id));
+					$sub = '';
+					if ($subunit_result instanceof SQLite3Result) {
+						$sub = '<ol type="a">';
+						while ($subunit = $subunit_result->fetchArray (SQLITE3_ASSOC)) {
+							$sub .= '<li><a href="#">' . $subunit['name'] . '</a></li>';
+							}
+						$sub .= '</ol>';
+						}
+
+					$val = $unit_id == 1 ? 50 : 0;
+					$progress = '<div class="progress"><div class="progress-bar progress-bar-success" style="width: ' . $val . '%;" aria-valuemax="100" aria-valuemin="0" aria-valuenow="' . $val . '" role="progressbar"></div></div>';
+					$out[10] .= '<li><a href="#">' . $unit['name'] . '</a>' . $progress . $sub . '</li>';
+					}
+				}
+			$out[10] .= '</ol>';
+			}
+
+		/** Clients */
+		$pids = $wpdb->get_col ('select uid from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where pid in (select id from `' . $wpdb->prefix . WP_CRM_Product::$T . '` where resource=\'' . $this->get ('self') . '\')');
+		$persons_array = array ();
+		foreach ($pids as $pid) {
+			if ($pid == 0) continue;
+			$persons_array[$pid] = new WP_CRM_Person ((int) $pid);
+			}
+		$persons = new WP_CRM_List ('WP_CRM_Person');
+		$persons->flat ($persons_array);
+
+		$view = new WP_CRM_View ($persons);
+		$out[4] = $view->get ();
+		unset ($view);
+
+		$supports = new WP_CRM_List ('WP_CRM_Support');
+		$view = new WP_CRM_View ($supports);
+		$out[5] = $view->get ();
+		unset ($view);
+
+		$forum = new WP_CRM_List ('WP_CRM_Forum', array (sprintf ('parent=%d', $this->ID)));
+		$view = new WP_CRM_View ($forum->get ('last'));
+		$out[6] = $view->get ();
+		unset ($view);
+
+		$blog = new WP_CRM_List ('WP_CRM_Blog', array (sprintf ('parent=%d', $this->ID)));
+		$view = new WP_CRM_View ($blog->get ('last'));
+		$out[7] = $view->get ();
+		unset ($view);
+
+		$wiki = new WP_CRM_List ('WP_CRM_Wiki', array (sprintf ('parent=%d', $this->ID)));
+		$view = new WP_CRM_View ($wiki->get ('last'));
+		$out[8] = $view->get ();
+		unset ($view);
+
+		$dictionary = new WP_CRM_List ('WP_CRM_Dictionary');
+		$view = new WP_CRM_View ($dictionary->get ('last'));
+		$out[9] = $view->get ();
+		unset ($view);
+
 		return
 			'<div class="row">' . 
 			(!empty ($out[1]) ? (
@@ -266,7 +432,71 @@ class WP_CRM_Course extends WP_CRM_Model {
 				$out[3] . "\n" .
 			'</div>'
 				) : '') . 
-			'</div>';
+			'</div>' .
+'<div class="row clearfix">
+		<div class="col-md-12">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#tab-units">Curicula</a></li>
+				<li><a href="#tab-clients">Cursanti</a></li>
+				<li><a href="#tab-support">Resurse</a></li>
+				<li><a href="#tab-forum">Forum</a></li>
+				<li><a href="#tab-blog">Blog</a></li>
+				<li><a href="#tab-wiki">Wiki</a></li>
+				<li><a href="#tab-dictionary">Dictionar</a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="tab-units">
+					<div class="row">
+						<div class="col-sm-12 col-md-12">'  .
+			$out[10] . "\n" .
+						'</div>
+					</div>
+				</div>
+				<div class="tab-pane active" id="tab-clients">
+					<div class="row">
+						<div class="col-sm-12 col-md-12">'  .
+			$out[4] . "\n" .
+						'</div>
+					</div>
+				</div>
+				<div class="tab-pane active" id="tab-support">
+					<div class="row">
+						<div class="col-sm-12 col-md-12">'  .
+			$out[5] . "\n" .
+						'</div>
+					</div>
+				</div>
+				<div class="tab-pane active" id="tab-forum">
+					<div class="row">
+						<div class="col-sm-12 col-md-12">'  .
+			$out[6] . "\n" .
+						'</div>
+					</div>
+				</div>
+				<div class="tab-pane active" id="tab-blog">
+					<div class="row">
+						<div class="col-sm-12 col-md-12">'  .
+			$out[7] . "\n" .
+						'</div>
+					</div>
+				</div>
+				<div class="tab-pane active" id="tab-wiki">
+					<div class="row">
+						<div class="col-sm-12 col-md-12">'  .
+			$out[8] . "\n" .
+						'</div>
+					</div>
+				</div>
+				<div class="tab-pane active" id="tab-dictionary">
+					<div class="row">
+						<div class="col-sm-12 col-md-12">'  .
+			$out[9] . "\n" .
+						'</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>';
 		}
 	}
 ?>

@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+ini_set ('error_reporting', 0);
 define ('WP_USE_THEMES', false);
 include (dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/wp-blog-header.php');
 

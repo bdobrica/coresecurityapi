@@ -1,5 +1,8 @@
+;Array.prototype.last = Array.prototype.last || function(){return this[this.length-1];};
+
 jQuery(document).ready(function(){
 	var disc = function () {
+		return;
 		var o = jQuery.parseJSON(jQuery('.wp-crm-form-coupon-data').val());
 		jQuery('.wp-crm-form-basket select').each(function(i,v){
 			var j = 0;
@@ -21,18 +24,20 @@ jQuery(document).ready(function(){
 		};
 	var init = function () {
 		var a = jQuery('.wp-crm-form-wrapper').toArray();
-		jQuery('.wp-crm-form-tabs li').each(function(n,l){
-//			jQuery(a[n]).attr('rel', parseInt(jQuery(a[n]).height()));
-//			alert(jQuery(a[n]).attr('rel'));
-			if (jQuery(l).find('input:checked').length < 1) jQuery(a[n]).height(0);
+		jQuery('.wp-crm-form-tabs label').each(function(n,l){
+			if (jQuery('input:checked', l).length < 1) jQuery(a[n]).height(0);
 			jQuery(l).attr('rel', n).click(function(e){
 				var c = 0;
 				jQuery(e.target).find('input').attr('checked', 'checked');
 				for (;c<a.length;c++)
 					if (parseInt(jQuery(e.target).attr('rel')) != c)
 						jQuery(a[c]).animate({'height': 0});
-					else
-						jQuery(a[c]).animate({'height': jQuery(a[c]).attr('rel')});
+					else {
+						if (!jQuery(a[c]).height()) {
+							var h = jQuery(a[c]).css({'height': 'auto'}).height();
+							jQuery(a[c]).css({'height':0}).animate({'height':h+'px'});
+							}
+						}
 				});
 			jQuery(l).find('input').click(function(e){
 				e.stopPropagation();
@@ -40,8 +45,12 @@ jQuery(document).ready(function(){
 				for (;c<a.length;c++)
 					if (parseInt(jQuery(e.target).parent().attr('rel')) != c)
 						jQuery(a[c]).animate({'height': 0});
-					else
-						jQuery(a[c]).animate({'height': jQuery(a[c]).attr('rel')});
+					else {
+						if (!jQuery(a[c]).height()) {
+							var h = jQuery(a[c]).css({'height': 'auto'}).height();
+							jQuery(a[c]).css({'height':0}).animate({'height':h+'px'});
+							}
+						}
 				});
 			});
 		jQuery('.wp-crm-form-basket select').change(function(e){
@@ -114,6 +123,36 @@ jQuery(document).ready(function(){
 					});
 				});
 			});
-		};
+
+		jQuery('*[data-toggle="radio"]').radio();
+		jQuery('*[data-selected="radio"]').change(function(e){
+			if (this.checked) jQuery(jQuery(this).data('target')).collapse('show'); else jQuery(jQuery(this).data('target')).collapse('hide');
+			});
+		jQuery('*[data-selected="radio"]:checked').each(function(n,i){
+			jQuery(jQuery(i).data('target')).collapse('show');
+			});
+		jQuery('*[data-autofill="ajax"]').change(function(e){
+			var f = jQuery(jQuery(this).data('target'));
+			jQuery.ajax({
+				url: '/wp-content/themes/wp-crm/ajax/widget/info.php',
+				data: 'object=' + jQuery(this).data('requestobject') + this.options[this.selectedIndex].value,
+				type: 'GET',
+				success: function(d) {
+					var i = JSON.parse(d);
+					if (i.error) return;
+					if (!i.data) return;
+					alert(f[0]);
+					for (var k in i.data)
+						if (i.data.hasOwnProperty(k)) {
+							alert (k + '=' + i.data[k]);
+							jQuery('*[data-autofill="' + k + '"]', f).val(i.data[k]);
+							}
+					},
+				cache: false,
+				contentType: false,
+				processData: false
+				});
+			});
+		} // end init;
 	init ();
 	});

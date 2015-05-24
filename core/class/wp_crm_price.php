@@ -98,6 +98,26 @@ class WP_CRM_Price extends WP_CRM_Model {
 		return parent::get ($key, $opts);
 		}
 
+	public function set ($key = null, $value = null) {
+		global $wpdb;
+
+		if (is_string ($key)) {
+			switch ($key) {
+				case 'matrix':
+					break;
+				}
+			}
+
+		if (is_array ($key)) {
+			if (isset ($key['matrix'])) {
+				$this->set ('matrix', $key['matrix']);
+				unset ($key['matrix']);
+				}
+			}
+
+		return parent::set ($key, $value);
+		}
+
 	public function save ($data = null) {
 		global $wpdb;
 

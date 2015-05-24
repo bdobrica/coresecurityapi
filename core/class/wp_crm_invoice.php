@@ -7,7 +7,7 @@ class WP_CRM_Invoice extends WP_CRM_Basket {
 
 	const Temporary_Prefix		= 'P';
 
-	const Cache			= 'cache/invoices';
+	const Path			= 'invoices';
 
 	const Epsilon			= 1;
 	const ID_Base			= 24;
@@ -417,8 +417,6 @@ class WP_CRM_Invoice extends WP_CRM_Basket {
 			}
 
 		if (is_array ($key) && is_null ($value)) {
-			echo "\n\$key=";
-			var_dump ($key);
 			if (isset ($key['buyer']) && is_object ($key['buyer'])) {
 				$this->buyer = $key['buyer'];
 				$key['bid'] = $key['buyer']->get ();
@@ -438,23 +436,15 @@ class WP_CRM_Invoice extends WP_CRM_Basket {
 			
 			$self = array_intersect ($keys, self::$K);
 			if (!empty ($self)) {
-				echo "\n\$self=";
-				var_dump ($self);
 				$set = array ();
 				foreach ($self as $_k) $set[$_k] = $key[$_k];
-				echo "\n\$set=";
-				var_dump ($set);
 				
 				WP_CRM_Model::set ($set);
 				}
 			$parent = array_intersect ($keys, parent::$K);
 			if (!empty ($parent)) {
-				echo "\n\$parent=";
-				var_dump ($parent);
 				$set = array ();
 				foreach ($parent as $_k) $set[$_k] = $key[$_k];
-				echo "\n\$set=";
-				var_dump ($set);
 
 				WP_CRM_Model::set ($set);
 				}
@@ -714,6 +704,13 @@ INFO: force updating the values
 								));
 					return $wpdb->get_var ($sql);
 				}
+				break;
+			case 'product_list':
+				$data = parent::get ('products');
+				$out = array ();
+				foreach ($data as $code => $quantity)
+					$out[] = $quantity . 'x' . $code;
+				return implode (',', $out);
 				break;
 			case 'clients':
 				$sql = $wpdb->prepare ('select pid,product,code,quantity from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where iid=%d;', array (
@@ -1011,8 +1008,6 @@ INFO: force updating the values
 				if (!empty($companies) && in_array ($company_id, $companies)) continue;
 				$companies[] = $company_id;
 				}
-
-		print_r ($this->data);
 
 		if (empty($companies) && isset($this->data['sid'])) $companies[] = $this->data['sid'];
 		if (is_object ($this->buyer)) $wp_crm_buyer = new WP_CRM_Buyer ($this->buyer);
@@ -1637,16 +1632,20 @@ INFO: force updating the values
 			$pdf->Cell (0, 4, 'Act de identitate seria si numarul: '.$wp_user_data[1].', CNP: '.$wp_user_data[0]);
 			}
 
-		if ($back) {
+		if ($back && FALSE) {
 			$pdf->AddPage ();
 			$pdf = $this->back (FALSE, $pdf);
 			}
 
 		if (is_null($append)) {
 			if (!$echo) {
-				$path = dirname(dirname(__FILE__)) . '/' . self::Cache . '/' . $this->get ('series') . '.pdf';
-				$pdf->out ($path, 'F');
-				return $path;
+				$path = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . self::Path . DIRECTORY_SEPARATOR . $this->buyer->get ();
+				$file = FALSE;
+				if (@mkdir ($path, 0660, TRUE)) {
+					$file = $path . DIRECTORY_SEPARATOR . $this->get ('series') . '.pdf';
+					$pdf->out ($file, 'F');
+					}
+				return $file;
 				}
 			else
 				$pdf->out ($this->get('series') . '.pdf');

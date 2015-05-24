@@ -8,7 +8,12 @@ spl_autoload_register (function ($class) {
 	if (file_exists($class_file)) include ($class_file);
 	});
 
-/* the correct way to fire an event */
+/**
+ * the correct way to fire an event:
+ * step 1. check if the event exists. if not,
+ * step 2. create the event
+ * step 3. fire the event
+ */
 try {
 	$event = new WP_CRM_Event ('timer');
 	}

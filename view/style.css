@@ -1,6 +1,15 @@
+* { font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
 /**/
 .wp-crm-form-column input[name="close"] { float: left; }
 .wp-crm-form-column input[name="next"] { float: right; }
+.wp-crm-view-table .column-sort { cursor: pointer; margin-left: 1em; }
+.wp-crm-view-table tr td:last-child { min-width: 72px; }
+.wp-crm-view-table .btn-group { min-width: 84px; }
+.wp-crm-view-actions { cursor: pointer; }
+.calendar .fc-day { cursor: pointer; }
+.calendar .fc-event { cursor: pointer; height: 12px; }
+.calendar .fc-event .fc-event-inner { display: block; line-height: 12px; text-align: center; font-size: 11px; }
+.modal.wide .modal-dialog { width: 90%; }
 
 /* Seller */
 .ui-widget-seller {  border-radius: 6px; border: 2px solid rgb(189, 195, 199); background: #fff; position: absolute; z-index: 99999; }
@@ -56,8 +65,10 @@
 .wp-crm-form-filedrop-list input { margin-right: 0.5em; }
 .wp-crm-form-filedrop-list i { position: absolute; right: 0; top: 0; line-height: 1.8em; height: 1.8em; cursor: pointer; }
 
+.wp-crm-view-file-manager { min-height: 700px; }
+
 /* RTE Input */
-.tinyeditor { width: 100%; }
+.tinyeditor { width: 100%; background: #fff; }
 .wp-crm-form-textarea-rte-expand { cursor: pointer; }
 
 /* Matrix Input */
@@ -140,11 +151,70 @@
 /* Visual Aid */
 .poscce { margin: 0 -20px 30px; padding: 0; border: 0; text-align: center; font-size: 8pt; font-weight: bold; }
 .poscce img { margin: 0 0 20px; }
-#content.front-page { background-image: url(images/background-ei.png); background-position: center center; }
-.login-box { border-radius: 3px; }
+.signup-box,
+.login-box { border-radius: 3px; margin: 0!important; }
+.signup-box .footer,
 .login-box .footer { font-size: 8pt; text-align: center; margin-top: 10px; }
+.signup-box { padding-top: 50px; }
+
+#content.front-page { background: #fff; padding: 0; }
+.top-menu { background: #fff; border-bottom: 1px solid #ccc; }
 
 /** logger */
-.wp-crm-ui-logger { position: fixed; bottom: 15px; right: 15px; width: 300px; z-index: 9999; background: #fff; border-radius: 3px; }
-.wp-crm-ui-logger label { font-size: 8pt; font-weight: bold; margin: 3px 3px 0; }
-.wp-crm-ui-logger textarea { border: 1px solid #eee; margin: 3px; width: 292px; height: 192px; font-family: "Lucida Console", "Courier New", monospace; font-size: 7pt; }
+.wp-crm-ui-logger { position: fixed; bottom: 15px; right: 15px; height: 16px; width: 16px; z-index: 9999; background: #fff; border-radius: 3px; overflow: hidden; }
+.wp-crm-ui-logger label { font-size: 8pt; font-weight: bold; margin: 3px 16px 0; }
+.wp-crm-ui-logger textarea { border: 1px solid #eee; margin: 3px; width: 292px; height: 212px; font-family: "Lucida Console", "Courier New", monospace; font-size: 7pt; }
+.wp-crm-ui-logger-toggle { position: absolute; top: 2px; right: 2px; display: block; background: #fff; cursor: pointer; z-index: 9999; }
+
+.et-container nav a:hover { background: #fff; }
+
+.wp-crm-ude-calculator table { width: 100%; }
+.wp-crm-ude-calculator td { padding: 1px 5px; }
+.wp-crm-ude-calculator .wp-crm-ude-calculator-type { width: 50%; }
+.wp-crm-ude-calculator .wp-crm-ude-calculator-value { width: 25%; }
+.wp-crm-ude-calculator .wp-crm-ude-calculator-so { width: 20%; }
+.wp-crm-ude-calculator select { width: 100%; }
+.wp-crm-ude-calculator table thead th:nth-child(3),
+.wp-crm-ude-calculator table tbody td:nth-child(3),
+.wp-crm-ude-calculator table tfoot td:nth-child(3) { text-align: right; }
+.wp-crm-ude-calculator table tfoot td { font-weight: bold; }
+
+.inbox .message { border-right: 0; }
+
+/** remote **/
+.container-remote::before,
+.container-remote div.navbar-remote::before { content: " "; display: table; }
+.container-remote::after,
+.container-remote div.navbar-remote::after { content: " "; clear: both; display: table; }
+.container-remote { width: 1170px; margin: 0 auto; padding: 0 15px; position: relative; }
+.container-remote div.navbar-remote { background-color: transparent; margin: 36px 0; min-height: 50px; line-height: 20px; position: relative; clear: both; }
+.navbar-remote a.navbar-brand { overflow: hidden; width: 410px; height: 90px; background: transparent; color: #777; line-height: 20px; text-align: left; position: relative; }
+.navbar-remote a.navbar-brand span.logo_title { font-size: 36px; font-weight: 300; display: block; padding: 10px 0 0; line-height: 42px; color: #777; }
+.navbar-remote a.navbar-brand span.logo_title strong { font-weight: bold; font-size: 36px; }
+.navbar-remote a.navbar-brand span.logo_subtitle { font-size: 13px; font-weight: 300; display: block; color: #777; }
+.navbar-remote a.navbar-brand img { height: 90px; float: left; margin-right: 10px; }
+
+.navbar-remote ul.nav { margin: 27px 0 0; }
+.navbar-remote ul.nav li.menu-item a { text-transform: uppercase; margin: 0 3px; color: #777; }
+.navbar-remote ul.nav li.menu-item a:hover,
+.navbar-remote ul.nav li.menu-item a:active,
+.navbar-remote ul.nav li.menu-item.active > a,
+.navbar-remote ul.nav li.menu-item.open > a { border-bottom: 1px solid #428bca; background: transparent; }
+.navbar-remote ul.nav li.menu-item.dropdown.open a.dropdown-toggle { background: transparent; color: #777; }
+.navbar-remote .dropdown-menu { top: 100%; padding: 5px 0; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175); border-radius: 4px; }
+.navbar-remote .dropdown-menu li { border-bottom: 0!important; }
+.navbar-remote .dropdown-menu li a { padding: 3px 20px!important; white-space: nowrap!important; border-bottom: 1px transparent solid; }
+
+#sign { position: absolute; top: 7px; right: 150px; font-size: 12px; z-index: 101; height: 50px; line-height: 40px; padding-right: 10px; }
+#sign a { color: #428bca; text-decoration: none; }
+#sign i { color: #777; font-size: 18px; padding: 0 6px; }
+
+#social_media_wrapper { background-color: #428bca; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; position: absolute; display: inline-block; top: 0; right: 15px; z-index: 101; overflow: hidden; padding: 10px; }
+#social_media_wrapper a { text-align: center; display: block; float: left; margin: 0 3px; background-color: #fff; font-size: 18px; border-radius: 50%; width: 30px; height: 30px; padding: 6px; transition: all 100ms linear 0s; color: #428bca; }
+#social_media_wrapper a i { vertical-align: top; }
+#social_media_wrapper a:hover,
+#social_media_wrapper a:active { text-decoration: none; color: #fff; background: #428bca; }
+
+.container-signin { width: 1170px; margin: 0 auto; padding: 0 15px; position: relative; }
+.container-signin .hgroup { margin: 26px 0; border-bottom: 1px solid #ccc; padding: 17px 0; position: relative; }
+.container-signin ul.breadcrumb { font-size: 12px; background-color: #fff; margin: 0; padding: 6px 15px; border: 1px solid #ccc; position: absolute; bottom: -15px; right: 0; border-radius: 4px; height: auto; } 

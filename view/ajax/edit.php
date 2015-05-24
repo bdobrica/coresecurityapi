@@ -26,6 +26,8 @@ if ($_POST['object']) {
 	$object = new $class ((int) $id);
 	echo "OK\nUPDATE:" . $object->changes ();
 	}
-else
+else {
+	echo "<!-- MODAL_TITLE: Modifica Obiect -->";
 	$form->render (TRUE);
+	}
 ?>

@@ -14,20 +14,13 @@
 	<!-- start: Mobile Specific -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- end: Mobile Specific -->
-	
-	<!-- start: CSS -->
-	<link href="<?php echo $URL; ?>/assets/css/bootstrap.min.css" rel="stylesheet">
-	<link href="<?php echo $URL; ?>/assets/css/style.min.css" rel="stylesheet">
-	<link href="<?php echo $URL; ?>/assets/css/retina.min.css" rel="stylesheet">
-	<link href="<?php echo $URL; ?>/assets/css/print.css" rel="stylesheet" type="text/css" media="print"/>
-	<link href="<?php echo $URL; ?>/style.css?v=0.2" rel="stylesheet">
-	<!-- end: CSS -->
-	
 
+	<?php wp_head(); ?>
+	
 	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
 	<!--[if lt IE 9]>
 		
-	  	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	  	<script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<script src="<?php echo $URL; ?>/assets/js/respond.min.js"></script>
 		
 	<![endif]-->
@@ -39,20 +32,20 @@
 	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="<?php echo $URL; ?>/assets/ico/apple-touch-icon-57-precomposed.png">
 	<link rel="shortcut icon" href="<?php echo $URL; ?>/assets/ico/favicon.png">
 	<!-- end: Favicon and Touch Icons -->
+<?php /*	
 	
-	
-	<?php wp_head(); ?>
-    <!-- start: fileManager scripts -->
+	<!-- start: fileManager scripts -->
 
-    <script src="<?php echo $URL; ?>/script/fileManager/gsFileManager.js" type="text/javascript"></script>
-    <script src="<?php echo $URL; ?>/script/fileManager/jquery.form.js" type="text/javascript"></script>
-    <script src="<?php echo $URL; ?>/script/fileManager/jquery.Jcrop.js" type="text/javascript"></script>
-    <script src="<?php echo $URL; ?>/script/lib/ckeditor/ckeditor.js" type="text/javascript"></script>
-   
-    <link href="<?php echo $URL; ?>/script/fileManager/gsFileManager.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="<?php echo $URL; ?>/script/fileManager/jquery.Jcrop.css" rel="stylesheet" type="text/css" media="screen" />
+	<script src="<?php echo $URL; ?>/script/fileManager/gsFileManager.js" type="text/javascript"></script>
+	<script src="<?php echo $URL; ?>/script/fileManager/jquery.form.js" type="text/javascript"></script>
+	<script src="<?php echo $URL; ?>/script/fileManager/jquery.Jcrop.js" type="text/javascript"></script>
+	<script src="<?php echo $URL; ?>/script/lib/ckeditor/ckeditor.js" type="text/javascript"></script>
 
-    <!-- end: fileManager scripts -->
+	<link href="<?php echo $URL; ?>/script/fileManager/gsFileManager.css" rel="stylesheet" type="text/css" media="screen" />
+	<link href="<?php echo $URL; ?>/script/fileManager/jquery.Jcrop.css" rel="stylesheet" type="text/css" media="screen" />
+
+	<!-- end: fileManager scripts -->
+*/ ?>
 </head>
 
 <body>

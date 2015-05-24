@@ -9,46 +9,175 @@
  *
  */
 class WP_CRM_User extends WP_CRM_Model {
+	const Defaults	= '_wp_crm_defaults';
+	const Layout	= '_wp_crm_layout';
+	const Settings	= '_wp_crm_settings';
+
+	public static $DEFAULTS = array (
+		'promoter_invitations'	=>	5,
+		);
+	public static $LAYOUT = array (
+		'dashboard' => array (
+			/** Rows, of widgets:								*/
+			/** array ( array ('widget' => WIDGET, 'size' => {1...12}), ... ), ...		*/
+			),
+		);
+	public static $SETTINGS  = array (
+		'root_folder'		=>	0,
+		'scan_folder'		=>	0,
+		'companies_folder'	=>	0,
+		'default_office'	=>	0,
+		'default_company'	=>	0
+		);
+
+	private static $CAPABILITIES = array (
+		/** System */
+		'wp_crm_system'			=> '',
+		'wp_crm_admin'			=> '',
+		'wp_crm_work'			=> '',
+		/** Users */
+		'wp_crm_promote'		=> '',
+		'wp_crm_loyal'			=> '',
+		'wp_crm_shop'			=> '',
+		'wp_crm_news'			=> '',
+		/** User Management */
+		'wp_crm_add_user'		=> '',
+		'wp_crm_edit_user'		=> '',
+		'wp_crm_delete_user'		=> '',
+		/** Chat */
+		'wp_crm_use_chat'		=> '',
+		/** Evaluation Form */
+		'wp_crm_add_evaluation_form'	=> '',
+		'wp_crm_edit_evaluation_form'	=> '',
+		'wp_crm_delete_evaluation_form'	=> '',
+		/** Forum */
+		'wp_crm_add_topic'		=> '',
+		'wp_crm_edit_topic'		=> '',
+		'wp_crm_delete_topic'		=> '',
+		'wp_crm_add_reply'		=> '',
+		'wp_crm_edit_reply'		=> '',
+		'wp_crm_delete_reply'		=> '',
+		/** Dictionary */
+		'wp_crm_add_dictionary_term'	=> '',
+		'wp_crm_edit_dictionary_term'	=> '',
+		'wp_crm_delete_dictionary_term'	=> '',
+		/** Blog */
+		'wp_crm_add_post'		=> '',
+		'wp_crm_edit_post'		=> '',
+		'wp_crm_delete_post'		=> '',
+		/** Courses */
+		'wp_crm_add_course'		=> '',
+		'wp_crm_edit_course'		=> '',
+		'wp_crm_delete_course'		=> '',
+		/** Resources */
+		'wp_crm_add_resource'		=> '',
+		'wp_crm_edit_resource'		=> '',
+		'wp_crm_delete_resource'	=> '',
+		/** Polls */
+		'wp_crm_add_poll'		=> '',
+		'wp_crm_edit_poll'		=> '',
+		'wp_crm_delete_poll'		=> '',
+		/** Tests */
+		'wp_crm_add_test'		=> '',
+		'wp_crm_edit_test'		=> '',
+		'wp_crm_delete_test'		=> '',
+		/** Wiki */
+		'wp_crm_add_wikipage'		=> '',
+		'wp_crm_edit_wikipage'		=> '',
+		'wp_crm_delete_wikipage'	=> '',
+		/** Live Streaming*/
+		'wp_crm_add_livestream'		=> '',
+		'wp_crm_close_livestream'	=> '',
+		/** Products */
+		'wp_crm_add_product'		=> '',
+		'wp_crm_edit_product'		=> '',
+		'wp_crm_delete_product'		=> '',
+		/** Invoices */
+		'wp_crm_add_invoice'		=> '',
+		'wp_crm_edit_invoice'		=> '',
+		'wp_crm_delete_invoice'		=> '',
+		'wp_crm_pay_invoice'		=> '',
+		#''		=> '',
+		);
+
 	public static $ROLES = array (
+		/**
+		 * Employees:
+		 */
 		'wp_crm_admin'	=> array (
 			'title' => 'WP CRM Office Administrator',
+			'capabilities' => array (
+				'wp_crm_system'	=> true,
+				'wp_crm_admin'	=> true,
+				),
+			'group_id' => -1,
+			),
+		'wp_crm_accountant'	=> array (
+			'title' => 'WP CRM Office Accountant',
 			'capabilities' => array (
 				'wp_crm_admin'	=> true,
 				'wp_crm_pay'	=> true,
 				'wp_crm_work'	=> true,
 				),
-			),
-		'wp_crm_accountant'	=> array (
-			'title' => 'WP CRM Office Accountant',
-			'capabilities' => array (
-				'wp_crm_pay'	=> true,
-				'wp_crm_work'	=> true,
-				),
+			'group_id' => -2,
 			),
 		'wp_crm_user'	=> array (
 			'title' => 'WP CRM Office User',
 			'capabilities' => array (
 				'wp_crm_work'	=> true,
 				),
+			'group_id' => -3,
 			),
+		'wp_crm_promoter' => array (
+			'title' => 'WP CRM Office Promoter',
+			'capabilities' => array (
+				'wp_crm_shop' => true,
+				'wp_crm_promote' => true,
+				'wp_crm_news' => true,
+				),
+			'group_id' => -4,
+			),
+		'wp_crm_lecture_manager' => array (
+			'title' => 'WP CRM Lecture Manager',
+			'capabilities' => array (
+				'wp_crm_content' => true,
+				'wp_crm_lecture' => true,
+				),
+			'group_id' => -5
+			),
+		'wp_crm_lecturer' => array (
+			'title' => 'WP CRM Lecturer',
+			'capabilities' => array (
+				'wp_crm_lecture' => true,
+				),
+			'group_id' => -6
+			),
+		/**
+		 * Clients:
+		 */
 		'wp_crm_client'	=> array (
 			'title' => 'WP CRM Client',
 			'capabilities' => array (
 				'wp_crm_loyal'	=> true,
 				'wp_crm_shop'	=> true,
+				'wp_crm_news' => true,
 				),
+			'group_id' => -97,
 			),
 		'wp_crm_customer'	=> array (
 			'title' => 'WP CRM Customer',
 			'capabilities' => array (
 				'wp_crm_shop'	=> true,
+				'wp_crm_news' => true,
 				),
+			'group_id' => -98,
 			),
 		'wp_crm_subscriber'	=> array (
 			'title' => 'WP CRM Subscriber',
 			'capabilities' => array (
 				'wp_crm_shop'	=> true,
 				),
+			'group_id' => -99,
 			),
 		);
 
@@ -89,6 +218,13 @@ class WP_CRM_User extends WP_CRM_Model {
 
 	private $person;
 
+	private $offices;
+	private $companies;
+
+	private $defaults;
+	private $layout;
+	private $settings;
+
 	public function __construct ($data = null) {
 		global
 			$current_user,
@@ -110,9 +246,48 @@ class WP_CRM_User extends WP_CRM_Model {
 				}
 			else
 				throw new WP_CRM_Exception (WP_CRM_Exception::Invalid_ID);
-			}
+			}		
 
 		parent::__construct ($data);
+
+		if ($this->ID) {
+			/**
+			 * Adding the defaults meta-keys to this user:
+			 * Defaults are settings that can be changed by admins
+			 */
+			if (($this->defaults = get_user_meta ($this->ID, self::Defaults, TRUE)) === '') {
+				add_user_meta ($this->ID, self::Defaults, self::$DEFAULTS, TRUE);
+				$this->defaults = self::$DEFAULTS;
+				}
+			if (empty ($this->defaults)) $this->defaults = self::$DEFAULTS;
+
+			/**
+			 * Adding the layout meta-keys to this user:
+			 * Layout are settings that this user can change, in order to alter the layout of the app
+			 */
+			if (($this->layout = get_user_meta ($this->ID, self::Layout, TRUE)) === '') {
+				add_user_meta ($this->ID, self::Layout, self::$LAYOUT, TRUE);
+				$this->layout = self::$LAYOUT;
+				}
+			if (empty ($this->layout)) $this->settings = self::$LAYOUT;
+
+			/**
+			 * Adding the settings meta-keys to this user:
+			 * Settings can be changed by this user alone.
+			 */
+			if (($this->settings = get_user_meta ($this->ID, self::Settings, TRUE)) === '') {
+				add_user_meta ($this->ID, self::Settings, self::$SETTINGS, TRUE);
+				$this->settings = self::$SETTINGS;
+				}
+			if (empty ($this->settings)) $this->settings = self::$SETTINGS;
+
+			$this->offices = get_user_meta ($this->ID, WP_CRM_Office::MetaKey, TRUE);
+			$this->offices = $this->offices === '' ? array () : (is_array ($this->offices) ? $this->offices : array ($this->offices));
+
+			
+			$this->companies = get_user_meta ($this->ID, WP_CRM_Company::MetaKey, TRUE);
+			$this->companies = $this->companies === '' ? array () : (is_array ($this->companies) ? $this->companies : array ($this->companies));
+			}
 
 		try {
 			$this->person = new WP_CRM_Person ($this->data['user_email']);
@@ -129,22 +304,48 @@ class WP_CRM_User extends WP_CRM_Model {
 
 		if (is_string ($key)) {
 			switch ($key) {
+				case 'person':
+					return $this->person instanceof WP_CRM_Person ? $this->person : NULL;
+					break;
 				case 'password':
 				case 'confirm_password':
 					return '';
 					break;
+				case 'offices':
+					return $this->offices;
+					break;
+				case 'office_list':
+					break;
+				case 'offices_query':
+					return sizeof ($this->offices) == 1 ? sprintf ('oid=%d', current($this->offices)) : sprintf ('oid in (%s)', implode (',', $this->offices));
+					break;
+				case 'companies':
+					return $this->companies;
+					break;
+				case 'company_list':
+					return new WP_CRM_List ('WP_CRM_Company', array ($this->get ('offices_query')));
+					break;
 				case 'products':
-					$product_ids = '0';
-					if (is_object ($this->person)) {
-						$sql = $wpdb->prepare ('select group_concat(pid) from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where bid=%d;', $this->person->get());
-						$product_ids = $wpdb->get_var ($sql);
-						}
-					return new WP_CRM_List ('WP_CRM_Product', array ('id in (' . $product_ids . ')'));
+					$products = array ();
+					$sql = $wpdb->prepare ('select pid,bid,buyer from `' . $wpdb->prefix . WP_CRM_Basket::$T . '` where uid=%d;', $this->ID);
+					$results = $wpdb->get_results ($sql);
+					if ($results)
+					foreach ($results as $result)
+						$products[] = array (
+							'product' => new WP_CRM_Product ((int) $result->pid),
+							'company' => new WP_CRM_Company ((int) $result->bid)
+							);
+					return $products;
 					break;
 				case 'first_name':
 				case 'last_name':
 					if (is_object ($this->person)) {
 						return $this->person->get ($key);
+						}
+					break;
+				case 'full_name':
+					if (is_object ($this->person)) {
+						return $this->person->get ('first_name') . ' ' . $this->person->get ('last_name');
 						}
 					break;
 				case 'role':
@@ -170,9 +371,21 @@ class WP_CRM_User extends WP_CRM_Model {
 						}
 					return $out;
 					break;
+				case 'capability_list':
+					return self::$CAPABILITIES;
+					break;
+				case 'role_path':
+					return get_template_directory () . '/template/' . str_replace ('wp_crm_', '', $this->get ('role')) . '/' . $opts;
+					break;
+				case 'defaults':
+					if (in_array ($opts, array_keys ($this->defaults))) return $this->defaults[$opts];
+					return FALSE;
+					break;
 				}
 			}
 
+		if (!in_array ($key, static::$K) && WP_CRM_Person::has_key ($key))
+			return is_object ($this->person) ? $this->person->get ($key, $opts) : NULL;
 		return parent::get ($key, $opts);
 		}
 
@@ -182,6 +395,15 @@ class WP_CRM_User extends WP_CRM_Model {
 			$wp_roles;
 
 		if (is_array ($key)) {
+			if (isset ($key['offices'])) {
+				update_user_meta ($this->ID, WP_CRM_Office::MetaKey, $key['offices']);
+				unset ($key['offices']);
+				}
+			if (isset ($key['companies'])) {
+				update_user_meta ($this->ID, WP_CRM_Company::MetaKey, $key['companies']);
+				unset ($key['companies']);
+				}
+
 			if (isset ($key['user_pass'])) unset ($key['user_pass']);
 
 			if (isset ($key['password'])) {
@@ -200,6 +422,24 @@ class WP_CRM_User extends WP_CRM_Model {
 			}
 		else {
 			switch ($key) {
+				case 'defaults':
+					if (!is_array ($value)) return FALSE;
+					foreach ($value as $_k => $_v) {
+						if (in_array ($_k, array_keys ($this->defaults)))
+							$this->defaults[$_k] = $_v;
+						}
+					update_user_meta ($this->ID, self::Defaults, $this->defaults);
+					return TRUE;
+					break;
+				case 'settings':
+					if (!is_array ($value)) return FALSE;
+					foreach ($value as $_k => $_v) {
+						if (in_array ($_k, array_keys ($this->settings)))
+							$this->settings[$_k] = $_v;
+						}
+					update_user_meta ($this->ID, self::Settings, $this->settings);
+					return TRUE;
+					break;
 				case 'password':
 					$key = 'user_pass';
 					$value = wp_hash_password ($value);
@@ -210,10 +450,28 @@ class WP_CRM_User extends WP_CRM_Model {
 					$user->set_role ($value);
 					return TRUE;
 					break;
+				case 'offices':
+					update_user_meta ($this->ID, WP_CRM_Office::MetaKey, $value);
+					return TRUE;
+					break;
+				case 'companies':
+					update_user_meta ($this->ID, WP_CRM_Company::MetaKey, $value);
+					return TRUE;
+					break;
 				}
 			}
 
 		return parent::set ($key, $value);
+		}
+
+	public function is ($what = null, $opts = null) {
+		global $current_user;
+
+		if (is_string ($what))
+		switch ($what) {
+			default:
+				return ($current_user->ID && ($current_user->ID == $this->ID)) ? TRUE : FALSE;
+			}
 		}
 
 	public function save () {
@@ -302,6 +560,26 @@ class WP_CRM_User extends WP_CRM_Model {
 		if (!empty (self::$ROLES))
 		foreach (self::$ROLES as $role => $options)
 			add_role ($role, $options['title'], $options['capabilities']);
+		}
+
+	public function can ($what = null) {
+		if (is_null ($what)) return TRUE;
+		if (!in_array ($what, array_keys (self::$CAPABILITIES))) return FALSE;
+		if (!$this->ID) return FALSE;
+		return user_can ($this->ID, $what);
+		}
+
+	public function check ($what = null, $against = null) {
+		if (is_string ($what)) {
+			switch ($what) {
+				case 'password':
+				case 'pass':
+				case 'pwd':
+					return wp_check_password (trim($against), $this->data['user_pass'], $this->ID);
+					break;
+				}
+			}
+		return FALSE;
 		}
 	}
 ?>

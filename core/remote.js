@@ -1,4 +1,5 @@
 var $wpcrm = new function () {
+	this.path = 'https://api.acreditate.ro/';
 	this.fx = function (initElm){
 		if(initElm.nodeType && initElm.nodeType==1)
 			var elm = initElm;
@@ -350,7 +351,7 @@ var $wpcrm = new function () {
 		this.css(this.f, {'width': '100%', 'border': 0, 'padding': 0, 'margin': 0, 'height': '500px'});
 
 		var rf = document.createElement('iframe');
-		rf.src = 'http://www.biletedesucces.ro/wp-content/plugins/wp-crm/remote/cookie.php?r=' + escape(document.referrer);
+		rf.src = $wpcrm.path + '/wp-content/plugins/wp-crm/remote/cookie.php?r=' + escape(document.referrer);
 		rf.frameBorder = 0;
 		this.css(rf,{'position': 'absolute', 'width': '200px', 'height': '50px', 'top': 0, 'left': 0, 'border': 0, 'margin': 0, 'padding': 0, 'overflow': 'hidden'});
 
@@ -366,7 +367,7 @@ var $wpcrm = new function () {
 				ww.style.left = (ow + Math.floor((vw - parseInt(ww.style.width) )/2)) + 'px';
 				ww.style.top  = (oh + Math.floor((vh - parseInt(ww.style.height) )/2)) + 'px';
 
-				f.src = 'http://www.biletedesucces.ro/wp-content/plugins/wp-crm/remote/index.php?p=' + this.getAttribute('rel') + '&u=' + escape(window.location.href);
+				f.src = $wpcrm.path + '/wp-content/plugins/wp-crm/remote/index.php?p=' + this.getAttribute('rel') + '&u=' + escape(window.location.href);
 				s.style.display = 'block';
 				s.fxAddSet().fxAdd({'type': 'opacity', 'from': 0, 'to': 60, 'step': 6, 'delay': 5}).fxRun(function () {
 					w.style.display = 'block';
@@ -380,7 +381,7 @@ var $wpcrm = new function () {
 		document.body.appendChild(this.s);
 		document.body.appendChild(this.w);
 
-		this.css(this.c, {'marginLeft': '580px', 'marginTop': '5px', 'marginBottom': '5px', 'width': '12px', 'height': '12px', 'backgroundImage': 'url(http://www.biletedesucces.ro/wp-content/plugins/wp-crm/images/close.png)', 'borderRadius': '3px', 'cursor': 'pointer'});
+		this.css(this.c, {'marginLeft': '580px', 'marginTop': '5px', 'marginBottom': '5px', 'width': '12px', 'height': '12px', 'backgroundImage': 'url(' + $wpcrm.path + 'wp-content/plugins/wp-crm/images/close.png)', 'borderRadius': '3px', 'cursor': 'pointer'});
 		this.css(this.h, {'clear': 'both'});
 		this.h.appendChild(this.f);
 		this.c.onclick = function () {

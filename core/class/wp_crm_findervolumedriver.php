@@ -1001,7 +1001,7 @@ abstract class WP_CRM_FinderVolumeDriver {
 		if ($resolveLink && !empty($dir['thash'])) {
 			$dir = $this->file($dir['thash']);
 		}
-		
+	
 		return $dir && $dir['mime'] == 'directory' && empty($dir['hidden']) 
 			? $dir 
 			: $this->setError(WP_CRM_Finder::ERROR_NOT_DIR);

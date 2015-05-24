@@ -20,7 +20,7 @@ if (empty($ids)) die ('Err.');
 
 $objects = array ();
 
-foreach ($ids as $id) $objects[] = new $class ($id);
+foreach ($ids as $id) $objects[] = new $class ((int) $id);
 
 $wp_crm_helper = new WP_CRM_Garbage ($objects);
 
@@ -29,5 +29,7 @@ $form = new WP_CRM_Form ($structure);
 $form->set ('state', $wp_crm_state->get());
 
 if ($_POST['object']) $form->action ();
+
+echo "<!-- MODAL_TITLE: Sterge Obiect -->";
 $form->render (TRUE);
 ?>

@@ -12,6 +12,7 @@ class WP_CRM_Contact extends WP_CRM_Model {
 		'subject',
 		'message',
 		'attachments',
+		'status',
 		'stamp',
 		);
 	protected static $Q = array (
@@ -23,6 +24,7 @@ class WP_CRM_Contact extends WP_CRM_Model {
 		'`subject` text NOT NULL',
 		'`message` text NOT NULL',
 		'`attachments` text NOT NULL',
+		'`status` enum(\'sent\',\'queued\',\'canceled\') NOT NULL DEFAULT \'queued\'',
 		'`stamp` int(11) NOT NULL DEFAULT 0'
 		);
 	public static $F = array (
@@ -100,11 +102,44 @@ class WP_CRM_Contact extends WP_CRM_Model {
 		return parent::get ($key, $opts);
 		}
 
+	public function send ($data = null) {
+		if ($this->get ('status') != 'queued') return FALSE;
+		$this->set ('status', 'sent');
+		$recipients = $this->recipients->gget (array ('email', 'name'));
+		if (empty ($recipients)) return TRUE;
+
+		$attachment_list = $this->attachments->gget (array ('title', 'path'));
+
+		$attachments = array ();
+		if (!empty ($attachment_list))
+		foreach ($attachment_list as $attachment_item)
+			$attachments[$attachment_item['title']] = $attachment_item['path'];
+
+		$mail = new WP_CRM_Mail ($this->get ('sender'));
+		$message = new WP_CRM_Template (array (
+				'subject' => $this->get ('subject'),
+				'content' => $this->get ('message')
+				));
+
+		foreach ($recipients as $recipient) {
+			if (!$recipient['email']) continue;
+			$mail->send (
+				$recipient,
+				$message,
+				$attachments
+				);
+			}
+
+		return TRUE;
+		}
+
 	public function save ($data = null) {
 		$recipients = array ();
 		$attachments = array ();
 
 		if (!is_null($data)) $this->set ($data);
+
+		$this->data['status'] = 'queued';
 
 		/*
 		$sender = new WP_CRM_Mail ((int) $_POST['sender']);

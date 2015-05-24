@@ -3,59 +3,57 @@ class WP_CRM {
 	public static function buy ($data = null) {
 		global
 			$wpdb,
+			$wp_crm_cookie,
 			$wp_crm_state,
-			$wp_crm_buyer,
-			$wp_crm_cookie;
+			$wp_crm_user;
+
+		$log = new WP_CRM_Log (array ('action' => 'buy'));
+		$log->save ();
 
 		$data = empty($data) ?
 				$wp_crm_state->get ('data') :
 				array_merge ((array) $wp_crm_state->get ('data'), (array) $data);
+
+		if (empty ($data['buyer'])) return array ('message' => array (
+			'type' => 'error',
+			'content' => 'Nu poti cumpara fara a specifica un cumparator'
+			));
+
+		list ($class, $id) = explode ('-', $data['buyer']);
+		if (!in_array ($class, array (
+			'WP_CRM_Person',
+			'WP_CRM_Company'
+			))) return array ('message' => array (
+			'type' => 'error',
+			'content' => 'Eroare de sistem! Cumparatorul nu este un obiect valid.'
+			));
+		try {
+			$buyer = new $class ((int) $id);
+			}
+		catch (WP_CRM_Exception $wp_crm_exception) {
+			$buyer = null;
+			}
+
+		if (is_null ($buyer)) return array ('message' => array (
+			'type' => 'error',
+			'content' => 'Eroare de sistem! Cumparatorul, desi este un obiect valid nu a fost gasit in baza de date.'
+			));
+
 		$basket = $wp_crm_state->get ('basket');
 		$basket->save ();
 
 		$wp_crm_state->delete ();
 
-		if ($data['tabs'] == 'persoana-fizica') {
-			$buyer = new WP_CRM_Person (array (
-				'first_name'	=> $data['p_first_name'],
-				'last_name'	=> $data['p_last_name'],
-				'uin'		=> $data['p_uin'],
-				'email'		=> $data['p_email'],
-				'phone'		=> $data['p_phone']
-				));
-			$buyer->save ();
-
-			$delegate = $buyer;
-			}
-		else {
-			$delegate = new WP_CRM_Person (array (
-				'first_name'	=> $data['d_first_name'],
-				'last_name'	=> $data['d_last_name']
-				));
-			$delegate->save ();
-
-			$buyer = new WP_CRM_Company (array (
-				'name'		=> $data['c_name'],
-				'uin'		=> $data['c_uin'],
-				'rc'		=> $data['c_rc'],
-				'address'	=> $data['c_address'],
-				'county'	=> $data['c_county'],
-				'bank'		=> $data['c_bank'],
-				'account'	=> $data['c_account'],
-				'email'		=> $data['c_email'],
-				'phone'		=> $daca['c_phone']
-				));
-			$buyer->save ();
-			}
-
 		$invoice = new WP_CRM_Invoice ();
 
 		$invoice->set ('stamp', time ());
 		$invoice->set ('buyer', $buyer);
+
 		if ($data['coupon'])
 			$invoice->set ('coupon', strtoupper(trim($data['coupon'])));
 		if (is_object ($delegate))
 			$invoice->set ('did', $delegate->get ());
+
 		$invoice->set ('source', $wp_crm_cookie->get ());
 
 		$invoice_ids = $invoice->save ();
@@ -63,7 +61,12 @@ class WP_CRM {
 
 		if (!empty($invoice_ids))
 			foreach ($invoice_ids as $invoice_id) {
-				$wp_crm_invoice = new WP_CRM_Invoice ($invoice_id);
+				try {
+					$wp_crm_invoice = new WP_CRM_Invoice ($invoice_id);
+					}
+				catch (WP_CRM_Exception $wp_crm_exception) {
+					continue;
+					}
 				/*
 				TODO: should be included in WP_CRM_Invoice::save for speed reasons
 				*/
@@ -87,6 +90,7 @@ class WP_CRM {
 			$slug = strtolower ($product);
 			$wp_crm_product = new WP_CRM_Product ($product);
 
+			/*
 			for ($q = 1; $q <= $quantity; $q++) {
 				$participant = new WP_CRM_Person (array (
 					'first_name'	=> $data[$slug . '_' . $q . '_first_name'],
@@ -104,10 +108,11 @@ class WP_CRM {
 				unset ($participant);
 				unset ($client);
 				}
+			*/
 			unset ($wp_crm_product);
 			}
 
-		return array ();
+		return array ('invoice_ids' => $invoice_ids);
 		}
 
 	/**
@@ -138,6 +143,10 @@ class WP_CRM {
 		if (!is_numeric($id)) die ('Err.2');
 
 		$object = $id ? new $class ((int) $id) : new $class ();
+		
+		$log = new WP_CRM_Log (array ('action' => 'save', 'object' => $object->get ('self')));
+		$log->save ();
+
 
 		if (is_object ($wp_crm_helper)) {
 			try {
@@ -165,6 +174,9 @@ class WP_CRM {
 			$wp_crm_state,
 			$current_user;
 
+		$log = new WP_CRM_Log (array ('action' => 'login_attempt', 'details' => json_encode (array ('username' => $data['username']))));
+		$log->save ();
+
 		$user = wp_signon (array (
 			'user_login' => $data['username'],
 			'user_password' => $data['password']
@@ -172,8 +184,15 @@ class WP_CRM {
 
 		if (!is_wp_error($user)) {
 			$current_user = $user;
+
+			$log = new WP_CRM_Log (array ('action' => 'login_attempt_success'));
+			$log->save ();
+
 			return array ();
 			}
+
+		$log = new WP_CRM_Log (array ('action' => 'login_attempt_failed'));
+		$log->save ();
 
 		return array ('message' => array (
 			'type' => 'error',
@@ -189,6 +208,9 @@ class WP_CRM {
 
 		$user = wp_create_user ($data['username'], $data['password'], $data['email']);
 		$current_user = new WP_User ($user);
+		
+		$log = new WP_CRM_Log (array ('action' => 'signup'));
+		$log->save ();
 		/**
 		 * wp_crm_customer is the simplest role that a wp_crm user can have.
 		 */
@@ -218,32 +240,40 @@ class WP_CRM {
 		 * send an email: 
 		 */
 		$hash = md5 ($current_user->ID . $current_user->user_email);
+		/**
+		 * send an email from the default email account:
+		 */
+		$wp_crm_settings = new WP_CRM_Settings ();
 
-		$wp_crm_mail = new WP_CRM_Mail ();
+		$wp_crm_mail = new WP_CRM_Mail ($wp_crm_settings->get ('email_settings'));
 	
 		$activation_url = get_bloginfo ('url') . '/activate?h=' . $hash . '&l=' . urlencode($current_user->user_login);
-		
-		$wp_crm_mail->send ($current_user->user_email, array (
-			'subject' => 'Activare cont utilizator platforma ' . get_bloginfo ('name'),
-			'content' => 'Iti multumim ca te-ai inregistrat pentru a deveni membru al platformei ' . get_bloginfo ('name') . '!<br />
-Pentru a putea beneficia in totalitate de facilitatile oferite, trebuie sa activezi contul creat prin accesarea link-ului de mai jos:<br /><br />
-<ul type="square">
-<li><a href="' . $activation_url . '">' . $activation_url . '</a></li>
-</ul>
-Numele de utilizator pe care ti l-ai ales este: <strong>' . $current_user->user_login . '</strong> <br/>
-Iti multumim!<br />
---<br />
-Echipa ' . get_bloginfo ('name')
-			));
 
+		$wp_crm_template = new WP_CRM_Template ($wp_crm_settings->get ('registration_mail'));
+		$wp_crm_template->assign ('activation_url', $activation_url);
+		$wp_crm_template->assign ('current_user.user_login', $current_user->user_login);
+
+		$wp_crm_mail->send ($current_user->user_email, $wp_crm_template);
+		
 		return array ();
 		}
 
 	public static function activate ($data = null) {
 		if (!is_numeric ($data)) return array (); # FALSE
 		$user = new WP_User ((int) $data);
-		if (!$user->has_cap ('wp_crm_wakeup')) return array (); # TRUE
+
+		$log = new WP_CRM_Log (array ('uid' => $user->ID, 'action' => 'activate_attempt'));
+		$log->save ();
+
+		if (!$user->has_cap ('wp_crm_wakeup')) {
+			$log = new WP_CRM_Log (array ('uid' => $user->ID, 'action' => 'activate_attempt_failed'));
+			$log->save ();
+			return array (); # TRUE
+			}
 		$user->set_role ('wp_crm_customer');
+
+		$log = new WP_CRM_Log (array ('uid' => $user->ID, 'action' => 'activate_success'));
+		$log->save ();
 		
 		return array (); # TRUE
 		}
@@ -301,6 +331,32 @@ Echipa ' . get_bloginfo ('name')
 
 		$wp_crm_mail = new WP_CRM_Mail ($wp_crm_maillist->get ('mid'));
 		$wp_crm_mail->send ($wp_crm_mailagent->get ('email'), $template);
+		}
+
+	public static function order ($data = null) {
+		global
+			$wpdb,
+			$wp_crm_buyer;
+
+		if (empty($data['object'])) return;
+		list ($class, $id) = explode ('-', $data['object']);
+		if (!class_exists ($class)) return;
+		if ($class != 'WP_CRM_Product') return;
+		
+		$object = new $class ((int) $id);
+
+		$company = new WP_CRM_Company ((int) $data['company']);
+		$wp_crm_buyer = new WP_CRM_Buyer ($company);
+
+		$object->buy ();
+		}
+
+	public static function _ ($message) {
+		return __ ($message, 'WP_CRM_Plugin');
+		}
+
+	public static function debug ($message, $object = null) {
+		echo '<!--' . "\n" . (is_null ($object) ? '' : ('Object: ' . $object->get ('self') . "\n")) . $message . "\n" . '-->' . "\n\n";
 		}
 	};
 ?>

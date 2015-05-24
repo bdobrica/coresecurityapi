@@ -56,7 +56,7 @@ class WP_CRM_SecureLeaf extends WP_CRM_Model {
 		'`hash` char(128) NOT NULL DEFAULT \'\'',
 		'`version` int(11) NOT NULL DEFAULT 0',
 		'`stamp` int(11) NOT NULL DEFAULT 0',
-		'FULL TEXT(`name`)',
+		'FULLTEXT(`name`)',
 		'KEY (`type`)',
 		'KEY (`pid`)',
 		'UNIQUE(`pid`,`hash`)',

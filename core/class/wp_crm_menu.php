@@ -18,7 +18,9 @@ class WP_CRM_Menu extends WP_CRM_Model {
 	private $render;
 
 	public function __construct ($data = null, $render = null) {
-		global $wpdb;
+		global
+			$wpdb,
+			$wp_crm_user;
 
 		$this->render = is_null ($render) ? self::WP_CRM_Menu_Dashboard : (int) $render;
 
@@ -50,6 +52,24 @@ class WP_CRM_Menu extends WP_CRM_Model {
 				if (!in_array ($profile, $apps))
 					$apps = array_merge (array ($profile), $apps);
 			}
+		/**
+		 * Add an invoice app for users:
+		 */
+		if (in_array ($wp_crm_user->get ('role'), array ('wp_crm_subscriber'))) {
+			$apps[] = 7;
+			$apps[] = 6;
+			$apps[] = 20;
+			$apps[] = 26;
+			$apps[] = 11;
+			$apps[] = 14;
+			}
+
+		if (in_array ($wp_crm_user->get ('role'), array ('wp_crm_lecturer'))) {
+			$apps[] = 7;
+			$apps[] = 6;
+			$apps[] = 20;
+			}
+		
 
 		if (!empty($apps))
 		foreach ($apps as $app) {

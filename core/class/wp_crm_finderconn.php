@@ -90,7 +90,7 @@ class WP_CRM_FinderConn {
 		}
 	
 		$args['debug'] = isset($src['debug']) ? !!$src['debug'] : false;
-		
+	
 		$this->output($this->WP_CRM_Finder->exec($cmd, $args));
 	}
 	

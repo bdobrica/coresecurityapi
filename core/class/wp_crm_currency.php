@@ -156,5 +156,26 @@ class WP_CRM_Currency extends WP_CRM_Model {
 				}
 		return parent::get ($key, $opts);
 		}
+
+	public function convert ($amount = 0.00, $from = 'RON', $to = 'EUR') {
+		global $wpdb;
+		if ($from != 'RON') {
+			$sql = $wpdb->prepare ('select * from `' . $wpdb->prefix . static::$T . '` where currency=%s order by stamp desc limit 1;', $from);
+			$row = $wpdb->get_row ($sql);
+			$a = $row->rate / $row->multiplier;
+			}
+		else
+			$a = 1.00;
+
+		if ($to != 'RON') {
+			$sql = $wpdb->prepare ('select * from `' . $wpdb->prefix . static::$T . '` where currency=%s order by stamp desc limit 1;', $to);
+			$row = $wpdb->get_row ($sql);
+			$b = $row->rate / $row->multiplier;
+			}
+		else
+			$b = 1.00;
+
+		return $amount * $a / $b;
+		}
 	};
 ?>

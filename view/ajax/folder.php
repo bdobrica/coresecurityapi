@@ -8,7 +8,11 @@ list ($class, $id) = $_GET['object'] ? explode ('-', $_GET['object']) : explode 
 if (!class_exists ($class)) die ('Err.');
 if (!is_numeric($id)) die ('Err.');
 
-$object = new $class ((int) $id);
+try {
+	$object = new $class ((int) $id);
+	}
+catch (WP_CRM_Exception $wp_crm_exception) {
+	}
 
 $view = new WP_CRM_View ($object, array (
 	'toolbar' => array (
@@ -18,6 +22,7 @@ $view = new WP_CRM_View ($object, array (
 	'item' => array (
 		),
 	));
+
 echo "OK\nREDRAW:.wp-crm-view-folder-wrapper\n";
 unset ($view);
 ?>

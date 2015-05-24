@@ -12,6 +12,7 @@ $wp_crm_state = new WP_CRM_State ();
 $wp_crm_state->set ('state', WP_CRM_State::AddObject);
 
 $data = $_GET['object'] ? $_GET['object'] : $_POST['object'];
+$context = $_GET['context'] ? $_GET['context'] : $_POST['context'];
 
 list ($data_o, $filter) = explode (';', $data);
 list ($class, $id) = explode ('-', $data_o);
@@ -35,7 +36,12 @@ if (strpos ($filter, '=') !== FALSE) {
 if (!class_exists ($class)) die ('Err.');
 if (!is_numeric($id)) die ('Err.');
 
+if (!empty($context)) $context = (array) json_decode (trim (stripslashes (implode ('', explode ('\\', $context)))));
+
 $object = new $class ();
+
+if (!empty ($context)) $object->set ($context);
+
 
 $structure = new WP_CRM_Form_Structure ($object);
 if (!empty ($append)) 

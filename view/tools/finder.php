@@ -16,25 +16,22 @@ function access($attr, $path, $data, $volume) {
 		:  null;                                    // else elFinder decide it itself
 }
 
+header ('HTTP/1.1 200 OK');
+
+global $wp_crm_user;
+if (is_null ($wp_crm_user)) $wp_crm_user = new WP_CRM_User (FALSE);
+
+$root = new WP_CRM_Folder ((int) $wp_crm_user->get ('settings', 'root_folder'));
+
 $opts = array(
-	// 'debug' => true,
 	'roots' => array(
 		array(
 			'driver'        => 'WPCRM',   // driver for accessing file system (REQUIRED)
-			'path'          => '1',         // path to files (REQUIRED)
+			'path'          => $root->get (),         // path to files (REQUIRED)
 			'URL'           => '', // URL to files (REQUIRED)
-			'accessControl' => 'access',             // disable and hide dot starting files (OPTIONAL)
-			'attributes' => array(
-			array(
-				'pattern' => '/./', //You can also set permissions for file types by adding, for example, .jpg inside pattern.
-				'read'    => true,
-				'write'   => true,
-				'locked'  => true
 			)
 		)
-		)
-	)
-);
+	);
 
 // run WP_CRM_Finder
 $connector = new WP_CRM_FinderConn(new WP_CRM_Finder($opts));
