@@ -1,0 +1,42 @@
+<?php
+/*
+App Title: Proiecte
+App Parent: erp
+App Order: 1
+App Description:
+App Size: 1
+App Style:
+App Icon: th
+*/
+$list = new WP_CRM_List ('WP_CRM_Project', array ('uid='.$current_user->ID));//, 'id in (select iid from `wp_basket` where pid=4)'));
+$view = new WP_CRM_View ($list, array (
+		array (
+			'type' => 'toolbar',
+			'items' => array (
+				'add' => array (
+					'label' => 'Proiect Nou',
+					),
+				)
+			),
+		array (
+			'type' => 'column',
+			'label' => 'Actiuni',
+			'items' => array (
+				'view' => array (
+					'label' => 'Vezi',
+					),
+				'checklist' => array (
+					'label' => 'Checklist',
+					),
+				'memo' => array (
+					'label' => 'Memo',
+					),
+				'delete' => array (
+					'label' => 'Sterge',
+					),
+				)
+			)
+	));
+unset ($view);
+
+?>

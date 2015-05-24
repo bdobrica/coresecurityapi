@@ -1,0 +1,21 @@
+<?php
+/*
+App Title: Setari Generale
+App Parent: system
+App Order: 1
+App Description:
+App Size: 2
+App Style:
+App Icon: gears
+*/
+
+$wp_crm_settings = new WP_CRM_Settings ();
+
+$structure = new WP_CRM_Form_Structure ($wp_crm_settings);
+
+$form = new WP_CRM_Form ($structure);
+$form->set ('state', $wp_crm_state->get());
+
+if (!empty ($_POST)) $form->action ();
+$form->render (TRUE);
+?>

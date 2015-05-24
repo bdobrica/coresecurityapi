@@ -1,0 +1,15 @@
+DELETE FROM ca_wikis WHERE 1;
+ALTER TABLE ca_wikis AUTO_INCREMENT=1;
+DELETE FROM ca_wiki_pages WHERE 1;
+ALTER TABLE ca_wiki_pages AUTO_INCREMENT=1;
+DELETE FROM ca_forums WHERE 1;
+ALTER TABLE ca_forums AUTO_INCREMENT=1;
+DELETE FROM ca_forum_topics WHERE 1;
+ALTER TABLE ca_forum_topics AUTO_INCREMENT=1;
+DELETE FROM ca_forum_replies WHERE 1;
+ALTER TABLE ca_forum_replies AUTO_INCREMENT=1;
+DELETE FROM ca_blogs WHERE 1;
+ALTER TABLE ca_blogs AUTO_INCREMENT=1;
+DELETE FROM ca_blog_entries WHERE 1;
+ALTER TABLE ca_blog_entries AUTO_INCREMENT=1;
+

@@ -1,0 +1,54 @@
+<?php
+/*
+App Title: Fisiere
+App Parent: dms
+App Order: 1
+App Description:
+App Size: 1
+App Style:
+App Icon: folder
+*/
+?>
+<div class="row">
+	<div class="col-sm-12 col-md-12 col-lg-12">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#tab-local">Local</a></li>
+			<li><a href="#tab-remote">Remote</a></li>
+			<li><a href="#tab-scanner">Scanner</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="tab-local">
+				<div class="row">
+					<div class="col-lg-12">
+<?php
+$folder = new WP_CRM_Folder ((int) $wp_crm_user->get ('settings', 'root_folder'));
+$view = new WP_CRM_View ($folder, array (
+	'toolbar' => array (
+		'add' => 'Creaza',
+		'upload' => 'Incarca'
+		),
+	'item' => array (
+		),
+	));
+unset ($view);
+?>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" id="tab-remote">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="wp-crm-view-file-manager" rel="<?php bloginfo ('stylesheet_directory'); ?>/tools/finder-proxy.php"></div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" id="tab-scanner">
+				<div class="row">
+					<div class="col-lg-12">
+						<a href="#" class="btn btn-lg btn-success wp-crm-view-actions wp-crm-view-scanner"><i class="fa fa-print"></i> Scaneaza!</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
